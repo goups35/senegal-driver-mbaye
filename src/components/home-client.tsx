@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { TripRequestForm } from '@/components/forms/trip-request-form'
 import { TripQuoteDisplay } from '@/components/forms/trip-quote-display'
 import { TravelChat } from '@/components/chat/travel-chat'
+import { Navbar } from '@/components/navigation/navbar'
 import type { TripQuote } from '@/types'
 import { TripRequestInput } from '@/schemas/trip'
 
@@ -32,6 +33,7 @@ export function HomeClient() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Navbar />
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-12">
           <div className="mt-4 flex justify-center space-x-2 text-sm">
