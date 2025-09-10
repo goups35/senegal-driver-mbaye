@@ -74,16 +74,16 @@ export function HomeClient() {
                 >
                   <div className="text-center space-y-4 relative z-10">
                     <div className="text-6xl group-hover:scale-110 transition-transform">
-                      <svg className="w-16 h-16 mx-auto text-black" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-16 h-16 mx-auto text-black group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-black">Conseiller Voyage IA</h3>
-                    <p className="text-black text-sm">
+                    <h3 className="text-xl font-bold text-black group-hover:text-white transition-colors">Conseiller Voyage IA</h3>
+                    <p className="text-black group-hover:text-white transition-colors text-sm">
                       Première visite ? Laissez Mbaye vous guider avec son expertise locale. 
                       Itinéraires sur-mesure selon vos goûts et votre temps.
                     </p>
-                    <div className="text-xs text-black bg-sahel-sand p-3 rounded-lg">
+                    <div className="text-xs text-black group-hover:text-black bg-sahel-sand p-3 rounded-lg">
                       🎯 Sur-mesure • 🇸🇳 Expert Sénégal • 💬 Conversation naturelle
                     </div>
                   </div>
