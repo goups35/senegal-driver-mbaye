@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { TripRequestForm } from '@/components/forms/trip-request-form'
-import { TripQuoteDisplay } from '@/components/forms/trip-quote-display'
-import { TravelChat } from '@/components/chat/travel-chat'
 import { Navbar } from '@/components/navigation/navbar'
+import { ErrorBoundary } from '@/components/common/error-boundary'
+import { TravelPlannerWrapper } from '@/components/features/travel-planner/travel-planner-wrapper'
+import { TransportQuoteWrapper } from '@/components/features/transport-quote/transport-quote-wrapper'
 import type { TripQuote } from '@/types'
 import { TripRequestInput } from '@/schemas/trip'
 
@@ -36,11 +36,6 @@ export function HomeClient() {
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-12">
-          <div className="mt-4 flex justify-center space-x-2 text-sm">
-            <span className="px-3 py-1 bg-senegal-green text-white rounded-full font-medium">🏛️ Patrimoine</span>
-            <span className="px-3 py-1 bg-purple-600 text-white rounded-full font-medium">🏖️ Côtes</span>
-            <span className="px-3 py-1 bg-teranga-orange text-white rounded-full font-medium">🌅 Déserts</span>
-          </div>
         </header>
 
         <main className="space-y-8">
@@ -108,29 +103,12 @@ export function HomeClient() {
                 </button>
               </div>
               
-              {!currentQuote ? (
-                <TripRequestForm 
-                  onQuoteGenerated={handleQuoteGenerated} 
-                />
-              ) : (
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <button
-                      onClick={resetTransportForm}
-                      className="text-primary hover:underline text-sm"
-                    >
-                      ← Nouvelle demande
-                    </button>
-                  </div>
-                  
-                  {tripData && (
-                    <TripQuoteDisplay 
-                      quote={currentQuote} 
-                      tripData={tripData}
-                    />
-                  )}
-                </div>
-              )}
+              <TransportQuoteWrapper
+                currentQuote={currentQuote}
+                tripData={tripData}
+                onQuoteGenerated={handleQuoteGenerated}
+                onReset={resetTransportForm}
+              />
             </div>
           )}
 
@@ -145,7 +123,7 @@ export function HomeClient() {
                 </button>
               </div>
               
-              <TravelChat onTravelPlanReady={(plan) => console.log('Plan ready:', plan)} />
+              <TravelPlannerWrapper onTravelPlanReady={(plan) => console.log('Plan ready:', plan)} />
             </div>
           )}
         </main>

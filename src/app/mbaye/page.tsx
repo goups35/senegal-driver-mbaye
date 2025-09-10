@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/navigation/navbar'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function MbayePage() {
   return (
@@ -21,13 +22,14 @@ export default function MbayePage() {
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             {/* Photo */}
             <div className="text-center">
-              <div className="w-80 h-80 mx-auto bg-gradient-to-br from-senegal-green/20 to-ocean-blue/20 rounded-2xl flex items-center justify-center border border-sahel-sand">
-                <div className="text-center">
-                  <div className="w-32 h-32 bg-gradient-to-r from-senegal-green to-ocean-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white text-4xl font-bold">M</span>
-                  </div>
-                  <p className="text-gray-500 text-sm">Photo à venir</p>
-                </div>
+              <div className="relative w-80 h-80 mx-auto">
+                <Image
+                  src="/images/mbaye-photo.jpeg"
+                  alt="Mbaye Diop - Chauffeur guide professionnel au Sénégal"
+                  fill
+                  className="object-cover rounded-2xl shadow-lg border border-sahel-sand"
+                  priority
+                />
               </div>
             </div>
 
