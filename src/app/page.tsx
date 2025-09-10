@@ -32,23 +32,28 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-sahel-sand">
       <div className="container mx-auto px-4 py-8">
-        {/* Bandeau démo */}
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6 text-center">
-          <p className="text-sm">
-            🚀 <strong>Version Démo</strong> - Données simulées réalistes pour le Sénégal (pas d&apos;IA payante requise)
+        {/* Bandeau démo avec thème Sénégal */}
+        <div className="sahel-gradient border border-teranga-orange text-baobab-brown px-4 py-3 rounded-xl mb-6 text-center shadow-lg">
+          <p className="text-sm font-medium">
+            🇸🇳 <strong>Bienvenue au Sénégal</strong> - Service de transport premium avec Mbaye, votre chauffeur local
           </p>
         </div>
 
         <header className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-primary mb-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-senegal-green via-ocean-blue to-teranga-orange bg-clip-text text-transparent mb-4">
             🚗 Transport Sénégal
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Service de transport premium avec devis automatique et itinéraires optimisés. 
-            Réservez facilement votre trajet partout au Sénégal.
+          <p className="text-lg text-baobab-brown max-w-2xl mx-auto font-medium">
+            Découvrez le Sénégal avec Mbaye, votre chauffeur-guide expérimenté. 
+            Transport sûr, itinéraires authentiques, tarifs transparents.
           </p>
+          <div className="mt-4 flex justify-center space-x-2 text-sm">
+            <span className="px-3 py-1 bg-senegal-green text-white rounded-full">🏛️ Patrimoine</span>
+            <span className="px-3 py-1 bg-ocean-blue text-white rounded-full">🏖️ Côtes</span>
+            <span className="px-3 py-1 bg-teranga-orange text-white rounded-full">🌅 Déserts</span>
+          </div>
         </header>
 
         <main className="space-y-8">
@@ -57,35 +62,36 @@ export default function Home() {
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Mode Transport Direct */}
                 <div 
-                  className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer border border-gray-200"
+                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group"
                   onClick={() => setMode('transport')}
                 >
                   <div className="text-center space-y-4">
-                    <div className="text-6xl">🚗</div>
-                    <h3 className="text-xl font-bold text-primary">Transport Direct</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Vous savez où aller ? Obtenez instantanément un devis de transport 
-                      avec itinéraire détaillé et réservez via WhatsApp.
+                    <div className="text-6xl group-hover:scale-110 transition-transform">🚗</div>
+                    <h3 className="text-xl font-bold text-senegal-green">Transport Direct</h3>
+                    <p className="text-baobab-brown text-sm">
+                      Destination connue ? Obtenez votre devis de transport instantané 
+                      avec Mbaye. Itinéraires optimisés, tarifs transparents.
                     </p>
-                    <div className="text-xs text-muted-foreground bg-slate-50 p-2 rounded">
-                      ⚡ Devis en 30 secondes • 💰 Prix transparents • 📱 Réservation WhatsApp
+                    <div className="text-xs text-baobab-brown bg-sahel-sand p-3 rounded-lg">
+                      ⚡ Devis immédiat • 🗺️ Vraies distances • 📱 Contact WhatsApp
                     </div>
                   </div>
                 </div>
 
                 {/* Mode Chat IA */}
                 <div 
-                  className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer border border-gray-200 relative overflow-hidden"
+                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
                   onClick={() => setMode('chat')}
                 >
-                  <div className="text-center space-y-4">
-                    <div className="text-6xl">🤖</div>
-                    <h3 className="text-xl font-bold text-primary">Conseiller Voyage IA</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Pas d&apos;idée précise ? Discutez avec notre IA experte qui vous aidera 
-                      à planifier votre découverte personnalisée du Sénégal.
+                  <div className="absolute top-2 right-2 senegal-gradient w-16 h-16 rounded-full opacity-20"></div>
+                  <div className="text-center space-y-4 relative z-10">
+                    <div className="text-6xl group-hover:scale-110 transition-transform">🧭</div>
+                    <h3 className="text-xl font-bold text-ocean-blue">Conseiller Voyage IA</h3>
+                    <p className="text-baobab-brown text-sm">
+                      Première visite ? Laissez Mbaye vous guider avec son expertise locale. 
+                      Itinéraires sur-mesure selon vos goûts et votre temps.
                     </p>
-                    <div className="text-xs text-muted-foreground bg-slate-50 p-2 rounded">
+                    <div className="text-xs text-baobab-brown bg-sahel-sand p-3 rounded-lg">
                       🎯 Sur-mesure • 🇸🇳 Expert Sénégal • 💬 Conversation naturelle
                     </div>
                   </div>

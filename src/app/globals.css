@@ -1,26 +1,36 @@
 @import "tailwindcss";
 
 :root {
+  /* Couleurs authentiques Sénégal */
+  --senegal-green: #00a651;
+  --senegal-yellow: #ffed00;
+  --senegal-red: #e31e24;
+  --sahel-sand: #f4e4bc;
+  --baobab-brown: #8b4513;
+  --ocean-blue: #0077be;
+  --teranga-orange: #ff8c00;
+  
+  /* Variables système adaptées */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #2c1810;
   --card: #ffffff;
-  --card-foreground: #171717;
+  --card-foreground: #2c1810;
   --popover: #ffffff;
-  --popover-foreground: #171717;
-  --primary: #0f172a;
-  --primary-foreground: #f8fafc;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
-  --destructive: #ef4444;
-  --destructive-foreground: #f8fafc;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0f172a;
-  --radius: 0.5rem;
+  --popover-foreground: #2c1810;
+  --primary: var(--senegal-green);
+  --primary-foreground: #ffffff;
+  --secondary: var(--sahel-sand);
+  --secondary-foreground: var(--baobab-brown);
+  --muted: #f8f6f0;
+  --muted-foreground: #8b4513;
+  --accent: var(--teranga-orange);
+  --accent-foreground: #ffffff;
+  --destructive: var(--senegal-red);
+  --destructive-foreground: #ffffff;
+  --border: #e8dcc0;
+  --input: #f4e4bc;
+  --ring: var(--senegal-green);
+  --radius: 0.75rem;
 }
 
 @theme inline {
@@ -48,25 +58,56 @@
 /* Mode clair forcé - pas de mode sombre automatique */
 
 body {
-  background: #ffffff;
-  color: #171717;
-  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f6f0 100%);
+  color: #2c1810;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Force white background and dark text for all content */
+/* Thème Sénégal appliqué */
 * {
   box-sizing: border-box;
 }
 
+/* Gradients thématiques */
+.senegal-gradient {
+  background: linear-gradient(135deg, var(--senegal-green), var(--ocean-blue));
+}
+
+.sahel-gradient {
+  background: linear-gradient(45deg, var(--sahel-sand), var(--senegal-yellow));
+}
+
+.teranga-gradient {
+  background: linear-gradient(135deg, var(--teranga-orange), var(--senegal-red));
+}
+
+/* Classes utilitaires Sénégal */
+.text-senegal-green { color: var(--senegal-green) !important; }
+.text-baobab-brown { color: var(--baobab-brown) !important; }
+.text-ocean-blue { color: var(--ocean-blue) !important; }
+.bg-senegal-green { background-color: var(--senegal-green) !important; }
+.bg-sahel-sand { background-color: var(--sahel-sand) !important; }
+.bg-teranga-orange { background-color: var(--teranga-orange) !important; }
+
+/* Hover effects */
+.hover-senegal:hover {
+  background-color: var(--senegal-green);
+  color: white;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Cards avec thème */
 .bg-card, [class*="bg-card"] {
   background-color: #ffffff !important;
-  color: #171717 !important;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 10px rgba(0, 166, 81, 0.1);
 }
 
 .text-muted-foreground {
-  color: #64748b !important;
+  color: var(--muted-foreground) !important;
 }
 
 .text-primary {
-  color: #0f172a !important;
+  color: var(--primary) !important;
 }
