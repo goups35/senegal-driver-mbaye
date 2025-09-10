@@ -52,16 +52,16 @@ export function HomeClient() {
                 >
                   <div className="text-center space-y-4">
                     <div className="text-6xl group-hover:scale-110 transition-transform">
-                      <svg className="w-16 h-16 mx-auto text-baobab-brown group-hover:text-ocean-blue transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-16 h-16 mx-auto text-black" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M5 11l1.5-4.5h11L19 11m-1.5 5a1.5 1.5 0 01-3 0 1.5 1.5 0 013 0m-8 0a1.5 1.5 0 01-3 0 1.5 1.5 0 013 0M17 16H7m10 0a3 3 0 003-3V9a1 1 0 00-1-1H5a1 1 0 00-1 1v4a3 3 0 003 3m10 0v1a2 2 0 01-2 2H7a2 2 0 01-2-2v-1m10 0H7"/>
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-baobab-brown group-hover:text-ocean-blue transition-colors">Transport Direct</h3>
-                    <p className="text-baobab-brown text-sm">
+                    <h3 className="text-xl font-bold text-black">Transport Direct</h3>
+                    <p className="text-black text-sm">
                       Destination connue ? Obtenez votre devis de transport instantané 
                       avec Mbaye. Itinéraires optimisés, tarifs transparents.
                     </p>
-                    <div className="text-xs text-baobab-brown bg-sahel-sand p-3 rounded-lg">
+                    <div className="text-xs text-black bg-sahel-sand p-3 rounded-lg">
                       ⚡ Devis immédiat • 🗺️ Vraies distances • 📱 Contact WhatsApp
                     </div>
                   </div>
@@ -72,24 +72,23 @@ export function HomeClient() {
                   className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
                   onClick={() => setMode('chat')}
                 >
-                  <div className="absolute top-2 right-2 bg-gradient-to-br from-purple-500/20 to-pink-500/20 w-16 h-16 rounded-full"></div>
                   <div className="text-center space-y-4 relative z-10">
                     <div className="text-6xl group-hover:scale-110 transition-transform">
-                      <svg className="w-16 h-16 mx-auto text-ocean-blue" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-16 h-16 mx-auto text-black" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-ocean-blue">Conseiller Voyage IA</h3>
-                    <p className="text-baobab-brown text-sm">
+                    <h3 className="text-xl font-bold text-black">Conseiller Voyage IA</h3>
+                    <p className="text-black text-sm">
                       Première visite ? Laissez Mbaye vous guider avec son expertise locale. 
                       Itinéraires sur-mesure selon vos goûts et votre temps.
                     </p>
-                    <div className="text-xs text-baobab-brown bg-sahel-sand p-3 rounded-lg">
+                    <div className="text-xs text-black bg-sahel-sand p-3 rounded-lg">
                       🎯 Sur-mesure • 🇸🇳 Expert Sénégal • 💬 Conversation naturelle
                     </div>
                   </div>
                   <div className="absolute top-2 right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full">
-                    ✨ NOUVEAU
+                    NOUVEAU
                   </div>
                 </div>
               </div>
