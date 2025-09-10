@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/navigation/navbar'
+import Link from 'next/link'
 
 export default function MbayePage() {
   return (
@@ -129,18 +130,18 @@ export default function MbayePage() {
               Découvrez le Sénégal avec Mbaye et vivez une expérience inoubliable
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="/"
                 className="bg-senegal-green text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
                 Demander un devis
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/testimonials"
                 className="border border-senegal-green text-senegal-green px-8 py-3 rounded-lg hover:bg-senegal-green hover:text-white transition-colors font-medium"
               >
                 Voir les témoignages
-              </a>
+              </Link>
             </div>
           </div>
         </div>

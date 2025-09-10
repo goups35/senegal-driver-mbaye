@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/navigation/navbar'
+import Link from 'next/link'
 
 export default function TestimonialsPage() {
   const testimonials = [
@@ -171,18 +172,18 @@ export default function TestimonialsPage() {
               Planifiez votre voyage sur-mesure au Sénégal avec Mbaye
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="/"
                 className="bg-senegal-green text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
                 Demander un devis
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/mbaye"
                 className="border border-senegal-green text-senegal-green px-8 py-3 rounded-lg hover:bg-senegal-green hover:text-white transition-colors font-medium"
               >
                 En savoir plus sur Mbaye
-              </a>
+              </Link>
             </div>
           </div>
         </div>
