@@ -61,11 +61,9 @@ export function InlineLoading({ message = 'Chargement...', className = '' }: { m
   )
 }
 
-interface ButtonLoadingProps {
+interface ButtonLoadingProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   isLoading: boolean
-  disabled?: boolean
-  [key: string]: any
 }
 
 export function ButtonLoading({ children, isLoading, ...props }: ButtonLoadingProps) {
