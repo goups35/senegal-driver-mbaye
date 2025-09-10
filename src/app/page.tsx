@@ -32,19 +32,12 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-sahel-sand">
+    <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-12">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-senegal-green via-ocean-blue to-teranga-orange bg-clip-text text-transparent mb-4">
-            Transport Sénégal
-          </h1>
-          <p className="text-lg text-baobab-brown max-w-2xl mx-auto font-medium">
-            Découvrez le Sénégal avec Mbaye, votre chauffeur-guide expérimenté. 
-            Transport sûr, itinéraires authentiques, tarifs transparents.
-          </p>
           <div className="mt-4 flex justify-center space-x-2 text-sm">
             <span className="px-3 py-1 bg-senegal-green text-white rounded-full font-medium">🏛️ Patrimoine</span>
-            <span className="px-3 py-1 bg-blue-600 text-white rounded-full font-medium">🏖️ Côtes</span>
+            <span className="px-3 py-1 bg-purple-600 text-white rounded-full font-medium">🏖️ Côtes</span>
             <span className="px-3 py-1 bg-teranga-orange text-white rounded-full font-medium">🌅 Déserts</span>
           </div>
         </header>
@@ -55,7 +48,7 @@ export default function Home() {
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Mode Transport Direct */}
                 <div 
-                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-sahel-sand group hover:border-ocean-blue"
+                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-sahel-sand group"
                   onClick={() => setMode('transport')}
                 >
                   <div className="text-center space-y-4">
@@ -84,7 +77,7 @@ export default function Home() {
                   <div className="text-center space-y-4 relative z-10">
                     <div className="text-6xl group-hover:scale-110 transition-transform">
                       <svg className="w-16 h-16 mx-auto text-ocean-blue" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9l-5 4.74L18.18 22L12 18.27 5.82 22 7 13.74 2 9l6.91-.74L12 2z"/>
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                     </div>
                     <h3 className="text-xl font-bold text-ocean-blue">Conseiller Voyage IA</h3>
@@ -102,11 +95,6 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="text-center mt-8">
-                <p className="text-sm text-muted-foreground">
-                  🇸🇳 <strong>Transport Sénégal</strong> - Votre partenaire voyage de confiance
-                </p>
-              </div>
             </div>
           )}
 
