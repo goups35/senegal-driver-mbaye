@@ -137,8 +137,32 @@ export default function TestimonialsPage() {
           </div>
         </div>
 
+        {/* Laisser un avis */}
+        <div className="text-center mt-16 mb-8">
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 max-w-2xl mx-auto border border-blue-200">
+            <h3 className="text-2xl font-bold text-baobab-brown mb-4">
+              Vous avez voyagé avec Mbaye ?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Partagez votre expérience et aidez d&apos;autres voyageurs
+            </p>
+            <a
+              href="mailto:legoupil.alexandre@gmail.com?subject=Mon%20avis%20sur%20Transport%20Sénégal%20-%20Voyage%20avec%20Mbaye&body=Bonjour%2C%0A%0AJe%20souhaite%20partager%20mon%20expérience%20de%20voyage%20avec%20Mbaye%20:%0A%0A%F0%9F%93%85%20Dates%20du%20voyage%20:%20%0A%F0%9F%9A%97%20Type%20de%20voyage%20:%20%0A%E2%AD%90%20Note%20sur%205%20:%20%0A%F0%9F%93%9D%20Mon%20témoignage%20:%0A%0A%0A%0ACordialement%2C%0A[Votre%20nom]%0A[Votre%20ville%2C%20pays]"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 font-medium inline-flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+              </svg>
+              ✨ Laisser mon avis
+            </a>
+            <p className="text-xs text-gray-500 mt-3">
+              Votre avis sera vérifié avant publication
+            </p>
+          </div>
+        </div>
+
         {/* CTA Section */}
-        <div className="text-center mt-16">
+        <div className="text-center mt-8">
           <div className="bg-gradient-to-r from-sahel-sand/20 to-teranga-orange/20 rounded-2xl p-8 max-w-3xl mx-auto">
             <h3 className="text-2xl font-bold text-baobab-brown mb-4">
               Rejoignez nos voyageurs heureux
