@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" aria-hidden="true">
+  <!-- Ultra-simple outline variant using strokes; color via currentColor -->
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- AI chip -->
+    <rect x="3" y="3" width="12" height="12" rx="2.5"/>
+    <path d="M9 1v2M9 17v2M1 9h2M17 9h2"/>
+    <!-- Tiny 'AI' hint as two bars (not letters), keeps it generic and simple -->
+    <path d="M6.5 9.5v-3M11.5 6.5v6"/>
+    <!-- Route curve -->
+    <path d="M9 15c0 2.209 1.791 4 4 4h0.5c.828 0 1.5.672 1.5 1.5S14.328 22 13.5 22H13"/>
+    <!-- Destination pin -->
+    <path d="M18.5 13.25c-1.933 0-3.5 1.567-3.5 3.5 0 2.333 3.5 5.75 3.5 5.75s3.5-3.417 3.5-5.75c0-1.933-1.567-3.5-3.5-3.5Z"/>
+    <circle cx="18.5" cy="16.5" r="1.2"/>
+  </g>
+  <title>AI itinerary icon (outline)</title>
+</svg>

@@ -1,0 +1,148 @@
+import type { Config } from "tailwindcss";
+import { colorPalette } from './src/styles/color-palette';
+import { typography } from './src/styles/typography';
+import { designTokens } from './src/styles/design-tokens';
+
+const config: Config = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      // Import des couleurs depuis les design tokens
+      colors: {
+        // Couleurs Sénégal avec nuances complètes
+        'senegal-green': colorPalette.senegal.green,
+        'senegal-yellow': colorPalette.senegal.yellow,
+        'senegal-red': colorPalette.senegal.red,
+        
+        // Couleurs naturelles avec nuances
+        'sahel-sand': colorPalette.nature['sahel-sand'],
+        'baobab-brown': colorPalette.nature['baobab-brown'],
+        'ocean-blue': colorPalette.nature['ocean-blue'],
+        'teranga-orange': colorPalette.nature['teranga-orange'],
+        
+        // Couleurs sémantiques
+        success: colorPalette.semantic.success,
+        warning: colorPalette.semantic.warning,
+        error: colorPalette.semantic.error,
+        info: colorPalette.semantic.info,
+        
+        // Neutres
+        gray: colorPalette.neutral.gray,
+        
+        // Compatibilité Next.js/Tailwind
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+      },
+
+      // Typographie depuis design tokens
+      fontFamily: {
+        primary: typography.fonts.primary,
+        secondary: typography.fonts.secondary,
+        accent: typography.fonts.accent,
+        mono: typography.fonts.mono,
+        // Compatibilité
+        sans: typography.fonts.primary,
+      },
+      fontSize: typography.fontSize,
+      fontWeight: typography.fontWeight,
+      lineHeight: typography.lineHeight,
+      letterSpacing: typography.letterSpacing,
+
+      // Espacements et design tokens
+      spacing: designTokens.spacing,
+      borderRadius: {
+        ...designTokens.borderRadius,
+        // Compatibilité Next.js
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      boxShadow: designTokens.shadows,
+      zIndex: designTokens.zIndex,
+
+      // Animations améliorées
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-up': 'slideUp 0.3s ease-out',
+        'slide-in-from-top': 'slideInFromTop 0.2s ease-out',
+        'bounce-slow': 'bounce 2s infinite',
+        'pulse-slow': 'pulse 3s infinite',
+        'scale-in': 'scaleIn 0.2s ease-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideInFromTop: {
+          '0%': { transform: 'translateY(-10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+      },
+
+      // Gradients étendus
+      backgroundImage: {
+        'senegal-gradient': 'linear-gradient(135deg, #00a651, #0077be)',
+        'sahel-gradient': 'linear-gradient(45deg, #f4e4bc, #ffed00)',
+        'teranga-gradient': 'linear-gradient(135deg, #ff8c00, #e31e24)',
+        'hero-gradient': 'linear-gradient(135deg, #00a651 0%, #0077be 50%, #ff8c00 100%)',
+        'card-gradient': 'linear-gradient(145deg, rgba(244, 228, 188, 0.1), rgba(255, 237, 0, 0.05))',
+      },
+
+      // Tailles personnalisées
+      height: {
+        '18': '4.5rem', // 72px pour navbar
+      },
+
+      // Transitions
+      transitionDuration: designTokens.transitions.duration,
+      transitionTimingFunction: designTokens.transitions.timing,
+    },
+  },
+  plugins: [],
+};
+
+export default config;
