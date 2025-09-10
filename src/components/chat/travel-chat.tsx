@@ -144,7 +144,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
     <Card className="w-full max-w-4xl mx-auto h-[600px] flex flex-col">
       <CardHeader className="flex-shrink-0">
         <CardTitle className="flex items-center gap-2">
-          Maxime, l'assistant IA de Mbaye
+          Maxime, l&apos;assistant IA de Mbaye
           {isDemo && (
             <span className="text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
               DÉMO
