@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 
 export function createGeminiModel() {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'placeholder-key')
-  return genAI.getModel('gemini-1.5-flash')
+  return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 }
 
 export const TRAVEL_ADVISOR_PROMPT = `Tu es un expert conseiller voyage spécialisé au Sénégal 🇸🇳. Tu connais parfaitement :
