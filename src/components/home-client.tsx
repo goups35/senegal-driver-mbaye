@@ -47,21 +47,21 @@ export function HomeClient() {
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Mode Transport Direct */}
                 <div 
-                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-sahel-sand group"
+                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group"
                   onClick={() => setMode('transport')}
                 >
                   <div className="text-center space-y-4">
                     <div className="text-6xl group-hover:scale-110 transition-transform">
-                      <svg className="w-16 h-16 mx-auto text-black" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-16 h-16 mx-auto text-black group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M5 11l1.5-4.5h11L19 11m-1.5 5a1.5 1.5 0 01-3 0 1.5 1.5 0 013 0m-8 0a1.5 1.5 0 01-3 0 1.5 1.5 0 013 0M17 16H7m10 0a3 3 0 003-3V9a1 1 0 00-1-1H5a1 1 0 00-1 1v4a3 3 0 003 3m10 0v1a2 2 0 01-2 2H7a2 2 0 01-2-2v-1m10 0H7"/>
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-black">Transport Direct</h3>
-                    <p className="text-black text-sm">
+                    <h3 className="text-xl font-bold text-black group-hover:text-white transition-colors">Transport Direct</h3>
+                    <p className="text-black group-hover:text-white transition-colors text-sm">
                       Destination connue ? Obtenez votre devis de transport instantané 
                       avec Mbaye. Itinéraires optimisés, tarifs transparents.
                     </p>
-                    <div className="text-xs text-black bg-sahel-sand p-3 rounded-lg">
+                    <div className="text-xs text-black group-hover:text-black bg-sahel-sand p-3 rounded-lg">
                       ⚡ Devis immédiat • 🗺️ Vraies distances • 📱 Contact WhatsApp
                     </div>
                   </div>
