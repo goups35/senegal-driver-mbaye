@@ -121,7 +121,7 @@ ${lastMessage.content}
 Généré via Transport Sénégal - Votre conseiller voyage`
 
       const whatsappUrl = formatWhatsAppUrl(
-        process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '+33626388794', 
+        process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER || '+33626388794', 
         travelPlan
       )
       window.open(whatsappUrl, '_blank')
@@ -231,10 +231,26 @@ Généré via Transport Sénégal - Votre conseiller voyage`
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleSendMessage('Go, je valide ce programme')}
-              disabled={isLoading}
+              onClick={handleWhatsAppExport}
+              disabled={isLoading || !showWhatsAppButton}
             >
               ✅ Valider le programme
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleSendMessage('je souhaite découvrir le plus possible le Sénégal en 1 semaine')}
+              disabled={isLoading}
+            >
+              🌍 1 semaine roots
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleSendMessage('je souhaite organiser moi-même ma semaine, j\'ai déjà en tête les endroits à visiter')}
+              disabled={isLoading}
+            >
+              🎯 1 semaine Guy
             </Button>
           </div>
         </div>
