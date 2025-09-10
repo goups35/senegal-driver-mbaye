@@ -37,7 +37,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
     if (messages.length === 0) {
       const welcomeMessage: Message = {
         role: 'assistant',
-        content: 'Bonjour, je suis ravi de vous aider à planifier votre voyage. 2 choix s\'offrent à vous :\n\n1. cliquer sur un des boutons pour pré-sélectionner un type de voyage.\n\n2. Ecrivez directement la durée du voyage, les endroits que vous souhaitez visiter et je vous ferai une proposition de voyage à revoir ensemble !',
+        content: 'Bonjour, je suis ravi de vous aider à planifier votre voyage. 2 choix s&apos;offrent à vous :\n\n1. cliquer sur un des boutons pour pré-sélectionner un type de voyage.\n\n2. Ecrivez directement la durée du voyage, les endroits que vous souhaitez visiter et je vous ferai une proposition de voyage à revoir ensemble !',
         timestamp: new Date()
       }
       setMessages([welcomeMessage])
