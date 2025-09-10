@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { TripRequestForm } from '@/components/forms/trip-request-form'
 import { TripQuoteDisplay } from '@/components/forms/trip-quote-display'
 import { TravelChat } from '@/components/chat/travel-chat'
@@ -14,6 +14,11 @@ export default function Home() {
   const [mode, setMode] = useState<AppMode>('home')
   const [currentQuote, setCurrentQuote] = useState<TripQuote | null>(null)
   const [tripData, setTripData] = useState<TripRequestInput | null>(null)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const handleQuoteGenerated = (quote: TripQuote, data: TripRequestInput) => {
     setCurrentQuote(quote)
@@ -29,6 +34,16 @@ export default function Home() {
   const resetTransportForm = () => {
     setCurrentQuote(null)
     setTripData(null)
+  }
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">Chargement...</div>
+        </div>
+      </div>
+    )
   }
 
   return (
