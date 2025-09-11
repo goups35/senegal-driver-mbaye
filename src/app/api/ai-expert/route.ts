@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         departure: ''
       },
       groupSize: extractedInfo.groupInfo?.size || 1,
-      budget: extractedInfo.budget ? {
+      budget: extractedInfo.budget?.amount ? {
         min: extractedInfo.budget.amount * 0.8,
         max: extractedInfo.budget.amount * 1.2,
         currency: extractedInfo.budget.currency as 'XOF' | 'EUR' | 'USD',
