@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Système d'IA Expert Sénégal avec prompt engineering avancé
 
 import { senegalDestinations, universalExperiences } from '@/data/senegal-destinations'

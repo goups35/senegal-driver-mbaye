@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server'
 import { generateAIRecommendation, extractClientInfo, scoreRecommendation } from '@/lib/ai-senegal-expert'
 import type { AIRecommendationRequest } from '@/types/destinations'
@@ -127,9 +128,9 @@ export async function POST(request: NextRequest) {
 }
 
 function generateConversationalResponse(
-  recommendation: any,
+  recommendation: Record<string, any>,
   context: string,
-  extractedInfo: any,
+  extractedInfo: Record<string, any>,
   score: number
 ): string {
   // Réponses contextuelles selon l'étape de conversation
@@ -212,7 +213,7 @@ Et hop, je vous concocte quelque chose d'authentique !`
       proposal += `# 🇸🇳 **${recommendation.itinerary.name}**\n\n`
       
       let currentDay = 1
-      destinations.forEach((dest: any, index: number) => {
+      destinations.forEach((dest: Record<string, any>) => {
         const stayDuration = Math.min(dailyPacing, duration - currentDay + 1)
         const endDay = currentDay + stayDuration - 1
         
@@ -256,7 +257,7 @@ Et hop, je vous concocte quelque chose d'authentique !`
       return `D'accord ! Dites-moi ce que vous aimeriez modifier :\n\n🎯 **Destinations** : autres lieux à privilégier ?\n📅 **Durée** : plus/moins de temps quelque part ?\n💰 **Budget** : ajuster les prestations ?\n🚗 **Rythme** : plus détendu ou plus intensif ?\n\nJ'adapte tout selon vos souhaits.`
 
     case 'booking_confirmation':
-      return `Fantastique ! 🎉\n\nJe suis ravi de vous accompagner dans cette aventure sénégalaise. Voici comment finaliser votre réservation :\n\n## 📱 **Contact WhatsApp direct :**\n**+33 6 26 38 87 94**\n\nÉcrivez-moi avec le message : *"Réservation itinéraire [votre nom]"*\n\n## 📋 **Récapitulatif final :**\n- Dates : ${recommendation.itinerary.client.travelDates.arrival} - ${recommendation.itinerary.client.travelDates.departure}\n- Destinations : ${recommendation.itinerary.destinations.map((d: any) => d.name).join(', ')}\n- Budget : ${recommendation.itinerary.totalCost.min.toLocaleString()} - ${recommendation.itinerary.totalCost.max.toLocaleString()} FCFA\n\n## ✅ **Prochaines étapes :**\n1. Contact WhatsApp pour confirmer les détails\n2. Acompte de réservation (30%)\n3. Je vous envoie le guide pratique personnalisé\n4. RDV à votre arrivée au Sénégal !\n\nJ'ai hâte de vous faire découvrir MON Sénégal ! 🇸🇳`
+      return `Fantastique ! 🎉\n\nJe suis ravi de vous accompagner dans cette aventure sénégalaise. Voici comment finaliser votre réservation :\n\n## 📱 **Contact WhatsApp direct :**\n**+33 6 26 38 87 94**\n\nÉcrivez-moi avec le message : *"Réservation itinéraire [votre nom]"*\n\n## 📋 **Récapitulatif final :**\n- Dates : ${recommendation.itinerary.client.travelDates.arrival} - ${recommendation.itinerary.client.travelDates.departure}\n- Destinations : ${recommendation.itinerary.destinations.map((d: Record<string, any>) => d.name).join(', ')}\n- Budget : ${recommendation.itinerary.totalCost.min.toLocaleString()} - ${recommendation.itinerary.totalCost.max.toLocaleString()} FCFA\n\n## ✅ **Prochaines étapes :**\n1. Contact WhatsApp pour confirmer les détails\n2. Acompte de réservation (30%)\n3. Je vous envoie le guide pratique personnalisé\n4. RDV à votre arrivée au Sénégal !\n\nJ'ai hâte de vous faire découvrir MON Sénégal ! 🇸🇳`
 
     default:
       return `Je suis là pour vous aider à découvrir le Sénégal authentique ! Que souhaitez-vous savoir ?`

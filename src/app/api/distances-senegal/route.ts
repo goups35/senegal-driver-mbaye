@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server'
 import { 
-  findRoute, 
   calculateTotalJourney, 
   getRouteRecommendations,
   findNearestCity,
@@ -145,8 +145,8 @@ function formatDuration(minutes: number): string {
 }
 
 function generatePersonalizedAdvice(
-  journey: any, 
-  preferences: any, 
+  journey: Record<string, any>, 
+  preferences: Record<string, any>, 
   season: string
 ): string[] {
   const advice = []

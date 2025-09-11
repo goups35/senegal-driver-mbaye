@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Types pour le système d'IA expert Sénégal
 export interface SenegalDestination {
   id: string

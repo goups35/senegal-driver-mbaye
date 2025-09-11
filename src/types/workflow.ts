@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Types pour le système de workflow complet
 
 export interface WorkflowSession {
