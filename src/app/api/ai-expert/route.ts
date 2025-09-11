@@ -156,12 +156,12 @@ Et hop, je vous concocte quelque chose d'authentique !`
 
     case 'preference_gathering':
       const interests = extractedInfo.preferences?.interests || []
-      const duration = extractedInfo.dates?.duration
+      const travelDuration = extractedInfo.dates?.duration
       const budget = extractedInfo.budget?.amount
       const groupSize = extractedInfo.groupInfo?.size
 
       // Si on a assez d'infos, proposer directement un itinéraire
-      const hasEnoughInfo = (duration || budget) && (interests.length > 0 || groupSize)
+      const hasEnoughInfo = (travelDuration || budget) && (interests.length > 0 || groupSize)
       
       if (hasEnoughInfo) {
         return generateConversationalResponse(recommendation, 'itinerary_proposal', extractedInfo, score)
@@ -173,8 +173,8 @@ Et hop, je vous concocte quelque chose d'authentique !`
         response += `${interests.join(' + ')} - excellent mélange ! `
       }
 
-      if (duration) {
-        response += `${duration} jours, c'est ${duration > 10 ? 'parfait pour bien approfondir' : duration > 5 ? 'idéal pour un bon aperçu' : 'court mais faisable'} ! `
+      if (travelDuration) {
+        response += `${travelDuration} jours, c'est ${travelDuration > 10 ? 'parfait pour bien approfondir' : travelDuration > 5 ? 'idéal pour un bon aperçu' : 'court mais faisable'} ! `
       }
 
       if (budget) {
@@ -188,7 +188,7 @@ Et hop, je vous concocte quelque chose d'authentique !`
       response += `\n\nPour finaliser votre itinéraire, j'ai besoin de savoir :`
 
       const missingInfo = []
-      if (!duration) missingInfo.push("📅 **Combien de jours** exactement ?")
+      if (!travelDuration) missingInfo.push("📅 **Combien de jours** exactement ?")
       if (!budget && !groupSize) missingInfo.push("💰 **Budget approximatif** pour le groupe ?")
       if (interests.length === 0) missingInfo.push("🎯 **Vos priorités** : détente, découverte culturelle, nature ?")
       

@@ -1,0 +1,75 @@
+{
+  "test_scenarios": [
+    {
+      "name": "Initial Contact",
+      "request": {
+        "message": "Bonjour, je souhaite visiter le Sénégal",
+        "conversationHistory": [],
+        "context": "initial_inquiry"
+      }
+    },
+    {
+      "name": "Preference Gathering",
+      "request": {
+        "message": "J'aime la culture et les plages, nous sommes 4 personnes pour 8 jours",
+        "conversationHistory": [
+          {
+            "id": "msg-1",
+            "role": "user",
+            "content": "Bonjour, je souhaite visiter le Sénégal",
+            "timestamp": "2025-01-15T10:00:00Z",
+            "metadata": {}
+          },
+          {
+            "id": "msg-2",
+            "role": "assistant",
+            "content": "Salut ! Mbaye à votre service...",
+            "timestamp": "2025-01-15T10:01:00Z",
+            "metadata": {}
+          }
+        ],
+        "context": "preference_gathering"
+      }
+    },
+    {
+      "name": "Budget Information",
+      "request": {
+        "message": "Notre budget est d'environ 2000 euros pour le groupe",
+        "conversationHistory": [
+          {
+            "id": "msg-1",
+            "role": "user",
+            "content": "J'aime la culture et les plages, nous sommes 4 personnes pour 8 jours",
+            "timestamp": "2025-01-15T10:00:00Z",
+            "metadata": {}
+          }
+        ],
+        "context": "preference_gathering"
+      }
+    },
+    {
+      "name": "Modification Request",
+      "request": {
+        "message": "Je souhaite modifier l'itinéraire pour inclure plus de nature",
+        "conversationHistory": [],
+        "context": "modification_request"
+      }
+    },
+    {
+      "name": "Booking Confirmation",
+      "request": {
+        "message": "Parfait, je valide cet itinéraire !",
+        "conversationHistory": [],
+        "context": "booking_confirmation"
+      }
+    },
+    {
+      "name": "Practical Details",
+      "request": {
+        "message": "Pouvez-vous me donner plus de détails pratiques ?",
+        "conversationHistory": [],
+        "context": "practical_details"
+      }
+    }
+  ]
+}
