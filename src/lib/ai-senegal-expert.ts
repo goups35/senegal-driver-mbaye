@@ -269,7 +269,7 @@ export async function generateAIRecommendation(
 ): Promise<AIRecommendationResponse> {
   
   // Extraction des infos client depuis la conversation
-  const extractedInfo = extractClientInfo(request.conversationHistory)
+  const extractedInfo = extractClientInfo(request.conversationHistory as any)
   
   // Construction du contexte pour l'IA
   const contextPrompt = CONVERSATION_PROMPTS[conversationContext]
