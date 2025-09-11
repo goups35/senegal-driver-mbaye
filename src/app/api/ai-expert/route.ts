@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
       metadata: {
         confidence: score / 100,
-        detectedIntent: determineIntent(message),
+        detectedIntent: determineIntent(message) as any,
         extractedInfo,
         suggestedDestinations: recommendation.itinerary.destinations.map(d => d.id),
         suggestedExperiences: recommendation.itinerary.experiences.map(e => e.id),
