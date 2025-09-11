@@ -135,7 +135,7 @@ export const senegalDestinations: SenegalDestination[] = [
         },
         seasonalAvailability: ['dry-season'],
         culturalContext: 'Activité économique vitale pour la communauté locale. Respect du travail et des traditions.',
-        whatToExpected: 'Travail physique dans l\'eau salée. Couleur rose plus intense selon luminosité. Rencontre authentique avec les travailleurs.',
+        whatToExpect: 'Travail physique dans l\'eau salée. Couleur rose plus intense selon luminosité. Rencontre authentique avec les travailleurs.',
         whatToBring: ['Maillot de bain', 'Serviette', 'Crème solaire', 'Sandales plastique', 'Appareil photo étanche'],
         languageSupport: ['français', 'wolof'],
         accessibility: {
@@ -237,7 +237,7 @@ export const senegalDestinations: SenegalDestination[] = [
         },
         seasonalAvailability: ['year-round'],
         culturalContext: 'Ville historique vivante. Population majoritairement Saint-Louisienne avec culture métissée.',
-        whatToExpected: 'Architecture coloniale remarquable, ambiance décontractée, rencontres avec artisans locaux.',
+        whatToExpect: 'Architecture coloniale remarquable, ambiance décontractée, rencontres avec artisans locaux.',
         whatToBring: ['Chapeau', 'Chaussures confortables', 'Appareil photo', 'Eau'],
         languageSupport: ['français', 'wolof'],
         accessibility: {
@@ -272,7 +272,7 @@ export const senegalDestinations: SenegalDestination[] = [
         },
         seasonalAvailability: ['dry-season'],
         culturalContext: 'Parc géré en collaboration avec les communautés locales. Écotourisme responsable.',
-        whatToExpected: 'Concentration exceptionnelle d\'oiseaux migrateurs, navigation en pirogue, silence nécessaire.',
+        whatToExpect: 'Concentration exceptionnelle d\'oiseaux migrateurs, navigation en pirogue, silence nécessaire.',
         whatToBring: ['Jumelles', 'Appareil photo zoom', 'Chapeau', 'Crème solaire', 'Vêtements kaki/beige'],
         languageSupport: ['français', 'english'],
         accessibility: {
