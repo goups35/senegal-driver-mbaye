@@ -71,8 +71,21 @@ export async function POST(request: NextRequest) {
       conversationHistory: updatedHistory
     }
 
+    // Déterminer le contexte selon l'intention du message
+    const detectedIntent = determineIntent(message)
+    let actualContext = context
+    
+    // Si l'utilisateur confirme/valide, passer au contexte de réservation
+    if (detectedIntent === 'confirm-proposal' && context === 'itinerary_proposal') {
+      actualContext = 'booking_confirmation'
+    } else if (detectedIntent === 'request-modification') {
+      actualContext = 'modification_request'
+    } else if (detectedIntent === 'ask-practical-info') {
+      actualContext = 'practical_details'
+    }
+
     // Génération de la recommandation IA
-    const recommendation = await generateAIRecommendation(aiRequest, context)
+    const recommendation = await generateAIRecommendation(aiRequest, actualContext)
     
     // Scoring de la recommandation
     const score = scoreRecommendation(recommendation, aiRequest.clientPreferences)
@@ -80,7 +93,7 @@ export async function POST(request: NextRequest) {
     // Construction de la réponse conversationnelle
     const conversationalResponse = generateConversationalResponse(
       recommendation,
-      context,
+      actualContext,
       extractedInfo,
       score
     )
@@ -102,15 +115,45 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const response = {
+    let response: any = {
       message: conversationalResponse,
       aiMessage,
       recommendation,
       extractedInfo,
       score,
       conversationHistory: [...updatedHistory, aiMessage],
-      suggestedActions: generateSuggestedActions(context, score),
-      nextSteps: getNextSteps(context, score)
+      suggestedActions: generateSuggestedActions(actualContext, score),
+      nextSteps: getNextSteps(actualContext, score)
+    }
+
+    // Si on est en mode booking_confirmation, sauvegarder l'itinéraire
+    if (actualContext === 'booking_confirmation') {
+      try {
+        const saveResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/save-itinerary`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recommendation,
+            extractedInfo,
+            conversationalResponse,
+            clientName: extractedInfo.name || 'Voyageur',
+            clientPhone: extractedInfo.phone
+          })
+        })
+
+        if (saveResponse.ok) {
+          const saveData = await saveResponse.json()
+          response.savedItinerary = {
+            id: saveData.itineraryId,
+            title: saveData.title,
+            whatsappMessage: saveData.whatsappMessage,
+            planningUrl: saveData.planningUrl
+          }
+        }
+      } catch (error) {
+        console.warn('Erreur sauvegarde itinéraire:', error)
+        // On continue sans bloquer la réponse
+      }
     }
 
     return NextResponse.json(response)
@@ -236,16 +279,17 @@ Et hop, je vous concocte quelque chose d'authentique !`
       proposal += `## 🚗 **Votre chauffeur-guide**\n`
       proposal += `Je vous accompagne personnellement dans un véhicle ${recommendation.itinerary.transportPlan.vehicleRecommendation.type} confortable avec climat, WiFi et tout l'équipement nécessaire.\n\n`
 
-      // Clôture selon le score - haute qualité = proposition de réservation
+      // Question concluante pour validation
       if (score >= 85) {
-        proposal += `Cet itinéraire correspond parfaitement à vos attentes ! ✅\n\n`
-        proposal += `**Pour réserver :** Contactez-moi directement au **+33 6 26 38 87 94** (WhatsApp)\n`
-        proposal += `Je vous enverrai tous les détails pratiques et nous finaliserons ensemble.\n\n`
-        proposal += `*Acompte : 30% - Solde : à votre arrivée au Sénégal*`
+        proposal += `Cet itinéraire vous correspond parfaitement ! ✅\n\n`
+        proposal += `**Si ce planning vous convient, dites "oui" et je prépare un texte pour envoi par WhatsApp au chauffeur Mbaye.**\n\n`
+        proposal += `Vous pourrez ensuite partager directement les détails avec lui pour finaliser votre réservation.`
       } else if (score >= 70) {
-        proposal += `Cette proposition vous convient-elle ou souhaitez-vous que je l'ajuste ?`
+        proposal += `**Si ce planning vous convient, dites "oui" et je prépare un texte pour envoi par WhatsApp au chauffeur Mbaye.**\n\n`
+        proposal += `Sinon, indiquez-moi ce que vous souhaitez ajuster.`
       } else {
-        proposal += `Je peux adapter cet itinéraire selon vos préférences. Que souhaitez-vous modifier ?`
+        proposal += `Je peux adapter cet itinéraire selon vos préférences. Que souhaitez-vous modifier ?\n\n`
+        proposal += `Une fois ajusté à vos envies, je préparerai un texte pour contacter Mbaye directement.`
       }
 
       return proposal
@@ -257,7 +301,12 @@ Et hop, je vous concocte quelque chose d'authentique !`
       return `D'accord ! Dites-moi ce que vous aimeriez modifier :\n\n🎯 **Destinations** : autres lieux à privilégier ?\n📅 **Durée** : plus/moins de temps quelque part ?\n💰 **Budget** : ajuster les prestations ?\n🚗 **Rythme** : plus détendu ou plus intensif ?\n\nJ'adapte tout selon vos souhaits.`
 
     case 'booking_confirmation':
-      return `Fantastique ! 🎉\n\nJe suis ravi de vous accompagner dans cette aventure sénégalaise. Voici comment finaliser votre réservation :\n\n## 📱 **Contact WhatsApp direct :**\n**+33 6 26 38 87 94**\n\nÉcrivez-moi avec le message : *"Réservation itinéraire [votre nom]"*\n\n## 📋 **Récapitulatif final :**\n- Dates : ${recommendation.itinerary.client.travelDates.arrival} - ${recommendation.itinerary.client.travelDates.departure}\n- Destinations : ${recommendation.itinerary.destinations.map((d: Record<string, any>) => d.name).join(', ')}\n- Budget : ${recommendation.itinerary.totalCost.min.toLocaleString()} - ${recommendation.itinerary.totalCost.max.toLocaleString()} FCFA\n\n## ✅ **Prochaines étapes :**\n1. Contact WhatsApp pour confirmer les détails\n2. Acompte de réservation (30%)\n3. Je vous envoie le guide pratique personnalisé\n4. RDV à votre arrivée au Sénégal !\n\nJ'ai hâte de vous faire découvrir MON Sénégal ! 🇸🇳`
+      const confirmDestinations = recommendation.itinerary.destinations || []
+      const mainDestinations = confirmDestinations.slice(0, 3).map((d: Record<string, any>) => d.name).join(', ')
+      const confirmDuration = extractedInfo.dates?.duration || recommendation.itinerary.duration || '7'
+      const confirmBudget = recommendation.itinerary.totalCost ? `${recommendation.itinerary.totalCost.min.toLocaleString()} - ${recommendation.itinerary.totalCost.max.toLocaleString()} FCFA` : 'Sur mesure'
+      
+      return `Perfect ! ✅ Votre planning est validé !\n\n## 📋 **RÉCAPITULATIF DE VOTRE VOYAGE**\n\n**🎯 Destinations principales :** ${mainDestinations}\n**📅 Durée :** ${confirmDuration} jours\n**💰 Budget estimé :** ${confirmBudget}\n**🚗 Guide :** Mbaye Diop (20 ans d'expérience)\n\n---\n\n**📱 MESSAGE POUR MBAYE (WhatsApp) :**\n\n*Salut Mbaye ! Je souhaite réserver un voyage au Sénégal :\n\n• Destinations : ${mainDestinations}\n• Durée : ${confirmDuration} jours  \n• Budget : ${confirmBudget}\n• Voyageurs : ${extractedInfo.groupInfo?.size || 1} personne(s)\n\nPeux-tu me confirmer la disponibilité et les détails pratiques ?\n\nMerci ! 🙏*\n\n---\n\n**💬 Envoyez ce message à Mbaye : +33 6 26 38 87 94**\n\nVotre planning détaillé a été sauvegardé et sera visible dans l'encart ci-dessous.`
 
     default:
       return `Je suis là pour vous aider à découvrir le Sénégal authentique ! Que souhaitez-vous savoir ?`
@@ -265,14 +314,23 @@ Et hop, je vous concocte quelque chose d'authentique !`
 }
 
 function determineIntent(message: string): string {
-  const lowerMessage = message.toLowerCase()
+  const lowerMessage = message.toLowerCase().trim()
   
   // Éviter la détection répétitive des salutations après le premier échange
   if (lowerMessage.match(/^(bonjour|hello|salut|bonsoir)[\s.,!]*$/)) {
     return 'initial-inquiry'
   }
   
-  if (lowerMessage.includes('réserver') || lowerMessage.includes('confirmer') || lowerMessage.includes('ok pour') || lowerMessage.includes('validé')) {
+  // Détection validation/confirmation du planning
+  if (lowerMessage.match(/^(oui|yes|ok|d'accord|parfait|très bien|ça me va|c'est bon|validé|je valide)[\s.,!]*$/) ||
+      lowerMessage.includes('je valide') || 
+      lowerMessage.includes('c\'est parfait') ||
+      lowerMessage.includes('ça me convient') ||
+      lowerMessage.includes('planning me plaît')) {
+    return 'confirm-proposal'
+  }
+  
+  if (lowerMessage.includes('réserver') || lowerMessage.includes('confirmer') || lowerMessage.includes('ok pour')) {
     return 'confirm-proposal'
   }
   

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { formatWhatsAppUrl } from '@/lib/utils'
+import { PlanningCard } from '@/components/planning/planning-card'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -22,6 +23,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isDemo, setIsDemo] = useState(false)
   const [showWhatsAppButton, setShowWhatsAppButton] = useState(false)
+  const [validatedPlanning, setValidatedPlanning] = useState<any>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -62,15 +64,19 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch('/api/ai-expert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
           conversationHistory: isAutoStart ? [] : messages.map(msg => ({
             role: msg.role,
-            content: msg.content
-          }))
+            content: msg.content,
+            id: `msg-${Date.now()}-${Math.random()}`,
+            timestamp: new Date().toISOString(),
+            metadata: {}
+          })),
+          context: 'initial_inquiry'
         })
       })
 
@@ -84,7 +90,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
 
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.response,
+        content: data.message || data.response,
         timestamp: new Date()
       }
 
@@ -94,12 +100,40 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
         setMessages(prev => [...prev, assistantMessage])
       }
 
-      // Vérifier si l'IA indique que le plan est prêt (contient "GO" ou des mots-clés finaux)
-      if (data.response.includes('RÉCAPITULATIF PERSONNALISÉ') || 
-          data.response.includes('VOTRE VOYAGE') ||
-          data.response.includes('Envoyer via WhatsApp')) {
+      // Vérifier si un planning a été validé et sauvegardé
+      if (data.savedItinerary) {
+        const destinations = data.recommendation?.itinerary?.destinations || []
+        const mainDestinations = destinations.slice(0, 3).map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          region: d.region
+        }))
+        
+        const duration = data.extractedInfo?.dates?.duration || data.recommendation?.itinerary?.duration || 7
+        const budget = data.recommendation?.itinerary?.totalCost ? 
+          `${data.recommendation.itinerary.totalCost.min?.toLocaleString()} - ${data.recommendation.itinerary.totalCost.max?.toLocaleString()} ${data.recommendation.itinerary.totalCost.currency}` : 
+          'Sur mesure'
+        const groupSize = data.extractedInfo?.groupInfo?.size || 1
+
+        setValidatedPlanning({
+          title: data.savedItinerary.title,
+          destinations: mainDestinations,
+          duration: parseInt(duration.toString()),
+          budget,
+          groupSize,
+          itineraryData: data.recommendation,
+          savedItinerary: data.savedItinerary
+        })
         setShowWhatsAppButton(true)
-        onTravelPlanReady?.(data.response)
+        onTravelPlanReady?.(data.message)
+      }
+
+      // Vérifier si l'IA indique que le plan est prêt (contient "GO" ou des mots-clés finaux)
+      else if ((data.message || data.response)?.includes('RÉCAPITULATIF PERSONNALISÉ') || 
+          (data.message || data.response)?.includes('VOTRE VOYAGE') ||
+          (data.message || data.response)?.includes('Envoyer via WhatsApp')) {
+        setShowWhatsAppButton(true)
+        onTravelPlanReady?.(data.message || data.response)
       }
 
     } catch (error) {
@@ -141,22 +175,23 @@ Généré via Transport Sénégal - Votre conseiller voyage`
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto h-[600px] flex flex-col">
-      <CardHeader className="flex-shrink-0">
-        <CardTitle className="flex items-center gap-2">
-          Maxime, l&apos;assistant IA de Mbaye
-          {isDemo && (
-            <span className="text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
-              DÉMO
-            </span>
-          )}
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Discutez avec notre expert IA pour planifier votre voyage sur-mesure au Sénégal
-        </p>
-      </CardHeader>
-      
-      <CardContent className="flex-1 flex flex-col overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto space-y-6">
+      <Card className="h-[600px] flex flex-col">
+        <CardHeader className="flex-shrink-0">
+          <CardTitle className="flex items-center gap-2">
+            Maxime, l&apos;assistant IA de Mbaye
+            {isDemo && (
+              <span className="text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+                DÉMO
+              </span>
+            )}
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Discutez avec notre expert IA pour planifier votre voyage sur-mesure au Sénégal
+          </p>
+        </CardHeader>
+        
+        <CardContent className="flex-1 flex flex-col overflow-hidden">
         {/* Zone des messages */}
         <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-slate-50 rounded">
           {messages.map((message, index) => (
@@ -260,6 +295,28 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           </div>
         </div>
       </CardContent>
-    </Card>
+      </Card>
+      
+      {/* Encart récapitulatif du planning validé */}
+      {validatedPlanning && (
+        <PlanningCard
+          title={validatedPlanning.title}
+          destinations={validatedPlanning.destinations}
+          duration={validatedPlanning.duration}
+          budget={validatedPlanning.budget}
+          groupSize={validatedPlanning.groupSize}
+          itineraryData={validatedPlanning.itineraryData}
+          savedItinerary={validatedPlanning.savedItinerary}
+          onWhatsAppSend={(message) => {
+            const whatsappUrl = formatWhatsAppUrl('+33626388794', message)
+            window.open(whatsappUrl, '_blank')
+          }}
+          onModify={() => {
+            setValidatedPlanning(null)
+            setShowWhatsAppButton(false)
+          }}
+        />
+      )}
+    </div>
   )
 }

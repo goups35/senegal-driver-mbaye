@@ -188,7 +188,7 @@ function optimizeTimeSchedule(journey: any): any {
   let currentTime = 8 * 60 // 8h00 départ recommandé
   const schedule: any[] = []
   
-  routes.forEach((route: any, index: number) => {
+  routes.forEach((route: any) => {
     const arrival = currentTime + route.duration
     schedule.push({
       segment: `${route.from} → ${route.to}`,

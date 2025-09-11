@@ -56,3 +56,33 @@ CREATE TRIGGER update_trip_requests_updated_at
 -- Politique simple pour permettre toutes les opérations (MVP uniquement)
 -- CREATE POLICY "Allow all operations on trip_requests" ON trip_requests FOR ALL USING (true);
 -- CREATE POLICY "Allow all operations on trip_quotes" ON trip_quotes FOR ALL USING (true);
+
+-- Table des itinéraires sauvegardés (Phase 2A)
+CREATE TABLE saved_itineraries (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  client_name TEXT,
+  client_phone TEXT,
+  destinations JSONB NOT NULL, -- Liste des destinations principales
+  itinerary_data JSONB NOT NULL, -- Données complètes de l'itinéraire
+  ai_recommendation JSONB NOT NULL, -- Réponse IA complète
+  whatsapp_message TEXT NOT NULL, -- Message formaté pour WhatsApp
+  duration INTEGER NOT NULL, -- Durée en jours
+  budget_min DECIMAL(10,2),
+  budget_max DECIMAL(10,2),
+  budget_currency TEXT DEFAULT 'FCFA',
+  group_size INTEGER DEFAULT 1,
+  status TEXT DEFAULT 'saved' CHECK (status IN ('saved', 'contacted', 'confirmed', 'cancelled')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Index pour optimiser les requêtes sur les itinéraires
+CREATE INDEX idx_saved_itineraries_created_at ON saved_itineraries(created_at);
+CREATE INDEX idx_saved_itineraries_status ON saved_itineraries(status);
+CREATE INDEX idx_saved_itineraries_client_phone ON saved_itineraries(client_phone);
+
+-- Trigger pour updated_at sur saved_itineraries
+CREATE TRIGGER update_saved_itineraries_updated_at 
+    BEFORE UPDATE ON saved_itineraries 
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
