@@ -186,7 +186,7 @@ function calculateDetailedBudget(journey: any, groupSize: number, vehicleType: s
 function optimizeTimeSchedule(journey: any): any {
   const routes = journey.routes
   let currentTime = 8 * 60 // 8h00 départ recommandé
-  const schedule = []
+  const schedule: any[] = []
   
   routes.forEach((route: any, index: number) => {
     const arrival = currentTime + route.duration
