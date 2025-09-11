@@ -396,7 +396,7 @@ export const universalExperiences: AuthenticExperience[] = [
     },
     seasonalAvailability: ['year-round'],
     culturalContext: 'Transmission de savoir-faire ancestraux. Respect du travail artisanal et des maîtres.',
-    whatToExpected: 'Démonstrations de techniques traditionnelles, possibilité de s\'essayer, achat direct au producteur.',
+    whatToExpect: 'Démonstrations de techniques traditionnelles, possibilité de s\'essayer, achat direct au producteur.',
     whatToBring: ['Vêtements qui ne craignent rien', 'Appareil photo', 'Curiosité'],
     languageSupport: ['français', 'wolof'],
     accessibility: {
