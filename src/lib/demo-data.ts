@@ -1,4 +1,4 @@
-import type { RouteStep, VehicleInfo } from '@/types'
+import type { RouteStep } from '@/types'
 
 // Données de démonstration pour les trajets au Sénégal
 export const demoRoutes: Record<string, {

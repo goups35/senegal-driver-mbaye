@@ -112,3 +112,17 @@ body {
 .text-primary {
   color: var(--primary) !important;
 }
+
+/* Print styles */
+@media print {
+  body { 
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+  }
+  .print\:hidden { 
+    display: none !important; 
+  }
+  .print\:block { 
+    display: block !important; 
+  }
+}

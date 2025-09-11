@@ -23,7 +23,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isDemo, setIsDemo] = useState(false)
   const [showWhatsAppButton, setShowWhatsAppButton] = useState(false)
-  const [validatedPlanning, setValidatedPlanning] = useState<any>(null)
+  const [validatedPlanning, setValidatedPlanning] = useState<Record<string, unknown> | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -44,7 +44,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       }
       setMessages([welcomeMessage])
     }
-  }, [])
+  }, [messages.length])
 
   const handleSendMessage = async (messageText?: string, isAutoStart = false) => {
     const message = messageText || inputMessage.trim()
@@ -103,7 +103,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       // Vérifier si un planning a été validé et sauvegardé
       if (data.savedItinerary) {
         const destinations = data.recommendation?.itinerary?.destinations || []
-        const mainDestinations = destinations.slice(0, 3).map((d: any) => ({
+        const mainDestinations = destinations.slice(0, 3).map((d: Record<string, unknown>) => ({
           id: d.id,
           name: d.name,
           region: d.region

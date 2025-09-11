@@ -16,8 +16,8 @@ interface SavedItinerary {
   client_name?: string
   client_phone?: string
   destinations: Destination[]
-  itinerary_data: any
-  ai_recommendation: any
+  itinerary_data: Record<string, unknown>
+  ai_recommendation: Record<string, unknown>
   whatsapp_message: string
   duration: number
   budget_min?: number
@@ -47,20 +47,24 @@ async function getItinerary(id: string): Promise<SavedItinerary | null> {
   }
 }
 
-export default async function PlanningPage({ params }: { params: { id: string } }) {
-  const itinerary = await getItinerary(params.id)
+export default async function PlanningPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
+  const itinerary = await getItinerary(resolvedParams.id)
 
   if (!itinerary) {
     notFound()
   }
 
   const generateDayByDaySchedule = () => {
-    if (!itinerary.itinerary_data?.itinerary?.destinations) return []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const itineraryData = itinerary.itinerary_data as any
+    if (!itineraryData?.itinerary?.destinations) return []
     
-    const destinations = itinerary.itinerary_data.itinerary.destinations
+    const destinations = itineraryData.itinerary.destinations
     const daysPerDestination = Math.max(1, Math.floor(itinerary.duration / destinations.length))
     let currentDay = 1
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return destinations.map((dest: any, index: number) => {
       const isLast = index === destinations.length - 1
       const daysForThisDestination = isLast ? (itinerary.duration - currentDay + 1) : daysPerDestination
@@ -71,7 +75,8 @@ export default async function PlanningPage({ params }: { params: { id: string } 
         destination: dest.name,
         region: dest.region || '',
         description: dest.description || '',
-        activities: dest.authenticExperiences?.map((exp: any) => ({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        activities: (dest.authenticExperiences || [])?.map((exp: any) => ({
           name: exp.name,
           description: exp.description,
           duration: exp.duration
@@ -208,8 +213,8 @@ export default async function PlanningPage({ params }: { params: { id: string } 
                 <div className="space-y-2">
                   <p><strong>Mbaye Diop</strong></p>
                   <p>📱 WhatsApp: +33 6 26 38 87 94</p>
-                  <p>🇫🇷 Français / 🇬🇧 English / Wolof</p>
-                  <p>⭐ 20+ ans d'expérience</p>
+                  <p>🇫🇷 Français / 🇬🇧 English / 🇸🇳 Wolof</p>
+                  <p>⭐ 20+ ans d&apos;expérience</p>
                 </div>
               </div>
               <div>
@@ -219,7 +224,7 @@ export default async function PlanningPage({ params }: { params: { id: string } 
                   <li>✅ Guide culturel et linguistique</li>
                   <li>✅ Assistance 24h/24</li>
                   <li>✅ Contacts privilégiés locaux</li>
-                  <li>✅ Flexibilité totale d'horaires</li>
+                  <li>✅ Flexibilité totale d&apos;horaires</li>
                 </ul>
               </div>
             </div>
@@ -262,23 +267,13 @@ export default async function PlanningPage({ params }: { params: { id: string } 
         </div>
       </div>
 
-      {/* Styles pour l'impression */}
-      <style jsx global>{`
-        @media print {
-          body { 
-            background: white !important;
-            -webkit-print-color-adjust: exact;
-          }
-          .print\\:hidden { display: none !important; }
-          .print\\:block { display: block !important; }
-        }
-      `}</style>
     </div>
   )
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const itinerary = await getItinerary(params.id)
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
+  const itinerary = await getItinerary(resolvedParams.id)
 
   if (!itinerary) {
     return {

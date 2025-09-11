@@ -27,16 +27,17 @@ const vehicleDatabase: Record<string, VehicleInfo> = {
   }
 }
 
-const routeResponseSchema = z.object({
-  distance_km: z.number(),
-  duration_minutes: z.number(),
-  route_steps: z.array(z.object({
-    instruction: z.string(),
-    distance_km: z.number(),
-    duration_minutes: z.number()
-  })),
-  estimated_traffic_multiplier: z.number().min(1).max(3)
-})
+// Schema pour validation de réponse (non utilisé actuellement)
+// const routeResponseSchema = z.object({
+//   distance_km: z.number(),
+//   duration_minutes: z.number(),
+//   route_steps: z.array(z.object({
+//     instruction: z.string(),
+//     distance_km: z.number(),
+//     duration_minutes: z.number()
+//   })),
+//   estimated_traffic_multiplier: z.number().min(1).max(3)
+// })
 
 export async function POST(request: NextRequest) {
   try {

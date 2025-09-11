@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    let response: any = {
+    const response: any = {
       message: conversationalResponse,
       aiMessage,
       recommendation,
@@ -136,8 +136,8 @@ export async function POST(request: NextRequest) {
             recommendation,
             extractedInfo,
             conversationalResponse,
-            clientName: extractedInfo.name || 'Voyageur',
-            clientPhone: extractedInfo.phone
+            clientName: 'Voyageur',
+            clientPhone: undefined
           })
         })
 
