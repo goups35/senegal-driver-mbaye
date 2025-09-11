@@ -33,7 +33,7 @@ export const senegalDestinations: SenegalDestination[] = [
         },
         seasonalAvailability: ['year-round'],
         culturalContext: 'Lieu de mémoire de la traite atlantique. Respect et silence requis dans certaines zones.',
-        whatToExpected: 'Visite émotionnellement intense. Témoignages historiques authentiques. Vue sur l\'océan depuis la "porte du voyage sans retour".',
+        whatToExpect: 'Visite émotionnellement intense. Témoignages historiques authentiques. Vue sur l\'océan depuis la "porte du voyage sans retour".',
         whatToBring: ['Chapeau', 'Eau', 'Appareil photo (zones autorisées)', 'Tenue respectueuse'],
         languageSupport: ['français', 'wolof', 'english'],
         accessibility: {
