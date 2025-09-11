@@ -360,7 +360,7 @@ export const universalExperiences: AuthenticExperience[] = [
     },
     seasonalAvailability: ['year-round'],
     culturalContext: 'La Teranga (hospitalité) est la valeur fondamentale sénégalaise. Respect et ouverture essentiels.',
-    whatToExpected: 'Accueil chaleureux, partage du bol commun, conversations sur la culture sénégalaise.',
+    whatToExpect: 'Accueil chaleureux, partage du bol commun, conversations sur la culture sénégalaise.',
     whatToBring: ['Petit cadeau pour la famille', 'Respect des traditions', 'Curiosité'],
     languageSupport: ['français', 'wolof'],
     accessibility: {
