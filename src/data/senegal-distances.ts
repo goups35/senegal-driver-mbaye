@@ -421,7 +421,7 @@ export function findRoute(from: string, to: string): SenegalRoute | null {
     }
   }
   
-  return route
+  return route || null
 }
 
 export function calculateTotalJourney(cities: string[]): {
