@@ -1,1 +1,249 @@
-/**\n * Enhanced error reporting and monitoring utilities\n */\n\nexport interface ErrorReport {\n  message: string\n  stack?: string\n  url: string\n  timestamp: number\n  userAgent: string\n  userId?: string\n  sessionId?: string\n  context?: Record<string, any>\n  severity: 'low' | 'medium' | 'high' | 'critical'\n}\n\nexport interface ErrorReportingConfig {\n  endpoint?: string\n  apiKey?: string\n  enableConsoleLog?: boolean\n  enableLocalStorage?: boolean\n  maxReports?: number\n  userId?: string\n}\n\nclass ErrorReporter {\n  private static instance: ErrorReporter\n  private config: ErrorReportingConfig\n  private sessionId: string\n  private reports: ErrorReport[] = []\n\n  private constructor(config: ErrorReportingConfig = {}) {\n    this.config = {\n      enableConsoleLog: true,\n      enableLocalStorage: true,\n      maxReports: 50,\n      ...config\n    }\n    this.sessionId = this.generateSessionId()\n    this.initializeErrorHandlers()\n  }\n\n  static getInstance(config?: ErrorReportingConfig): ErrorReporter {\n    if (!ErrorReporter.instance) {\n      ErrorReporter.instance = new ErrorReporter(config)\n    }\n    return ErrorReporter.instance\n  }\n\n  private generateSessionId(): string {\n    return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`\n  }\n\n  private initializeErrorHandlers() {\n    if (typeof window === 'undefined') return\n\n    // Global error handler\n    window.addEventListener('error', (event) => {\n      this.reportError(\n        new Error(event.message),\n        'high',\n        {\n          filename: event.filename,\n          lineno: event.lineno,\n          colno: event.colno,\n          type: 'javascript-error'\n        }\n      )\n    })\n\n    // Unhandled promise rejection handler\n    window.addEventListener('unhandledrejection', (event) => {\n      this.reportError(\n        new Error(`Unhandled promise rejection: ${event.reason}`),\n        'high',\n        {\n          type: 'unhandled-promise-rejection',\n          reason: event.reason\n        }\n      )\n    })\n\n    // Network error handler\n    const originalFetch = window.fetch\n    window.fetch = async (...args) => {\n      try {\n        const response = await originalFetch(...args)\n        if (!response.ok) {\n          this.reportError(\n            new Error(`Network error: ${response.status} ${response.statusText}`),\n            'medium',\n            {\n              type: 'network-error',\n              url: args[0],\n              status: response.status,\n              statusText: response.statusText\n            }\n          )\n        }\n        return response\n      } catch (error) {\n        this.reportError(\n          error instanceof Error ? error : new Error(String(error)),\n          'high',\n          {\n            type: 'network-error',\n            url: args[0]\n          }\n        )\n        throw error\n      }\n    }\n  }\n\n  reportError(\n    error: Error,\n    severity: ErrorReport['severity'] = 'medium',\n    context?: Record<string, any>\n  ) {\n    const report: ErrorReport = {\n      message: error.message,\n      stack: error.stack,\n      url: typeof window !== 'undefined' ? window.location.href : '',\n      timestamp: Date.now(),\n      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',\n      userId: this.config.userId,\n      sessionId: this.sessionId,\n      context,\n      severity\n    }\n\n    this.addReport(report)\n\n    if (this.config.enableConsoleLog) {\n      const consoleMethod = severity === 'critical' || severity === 'high' ? 'error' : 'warn'\n      console[consoleMethod]('Error reported:', report)\n    }\n\n    if (this.config.endpoint) {\n      this.sendToEndpoint(report)\n    }\n\n    if (this.config.enableLocalStorage) {\n      this.saveToLocalStorage()\n    }\n  }\n\n  private addReport(report: ErrorReport) {\n    this.reports.push(report)\n    if (this.reports.length > (this.config.maxReports || 50)) {\n      this.reports = this.reports.slice(-this.config.maxReports!)\n    }\n  }\n\n  private async sendToEndpoint(report: ErrorReport) {\n    try {\n      if (!this.config.endpoint) return\n\n      await fetch(this.config.endpoint, {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` })\n        },\n        body: JSON.stringify(report)\n      })\n    } catch (error) {\n      console.error('Failed to send error report:', error)\n    }\n  }\n\n  private saveToLocalStorage() {\n    if (typeof localStorage === 'undefined') return\n    try {\n      localStorage.setItem('error-reports', JSON.stringify({\n        sessionId: this.sessionId,\n        reports: this.reports.slice(-10) // Keep only last 10 reports\n      }))\n    } catch (error) {\n      console.warn('Failed to save error reports to localStorage:', error)\n    }\n  }\n\n  getReports(): ErrorReport[] {\n    return [...this.reports]\n  }\n\n  getReportsByTimeRange(startTime: number, endTime: number): ErrorReport[] {\n    return this.reports.filter(\n      report => report.timestamp >= startTime && report.timestamp <= endTime\n    )\n  }\n\n  getReportsBySeverity(severity: ErrorReport['severity']): ErrorReport[] {\n    return this.reports.filter(report => report.severity === severity)\n  }\n\n  clearReports() {\n    this.reports = []\n    if (typeof localStorage !== 'undefined') {\n      localStorage.removeItem('error-reports')\n    }\n  }\n\n  // Manual error reporting for business logic errors\n  logError(message: string, context?: Record<string, any>, severity: ErrorReport['severity'] = 'medium') {\n    this.reportError(new Error(message), severity, context)\n  }\n\n  // User action tracking for error context\n  trackUserAction(action: string, data?: Record<string, any>) {\n    if (typeof window === 'undefined') return\n    \n    const actionData = {\n      action,\n      timestamp: Date.now(),\n      url: window.location.href,\n      ...data\n    }\n\n    // Store recent actions for error context\n    const recentActions = JSON.parse(localStorage.getItem('recent-actions') || '[]')\n    recentActions.push(actionData)\n    \n    // Keep only last 20 actions\n    if (recentActions.length > 20) {\n      recentActions.splice(0, recentActions.length - 20)\n    }\n    \n    localStorage.setItem('recent-actions', JSON.stringify(recentActions))\n  }\n}\n\n// Export singleton instance creator\nexport function createErrorReporter(config?: ErrorReportingConfig): ErrorReporter {\n  return ErrorReporter.getInstance(config)\n}\n\n// Export default instance\nexport const errorReporter = ErrorReporter.getInstance()\n\n// React error boundary helper\nexport function reportReactError(error: Error, errorInfo: any) {\n  errorReporter.reportError(error, 'high', {\n    type: 'react-error',\n    componentStack: errorInfo.componentStack,\n    errorBoundary: true\n  })\n}
+/**
+ * Enhanced error reporting and monitoring utilities
+ */
+
+export interface ErrorReport {
+  message: string
+  stack?: string
+  url: string
+  timestamp: number
+  userAgent: string
+  userId?: string
+  sessionId?: string
+  context?: Record<string, any>
+  severity: 'low' | 'medium' | 'high' | 'critical'
+}
+
+export interface ErrorReportingConfig {
+  endpoint?: string
+  apiKey?: string
+  enableConsoleLog?: boolean
+  enableLocalStorage?: boolean
+  maxReports?: number
+  userId?: string
+}
+
+class ErrorReporter {
+  private static instance: ErrorReporter
+  private config: ErrorReportingConfig
+  private sessionId: string
+  private reports: ErrorReport[] = []
+
+  private constructor(config: ErrorReportingConfig = {}) {
+    this.config = {
+      enableConsoleLog: true,
+      enableLocalStorage: true,
+      maxReports: 50,
+      ...config
+    }
+    this.sessionId = this.generateSessionId()
+    this.initializeErrorHandlers()
+  }
+
+  static getInstance(config?: ErrorReportingConfig): ErrorReporter {
+    if (!ErrorReporter.instance) {
+      ErrorReporter.instance = new ErrorReporter(config)
+    }
+    return ErrorReporter.instance
+  }
+
+  private generateSessionId(): string {
+    return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  private initializeErrorHandlers() {
+    if (typeof window === 'undefined') return
+
+    // Global error handler
+    window.addEventListener('error', (event) => {
+      this.reportError(
+        new Error(event.message),
+        'high',
+        {
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          type: 'javascript-error'
+        }
+      )
+    })
+
+    // Unhandled promise rejection handler
+    window.addEventListener('unhandledrejection', (event) => {
+      this.reportError(
+        new Error(`Unhandled promise rejection: ${event.reason}`),
+        'high',
+        {
+          type: 'unhandled-promise-rejection',
+          reason: event.reason
+        }
+      )
+    })
+
+    // Network error handler
+    const originalFetch = window.fetch
+    window.fetch = async (...args) => {
+      try {
+        const response = await originalFetch(...args)
+        if (!response.ok) {
+          this.reportError(
+            new Error(`Network error: ${response.status} ${response.statusText}`),
+            'medium',
+            {
+              type: 'network-error',
+              url: args[0],
+              status: response.status,
+              statusText: response.statusText
+            }
+          )
+        }
+        return response
+      } catch (error) {
+        this.reportError(
+          error instanceof Error ? error : new Error(String(error)),
+          'high',
+          {
+            type: 'network-error',
+            url: args[0]
+          }
+        )
+        throw error
+      }
+    }
+  }
+
+  reportError(
+    error: Error,
+    severity: ErrorReport['severity'] = 'medium',
+    context?: Record<string, any>
+  ) {
+    const report: ErrorReport = {
+      message: error.message,
+      stack: error.stack,
+      url: typeof window !== 'undefined' ? window.location.href : '',
+      timestamp: Date.now(),
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      userId: this.config.userId,
+      sessionId: this.sessionId,
+      context,
+      severity
+    }
+
+    this.addReport(report)
+
+    if (this.config.enableConsoleLog) {
+      const consoleMethod = severity === 'critical' || severity === 'high' ? 'error' : 'warn'
+      console[consoleMethod]('Error reported:', report)
+    }
+
+    if (this.config.endpoint) {
+      this.sendToEndpoint(report)
+    }
+
+    if (this.config.enableLocalStorage) {
+      this.saveToLocalStorage()
+    }
+  }
+
+  private addReport(report: ErrorReport) {
+    this.reports.push(report)
+    if (this.reports.length > (this.config.maxReports || 50)) {
+      this.reports = this.reports.slice(-this.config.maxReports!)
+    }
+  }
+
+  private async sendToEndpoint(report: ErrorReport) {
+    try {
+      if (!this.config.endpoint) return
+
+      await fetch(this.config.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` })
+        },
+        body: JSON.stringify(report)
+      })
+    } catch (error) {
+      console.error('Failed to send error report:', error)
+    }
+  }
+
+  private saveToLocalStorage() {
+    if (typeof localStorage === 'undefined') return
+    try {
+      localStorage.setItem('error-reports', JSON.stringify({
+        sessionId: this.sessionId,
+        reports: this.reports.slice(-10) // Keep only last 10 reports
+      }))
+    } catch (error) {
+      console.warn('Failed to save error reports to localStorage:', error)
+    }
+  }
+
+  getReports(): ErrorReport[] {
+    return [...this.reports]
+  }
+
+  getReportsByTimeRange(startTime: number, endTime: number): ErrorReport[] {
+    return this.reports.filter(
+      report => report.timestamp >= startTime && report.timestamp <= endTime
+    )
+  }
+
+  getReportsBySeverity(severity: ErrorReport['severity']): ErrorReport[] {
+    return this.reports.filter(report => report.severity === severity)
+  }
+
+  clearReports() {
+    this.reports = []
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('error-reports')
+    }
+  }
+
+  // Manual error reporting for business logic errors
+  logError(message: string, context?: Record<string, any>, severity: ErrorReport['severity'] = 'medium') {
+    this.reportError(new Error(message), severity, context)
+  }
+
+  // User action tracking for error context
+  trackUserAction(action: string, data?: Record<string, any>) {
+    if (typeof window === 'undefined') return
+    
+    const actionData = {
+      action,
+      timestamp: Date.now(),
+      url: window.location.href,
+      ...data
+    }
+
+    // Store recent actions for error context
+    const recentActions = JSON.parse(localStorage.getItem('recent-actions') || '[]')
+    recentActions.push(actionData)
+    
+    // Keep only last 20 actions
+    if (recentActions.length > 20) {
+      recentActions.splice(0, recentActions.length - 20)
+    }
+    
+    localStorage.setItem('recent-actions', JSON.stringify(recentActions))
+  }
+}
+
+// Export singleton instance creator
+export function createErrorReporter(config?: ErrorReportingConfig): ErrorReporter {
+  return ErrorReporter.getInstance(config)
+}
+
+// Export default instance
+export const errorReporter = ErrorReporter.getInstance()
+
+// React error boundary helper
+export function reportReactError(error: Error, errorInfo: any) {
+  errorReporter.reportError(error, 'high', {
+    type: 'react-error',
+    componentStack: errorInfo.componentStack,
+    errorBoundary: true
+  })
+}

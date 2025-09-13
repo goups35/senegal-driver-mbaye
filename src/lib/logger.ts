@@ -89,8 +89,8 @@ if (isProduction) {
   )
 }
 
-// Create the logger
-const logger = winston.createLogger({
+// Create the winston logger
+const winstonLogger = winston.createLogger({
   level: isDevelopment ? 'debug' : 'info',
   levels: logLevels,
   format: logFormat,
@@ -296,11 +296,11 @@ class Logger {
 }
 
 // Export the enhanced logger instance
-export const logger = new Logger(logger)
+export const logger = new Logger(winstonLogger)
 export const log = logger // Alias for backward compatibility
 
 // Export the raw winston logger for advanced use cases
-export const rawLogger = logger
+export const rawLogger = winstonLogger
 
 // Utility function to extract request context
 export function getRequestContext(request: Request): LogContext {
