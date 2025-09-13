@@ -155,7 +155,7 @@ export default async function PlanningPage({ params }: { params: Promise<{ id: s
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-6">
-              {schedule.map((day, index) => (
+              {schedule.map((day: { days: string; destination: string; region?: string; activities?: { name: string; description: string; duration?: { recommended: number; optimal: number } }[]; description?: string; mbayeAdvice?: string }, index: number) => (
                 <div key={index} className="border border-green-200 rounded-lg p-6 bg-white">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-xl font-bold text-green-700">{day.days}</h3>
@@ -170,7 +170,7 @@ export default async function PlanningPage({ params }: { params: Promise<{ id: s
                     <p className="text-gray-600 leading-relaxed">{day.description}</p>
                   </div>
 
-                  {day.activities.length > 0 && (
+                  {day.activities && day.activities.length > 0 && (
                     <div className="mb-4">
                       <h4 className="font-medium text-gray-700 mb-3">🎯 Activités prévues</h4>
                       <div className="grid gap-3">
