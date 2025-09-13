@@ -1,77 +1,83 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Image from 'next/image'
 
 interface ImageGalleryProps {
   images: Array<{
-    id: string
     src: string
     alt: string
-    title?: string
-    description?: string
+    caption?: string
   }>
   className?: string
 }
 
 export default function ImageGallery({ images, className = '' }: ImageGalleryProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0)
+
+  const goToPrevious = useCallback(() => {
+    setSelectedIndex(prev => (prev > 0 ? prev - 1 : images.length - 1))
+  }, [images.length])
+
+  const goToNext = useCallback(() => {
+    setSelectedIndex(prev => (prev < images.length - 1 ? prev + 1 : 0))
+  }, [images.length])
 
   if (!images || images.length === 0) {
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-6">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="aspect-square bg-gray-200 rounded-lg animate-pulse" />
-        ))}
-      </div>
-    )
+    return null
   }
 
   return (
-    <div className={`grid grid-cols-2 md:grid-cols-3 gap-4 ${className}`}>
-      {images.map((image) => (
-        <div
-          key={image.id}
-          className="aspect-square relative overflow-hidden rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-          onClick={() => setSelectedImage(image.src)}
-        >
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 50vw, 33vw"
-          />
-          {image.title && (
-            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
-              <p className="text-sm font-medium truncate">{image.title}</p>
-            </div>
-          )}
-        </div>
-      ))}
-
-      {/* Modal for selected image */}
-      {selectedImage && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-4xl max-h-4xl">
-            <Image
-              src={selectedImage}
-              alt="Image agrandie"
-              width={800}
-              height={600}
-              className="object-contain"
-            />
+    <div className={`relative ${className}`}>
+      <div className="relative overflow-hidden rounded-lg">
+        <Image
+          src={images[selectedIndex].src}
+          alt={images[selectedIndex].alt}
+          width={800}
+          height={600}
+          className="object-cover w-full h-96"
+          priority
+        />
+        
+        {images.length > 1 && (
+          <>
             <button
-              className="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-75 transition-colors"
-              onClick={() => setSelectedImage(null)}
-              aria-label="Fermer l'image"
+              onClick={goToPrevious}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all"
+              aria-label="Image précédente"
             >
-              ×
+              ←
             </button>
-          </div>
+            
+            <button
+              onClick={goToNext}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all"
+              aria-label="Image suivante"
+            >
+              →
+            </button>
+          </>
+        )}
+      </div>
+
+      {images[selectedIndex].caption && (
+        <p className="text-center text-gray-600 mt-2">
+          {images[selectedIndex].caption}
+        </p>
+      )}
+
+      {images.length > 1 && (
+        <div className="flex justify-center mt-4 space-x-2">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setSelectedIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all ${
+                index === selectedIndex ? 'bg-blue-600' : 'bg-gray-300'
+              }`}
+              aria-label={`Aller à l'image ${index + 1}`}
+            />
+          ))}
         </div>
       )}
     </div>

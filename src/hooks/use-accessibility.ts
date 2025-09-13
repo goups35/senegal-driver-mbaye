@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useCallback, useRef, useState } from 'react'
+import { useEffect, useCallback, useRef, useState } from 'react'
 import { 
   ScreenReaderAnnouncer, 
   prefersReducedMotion, 
@@ -99,7 +99,6 @@ export function useFocusManagement() {
   }
 }
 
-// Hook to manage skip links
 export function useSkipLinks(links: Array<{ target: string; text: string }>) {
   useEffect(() => {
     if (typeof document === 'undefined') return
@@ -136,7 +135,6 @@ export function useSkipLinks(links: Array<{ target: string; text: string }>) {
   }, [links])
 }
 
-// Hook for live region management
 export function useLiveRegion() {
   const regionRef = useRef<HTMLDivElement>(null)
   const timeoutRef = useRef<NodeJS.Timeout>()
@@ -144,16 +142,13 @@ export function useLiveRegion() {
   const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
     if (!regionRef.current) return
 
-    // Clear any pending timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
 
-    // Update live region
     regionRef.current.setAttribute('aria-live', priority)
     regionRef.current.textContent = message
 
-    // Clear after announcement
     timeoutRef.current = setTimeout(() => {
       if (regionRef.current) {
         regionRef.current.textContent = ''
@@ -170,12 +165,11 @@ export function useLiveRegion() {
   }, [])
 
   const LiveRegion = useCallback(() => {
-    return React.createElement('div', {
-      ref: regionRef,
-      'aria-live': 'polite',
-      'aria-atomic': 'true',
-      className: 'sr-only'
-    })
+    const div = document.createElement('div')
+    div.setAttribute('aria-live', 'polite')
+    div.setAttribute('aria-atomic', 'true')
+    div.className = 'sr-only'
+    return div
   }, [])
 
   return { announce, LiveRegion }
