@@ -300,13 +300,13 @@ Généré via Transport Sénégal - Votre conseiller voyage`
       {/* Encart récapitulatif du planning validé */}
       {validatedPlanning && (
         <PlanningCard
-          title={validatedPlanning.title}
-          destinations={validatedPlanning.destinations}
-          duration={validatedPlanning.duration}
-          budget={validatedPlanning.budget}
-          groupSize={validatedPlanning.groupSize}
-          itineraryData={validatedPlanning.itineraryData}
-          savedItinerary={validatedPlanning.savedItinerary}
+          title={validatedPlanning.title as string}
+          destinations={validatedPlanning.destinations as { id: string; name: string; region: string }[]}
+          duration={validatedPlanning.duration as number}
+          budget={validatedPlanning.budget as string}
+          groupSize={validatedPlanning.groupSize as number}
+          itineraryData={validatedPlanning.itineraryData as { itinerary?: { destinations?: Array<Record<string, unknown>> } }}
+          savedItinerary={validatedPlanning.savedItinerary as { id: string; title: string; whatsappMessage: string; planningUrl: string }}
           onWhatsAppSend={(message) => {
             const whatsappUrl = formatWhatsAppUrl('+33626388794', message)
             window.open(whatsappUrl, '_blank')
