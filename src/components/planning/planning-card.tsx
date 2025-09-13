@@ -24,7 +24,7 @@ interface PlanningCardProps {
   duration: number
   budget: string
   groupSize: number
-  itineraryData: Record<string, unknown>
+  itineraryData: { itinerary?: { destinations?: Array<Record<string, unknown>> } }
   savedItinerary?: SavedItinerary
   whatsappPhone?: string
   onWhatsAppSend?: (message: string) => void
@@ -83,9 +83,9 @@ Merci ! 🙏`
       
       const result = {
         days: daysForThisDestination === 1 ? `Jour ${currentDay}` : `Jours ${currentDay}-${endDay}`,
-        destination: dest.name,
-        description: dest.description?.substring(0, 100) + '...' || '',
-        activities: (dest.authenticExperiences as Record<string, unknown>[] || [])?.slice(0, 2).map((exp: Record<string, unknown>) => exp.name) || []
+        destination: dest.name as string,
+        description: (dest.description as string)?.substring(0, 100) + '...' || '',
+        activities: (dest.authenticExperiences as Record<string, unknown>[] || [])?.slice(0, 2).map((exp: Record<string, unknown>) => exp.name as string) || []
       }
       
       currentDay = endDay + 1
