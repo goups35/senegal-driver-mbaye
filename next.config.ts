@@ -20,7 +20,6 @@ const nextConfig: NextConfig = {
         },
       },
     },
-    serverComponentsExternalPackages: ['sharp'],
     // Enable aggressive tree shaking
     optimizeServerReact: true,
     // Precompile dynamic imports
@@ -41,12 +40,6 @@ const nextConfig: NextConfig = {
         hostname: '**.supabase.co',
       },
     ],
-    // Enable image optimization quality
-    quality: 85,
-    // Add image loader for better performance
-    loader: 'default',
-    // Optimize for different viewports
-    breakpoints: [640, 768, 1024, 1280, 1536],
   },
 
   // Bundle optimization with advanced settings
@@ -186,8 +179,6 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   
-  // Static optimization
-  generateStaticParams: true,
   
   // Output configuration for better caching
   output: 'standalone',
