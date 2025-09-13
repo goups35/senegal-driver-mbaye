@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { config, isProduction } from '@/lib/config'
+import { logger } from '@/lib/logger'
+import { authenticate, logSecurityEvent, checkAuthRateLimit } from '@/lib/middleware/auth'
 
 // Rate limiting store (in-memory for demo, use Redis in production)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
@@ -19,23 +21,88 @@ const securityHeaders = {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const requestId = crypto.randomUUID()
+  const startTime = Date.now()
+  
+  // Add request ID to headers
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-request-id', requestId)
   
   // Create response
-  const response = NextResponse.next()
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders
+    }
+  })
   
   // Apply security headers to all requests
   Object.entries(securityHeaders).forEach(([key, value]) => {
     response.headers.set(key, value)
   })
   
-  // CORS headers for API routes
+  // Add request ID to response headers
+  response.headers.set('X-Request-ID', requestId)
+  
+  // Log request
+  logger.http('Request received', {
+    requestId,
+    method: request.method,
+    pathname,
+    userAgent: request.headers.get('user-agent')?.slice(0, 100),
+    ip: getClientIdentifier(request).replace('ip:', '')
+  })
+  
+  // Enhanced security and logging for API routes
   if (pathname.startsWith('/api/')) {
+    // Security checks for sensitive endpoints
+    if (pathname.includes('/admin') || pathname.includes('/internal')) {
+      const clientId = getClientIdentifier(request)
+      if (!checkAuthRateLimit(clientId)) {
+        logSecurityEvent('Admin endpoint rate limit exceeded', 'medium', request)
+        return new NextResponse(
+          JSON.stringify({
+            error: 'Too many requests to sensitive endpoint',
+            retryAfter: 900 // 15 minutes
+          }),
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': '900',
+              'X-Request-ID': requestId
+            }
+          }
+        )
+      }
+    }
+    
+    // Authentication check for protected API routes
+    const auth = authenticate(request)
+    if (pathname.includes('/protected') && !auth.isAuthenticated) {
+      logSecurityEvent('Unauthorized access attempt', 'low', request, {
+        endpoint: pathname
+      })
+      return new NextResponse(
+        JSON.stringify({
+          error: 'Authentication required',
+          code: 'AUTHENTICATION_REQUIRED'
+        }),
+        {
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json',
+            'WWW-Authenticate': 'Bearer',
+            'X-Request-ID': requestId
+          }
+        }
+      )
+    }
     // Handle preflight requests
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         status: 200,
         headers: {
-          'Access-Control-Allow-Origin': config.NODE_ENV === 'production' 
+          'Access-Control-Allow-Origin': isProduction 
             ? config.NEXT_PUBLIC_APP_URL 
             : request.headers.get('origin') || '*',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
@@ -49,7 +116,7 @@ export function middleware(request: NextRequest) {
     // Set CORS headers for API requests
     response.headers.set(
       'Access-Control-Allow-Origin',
-      config.NODE_ENV === 'production' 
+      isProduction 
         ? config.NEXT_PUBLIC_APP_URL 
         : request.headers.get('origin') || '*'
     )
@@ -83,8 +150,18 @@ export function middleware(request: NextRequest) {
     response.headers.set('X-RateLimit-Reset', new Date(rateLimitResult.resetTime).toISOString())
   }
   
-  // Add request ID for tracing
-  response.headers.set('X-Request-ID', crypto.randomUUID())
+  // Add processing time header
+  const processingTime = Date.now() - startTime
+  response.headers.set('X-Processing-Time', `${processingTime}ms`)
+  
+  // Log response
+  logger.http('Request completed', {
+    requestId,
+    method: request.method,
+    pathname,
+    processingTime,
+    status: response.status
+  })
   
   return response
 }
@@ -149,9 +226,18 @@ function getClientIdentifier(request: NextRequest): string {
   
   const ip = cfConnectingIp || realIp || forwardedFor?.split(',')[0] || 'unknown'
   
-  // In production, you might want to add user authentication
-  // const userId = request.headers.get('authorization')
-  // return userId || `ip:${ip}`
+  // Check for API key or user authentication
+  const apiKey = request.headers.get('x-api-key')
+  const authHeader = request.headers.get('authorization')
+  
+  if (apiKey) {
+    return `api:${apiKey.slice(0, 8)}`
+  }
+  
+  if (authHeader?.startsWith('Bearer ')) {
+    const token = authHeader.slice(7)
+    return `user:${token.slice(0, 8)}`
+  }
   
   return `ip:${ip.trim()}`
 }

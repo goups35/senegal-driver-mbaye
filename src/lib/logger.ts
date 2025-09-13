@@ -89,14 +89,6 @@ if (isProduction) {
   )
 }
 
-// Create the logger
-const logger = winston.createLogger({
-  level: isDevelopment ? 'debug' : 'info',
-  levels: logLevels,
-  format: logFormat,
-  transports,
-  exitOnError: false,
-})
 
 // Logger interface with additional context
 export interface LogContext {
@@ -295,12 +287,36 @@ class Logger {
   }
 }
 
-// Export the enhanced logger instance
-export const logger = new Logger(logger)
-export const log = logger // Alias for backward compatibility
+// Create winston logger instance first
+const winstonLogger = winston.createLogger({
+  levels: logLevels,
+  format: logFormat,
+  transports: [
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }),
+    new winston.transports.File({
+      filename: 'logs/combined.log',
+      maxsize: 5242880,
+      maxFiles: 5,
+    }),
+    new winston.transports.Console({
+      format: isDevelopment ? consoleFormat : logFormat,
+      level: isDevelopment ? 'debug' : 'info',
+    })
+  ],
+  defaultMeta: {
+    service: 'senegal-driver-api',
+    timestamp: new Date().toISOString()
+  }
+})
 
-// Export the raw winston logger for advanced use cases
-export const rawLogger = logger
+// Export the enhanced logger instance  
+export const logger = new Logger(winstonLogger)
+export const log = logger // Alias for backward compatibility
 
 // Utility function to extract request context
 export function getRequestContext(request: Request): LogContext {

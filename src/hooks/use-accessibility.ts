@@ -1,3 +1,182 @@
 'use client'
 
-import { useEffect, useCallback, useRef, useState } from 'react'\nimport { \n  ScreenReaderAnnouncer, \n  prefersReducedMotion, \n  prefersHighContrast,\n  manageFocusIndicators\n} from '@/utils/accessibility'\n\nexport function useScreenReader() {\n  const announcer = useRef(ScreenReaderAnnouncer.getInstance())\n\n  const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {\n    announcer.current.announce(message, priority)\n  }, [])\n\n  return { announce }\n}\n\nexport function useReducedMotion() {\n  const [prefersReduced, setPrefersReduced] = useState(false)\n\n  useEffect(() => {\n    if (typeof window === 'undefined') return\n\n    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')\n    setPrefersReduced(mediaQuery.matches)\n\n    const handleChange = (e: MediaQueryListEvent) => {\n      setPrefersReduced(e.matches)\n    }\n\n    mediaQuery.addEventListener('change', handleChange)\n    return () => mediaQuery.removeEventListener('change', handleChange)\n  }, [])\n\n  return prefersReduced\n}\n\nexport function useHighContrast() {\n  const [prefersHigh, setPrefersHigh] = useState(false)\n\n  useEffect(() => {\n    if (typeof window === 'undefined') return\n\n    const mediaQuery = window.matchMedia('(prefers-contrast: high)')\n    setPrefersHigh(mediaQuery.matches)\n\n    const handleChange = (e: MediaQueryListEvent) => {\n      setPrefersHigh(e.matches)\n    }\n\n    mediaQuery.addEventListener('change', handleChange)\n    return () => mediaQuery.removeEventListener('change', handleChange)\n  }, [])\n\n  return prefersHigh\n}\n\nexport function useFocusManagement() {\n  useEffect(() => {\n    const cleanup = manageFocusIndicators()\n    return cleanup\n  }, [])\n\n  const focusElement = useCallback((selector: string, options?: FocusOptions) => {\n    const element = document.querySelector(selector) as HTMLElement\n    if (element) {\n      element.focus(options)\n    }\n  }, [])\n\n  const focusFirst = useCallback((container?: HTMLElement, options?: FocusOptions) => {\n    const containerEl = container || document\n    const focusable = containerEl.querySelector(\n      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex=\"-1\"])'\n    ) as HTMLElement\n    if (focusable) {\n      focusable.focus(options)\n    }\n  }, [])\n\n  const focusLast = useCallback((container?: HTMLElement, options?: FocusOptions) => {\n    const containerEl = container || document\n    const focusableElements = containerEl.querySelectorAll(\n      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex=\"-1\"])'\n    )\n    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement\n    if (lastElement) {\n      lastElement.focus(options)\n    }\n  }, [])\n\n  return {\n    focusElement,\n    focusFirst,\n    focusLast\n  }\n}\n\n// Hook to manage skip links\nexport function useSkipLinks(links: Array<{ target: string; text: string }>) {\n  useEffect(() => {\n    if (typeof document === 'undefined') return\n\n    const skipContainer = document.createElement('div')\n    skipContainer.className = 'skip-links'\n    skipContainer.setAttribute('aria-label', 'Liens d\\'accès rapide')\n\n    links.forEach(({ target, text }) => {\n      const skipLink = document.createElement('a')\n      skipLink.href = `#${target}`\n      skipLink.textContent = text\n      skipLink.className = 'sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-primary text-primary-foreground px-4 py-2 rounded z-50 transition-all'\n      \n      skipLink.addEventListener('click', (e) => {\n        e.preventDefault()\n        const targetElement = document.getElementById(target)\n        if (targetElement) {\n          targetElement.focus({ preventScroll: false })\n          targetElement.scrollIntoView({ behavior: 'smooth' })\n        }\n      })\n\n      skipContainer.appendChild(skipLink)\n    })\n\n    document.body.insertBefore(skipContainer, document.body.firstChild)\n\n    return () => {\n      if (skipContainer.parentNode) {\n        skipContainer.parentNode.removeChild(skipContainer)\n      }\n    }\n  }, [links])\n}\n\n// Hook for live region management\nexport function useLiveRegion() {\n  const regionRef = useRef<HTMLDivElement>(null)\n  const timeoutRef = useRef<NodeJS.Timeout>()\n\n  const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {\n    if (!regionRef.current) return\n\n    // Clear any pending timeout\n    if (timeoutRef.current) {\n      clearTimeout(timeoutRef.current)\n    }\n\n    // Update live region\n    regionRef.current.setAttribute('aria-live', priority)\n    regionRef.current.textContent = message\n\n    // Clear after announcement\n    timeoutRef.current = setTimeout(() => {\n      if (regionRef.current) {\n        regionRef.current.textContent = ''\n      }\n    }, 1000)\n  }, [])\n\n  useEffect(() => {\n    return () => {\n      if (timeoutRef.current) {\n        clearTimeout(timeoutRef.current)\n      }\n    }\n  }, [])\n\n  const LiveRegion = useCallback(() => (\n    <div\n      ref={regionRef}\n      aria-live=\"polite\"\n      aria-atomic=\"true\"\n      className=\"sr-only\"\n    />\n  ), [])\n\n  return { announce, LiveRegion }\n}\n\n"
+import React, { useEffect, useCallback, useRef, useState } from 'react'
+import { 
+  ScreenReaderAnnouncer, 
+  prefersReducedMotion, 
+  prefersHighContrast,
+  manageFocusIndicators
+} from '@/utils/accessibility'
+
+export function useScreenReader() {
+  const announcer = useRef(ScreenReaderAnnouncer.getInstance())
+
+  const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
+    announcer.current.announce(message, priority)
+  }, [])
+
+  return { announce }
+}
+
+export function useReducedMotion() {
+  const [prefersReduced, setPrefersReduced] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setPrefersReduced(mediaQuery.matches)
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReduced(e.matches)
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
+  return prefersReduced
+}
+
+export function useHighContrast() {
+  const [prefersHigh, setPrefersHigh] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const mediaQuery = window.matchMedia('(prefers-contrast: high)')
+    setPrefersHigh(mediaQuery.matches)
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersHigh(e.matches)
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
+  return prefersHigh
+}
+
+export function useFocusManagement() {
+  useEffect(() => {
+    const cleanup = manageFocusIndicators()
+    return cleanup
+  }, [])
+
+  const focusElement = useCallback((selector: string, options?: FocusOptions) => {
+    const element = document.querySelector(selector) as HTMLElement
+    if (element) {
+      element.focus(options)
+    }
+  }, [])
+
+  const focusFirst = useCallback((container?: HTMLElement, options?: FocusOptions) => {
+    const containerEl = container || document
+    const focusable = containerEl.querySelector(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    ) as HTMLElement
+    if (focusable) {
+      focusable.focus(options)
+    }
+  }, [])
+
+  const focusLast = useCallback((container?: HTMLElement, options?: FocusOptions) => {
+    const containerEl = container || document
+    const focusableElements = containerEl.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+    if (lastElement) {
+      lastElement.focus(options)
+    }
+  }, [])
+
+  return {
+    focusElement,
+    focusFirst,
+    focusLast
+  }
+}
+
+// Hook to manage skip links
+export function useSkipLinks(links: Array<{ target: string; text: string }>) {
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+
+    const skipContainer = document.createElement('div')
+    skipContainer.className = 'skip-links'
+    skipContainer.setAttribute('aria-label', 'Liens d\'accès rapide')
+
+    links.forEach(({ target, text }) => {
+      const skipLink = document.createElement('a')
+      skipLink.href = `#${target}`
+      skipLink.textContent = text
+      skipLink.className = 'sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-primary text-primary-foreground px-4 py-2 rounded z-50 transition-all'
+      
+      skipLink.addEventListener('click', (e) => {
+        e.preventDefault()
+        const targetElement = document.getElementById(target)
+        if (targetElement) {
+          targetElement.focus({ preventScroll: false })
+          targetElement.scrollIntoView({ behavior: 'smooth' })
+        }
+      })
+
+      skipContainer.appendChild(skipLink)
+    })
+
+    document.body.insertBefore(skipContainer, document.body.firstChild)
+
+    return () => {
+      if (skipContainer.parentNode) {
+        skipContainer.parentNode.removeChild(skipContainer)
+      }
+    }
+  }, [links])
+}
+
+// Hook for live region management
+export function useLiveRegion() {
+  const regionRef = useRef<HTMLDivElement>(null)
+  const timeoutRef = useRef<NodeJS.Timeout>()
+
+  const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
+    if (!regionRef.current) return
+
+    // Clear any pending timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    // Update live region
+    regionRef.current.setAttribute('aria-live', priority)
+    regionRef.current.textContent = message
+
+    // Clear after announcement
+    timeoutRef.current = setTimeout(() => {
+      if (regionRef.current) {
+        regionRef.current.textContent = ''
+      }
+    }, 1000)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
+  const LiveRegion = useCallback(() => {
+    return React.createElement('div', {
+      ref: regionRef,
+      'aria-live': 'polite',
+      'aria-atomic': 'true',
+      className: 'sr-only'
+    })
+  }, [])
+
+  return { announce, LiveRegion }
+}
