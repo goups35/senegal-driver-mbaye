@@ -1,38 +1,82 @@
 'use client'
 
 import { Component, ErrorInfo, ReactNode } from 'react'
-import { Button } from '@/components/ui/button'
+import { AccessibleButton } from '@/components/ui/accessible-button'
+import { reportReactError } from '@/utils/error-reporting'
+import { ScreenReaderAnnouncer } from '@/utils/accessibility'
 
 interface Props {
   children: ReactNode
   fallback?: ReactNode
+  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  resetKeys?: Array<string | number>
 }
 
 interface State {
   hasError: boolean
   error?: Error
+  errorId: string
 }
 
 export class ErrorBoundary extends Component<Props, State> {
+  private resetTimeoutId: number | null = null
+  
   public state: State = {
-    hasError: false
+    hasError: false,
+    errorId: ''
   }
 
   public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error }
+    const errorId = `error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    return { hasError: true, error, errorId }
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+    // Report to error monitoring
+    reportReactError(error, errorInfo)
     
-    // En production, vous pourriez envoyer l'erreur à un service de monitoring
-    if (process.env.NODE_ENV === 'production') {
-      // Exemple: Sentry.captureException(error, { contexts: { errorInfo } })
+    // Announce to screen readers
+    const announcer = ScreenReaderAnnouncer.getInstance()
+    announcer.announce('Une erreur s\'est produite. Veuillez utiliser les boutons pour réessayer.', 'assertive')
+    
+    // Call custom error handler if provided
+    this.props.onError?.(error, errorInfo)
+    
+    // Auto-retry after 5 seconds in development
+    if (process.env.NODE_ENV === 'development') {
+      this.resetTimeoutId = window.setTimeout(() => {
+        this.handleRetry()
+      }, 5000)
+    }
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    const { resetKeys } = this.props
+    const { hasError } = this.state
+    
+    if (hasError && prevProps.resetKeys !== resetKeys) {
+      if (resetKeys?.some((resetKey, idx) => prevProps.resetKeys?.[idx] !== resetKey)) {
+        this.handleRetry()
+      }
+    }
+  }
+
+  public componentWillUnmount() {
+    if (this.resetTimeoutId) {
+      clearTimeout(this.resetTimeoutId)
     }
   }
 
   private handleRetry = () => {
-    this.setState({ hasError: false, error: undefined })
+    if (this.resetTimeoutId) {
+      clearTimeout(this.resetTimeoutId)
+      this.resetTimeoutId = null
+    }
+    
+    const announcer = ScreenReaderAnnouncer.getInstance()
+    announcer.announce('Tentative de récupération en cours...', 'polite')
+    
+    this.setState({ hasError: false, error: undefined, errorId: '' })
   }
 
   private handleReload = () => {
@@ -54,28 +98,35 @@ export class ErrorBoundary extends Component<Props, State> {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h2 className="text-xl font-semibold text-destructive mb-2">
+              <h2 className="text-xl font-semibold text-destructive mb-2" role="alert">
                 Oops, une erreur s&apos;est produite
               </h2>
-              <p className="text-muted-foreground text-sm mb-6">
-                Nous nous excusons pour ce désagrément. Veuillez réessayer ou recharger la page.
+              <p 
+                id={`error-description-${this.state.errorId}`}
+                className="text-muted-foreground text-sm mb-6"
+              >
+                Nous nous excusons pour ce désagrément. Cette erreur a été signalée automatiquement. 
+                Vous pouvez réessayer ou recharger la page pour continuer.
               </p>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button 
+              <AccessibleButton 
                 onClick={this.handleRetry}
                 variant="outline"
                 className="min-w-[120px]"
+                aria-describedby={`error-description-${this.state.errorId}`}
               >
                 Réessayer
-              </Button>
-              <Button 
+              </AccessibleButton>
+              <AccessibleButton 
                 onClick={this.handleReload}
-                className="min-w-[120px] bg-senegal-green hover:bg-senegal-green/90"
+                variant="primary"
+                className="min-w-[120px]"
+                aria-describedby={`error-description-${this.state.errorId}`}
               >
                 Recharger la page
-              </Button>
+              </AccessibleButton>
             </div>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
