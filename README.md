@@ -12,7 +12,7 @@ MVP d'un site Next.js pour un chauffeur au Sénégal : configuration de trips, g
 - ✅ **Envoi d'emails** avec devis détaillé (Resend)
 
 ### 🤖 **Mode Conseiller Voyage IA** ⭐ NOUVEAU
-- ✅ **Chat conversationnel avec Gemini 2.0 Flash** (ou mode démo)
+- ✅ **Chat conversationnel avec Groq** (ou mode démo)
 - ✅ **Assistant expert Sénégal** - recommandations personnalisées
 - ✅ **Planification voyage sur-mesure** selon budget/goûts/durée
 - ✅ **Suggestions destinations** : Dakar, Saint-Louis, Casamance, etc.
@@ -28,7 +28,7 @@ MVP d'un site Next.js pour un chauffeur au Sénégal : configuration de trips, g
 - **Frontend**: Next.js 14 (App Router) + TypeScript + Tailwind CSS
 - **Backend**: Next.js API Routes
 - **Database**: Supabase (PostgreSQL)
-- **AI**: OpenAI GPT-4o-mini avec JSON structuré + Zod
+- **AI**: Groq (Llama 3.1) avec JSON structuré + Zod
 - **Forms**: React Hook Form + Zod validation
 - **Email**: Resend (optionnel)
 - **Styling**: Tailwind CSS avec design system personnalisé
@@ -52,8 +52,7 @@ cp .env.example .env.local
 Variables requises:
 - `NEXT_PUBLIC_SUPABASE_URL` - URL de votre projet Supabase
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Clé anonyme Supabase
-- `OPENAI_API_KEY` - Clé API OpenAI (legacy - pour transport direct)
-- `GEMINI_API_KEY` - Clé API Google Gemini (pour chat IA) ⭐ NOUVEAU
+- `GROQ_API_KEY` - Clé API Groq (pour chat IA) ⭐ 
 - `WHATSAPP_PHONE_NUMBER` - Numéro WhatsApp du chauffeur
 - `RESEND_API_KEY` - Clé API Resend (optionnel)
 

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     const { message, conversationHistory = [] } = chatRequestSchema.parse(body)
 
     // Vérifier si GROQ est configuré, sinon utiliser mode démo
-    if (!process.env.GROQ_API_KEY || process.env.GROQ_API_KEY === 'placeholder-key') {
+    if (!process.env.GROQ_API_KEY || process.env.GROQ_API_KEY === 'placeholder-key' || process.env.GROQ_API_KEY === 'your_new_groq_api_key_here') {
       const demoResponse = getDemoResponse(message, conversationHistory)
       return NextResponse.json({ response: demoResponse, isDemo: true })
     }
