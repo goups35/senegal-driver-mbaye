@@ -173,7 +173,7 @@ async function generateOllamaResponse(prompt: string): Promise<AIResponse> {
       options: {
         temperature: 0.7,
         top_p: 0.9,
-        max_tokens: 1000
+        maxTokens: 1000
       }
     }),
   })
@@ -207,7 +207,7 @@ async function generateCohereResponse(prompt: string): Promise<AIResponse> {
     message: prompt,
     model: 'command',
     temperature: 0.7,
-    max_tokens: 1000
+    maxTokens: 1000
   })
 
   return {
