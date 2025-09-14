@@ -45,14 +45,14 @@ export async function POST(request: NextRequest) {
 
     const vehicleInfo = vehicleDatabase[tripData.vehicleType]
 
-    // Version DEMO - utilisation de données simulées au lieu d'OpenAI
+    // Version DEMO - utilisation de données simulées
     const { getDemoRoute } = await import('@/lib/demo-data')
     const demoRoute = getDemoRoute(tripData.departure, tripData.destination)
 
     // Simulation réaliste avec un petit délai
     await new Promise(resolve => setTimeout(resolve, 1000))
 
-    // Structure des données simulées comme si elles venaient d'OpenAI
+    // Structure des données simulées pour démonstration
     const validatedResponse = {
       distance_km: demoRoute.distance,
       duration_minutes: parseInt(demoRoute.duration.replace(/[^\d]/g, '')) || 30,
