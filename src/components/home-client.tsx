@@ -54,7 +54,7 @@ export function HomeClient() {
                 Découvrez le Sénégal
               </h1>
               <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto leading-relaxed drop-shadow-lg font-medium">
-                Voyagez en confiance avec Mbaye, chauffeur expert
+                Voyagez en confiance avec votre chauffeur Mbaye
               </p>
             </div>
 

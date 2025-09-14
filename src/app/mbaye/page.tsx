@@ -14,7 +14,7 @@ export default function MbayePage() {
               Découvrez Mbaye
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Votre chauffeur-guide expérimenté au Sénégal
+              Votre chauffeur Mbaye - guide expérimenté au Sénégal
             </p>
           </div>
 
