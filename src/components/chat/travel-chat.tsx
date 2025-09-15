@@ -44,7 +44,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       }
       setMessages([welcomeMessage])
     }
-  }, [])
+  }, [messages.length])
 
   const handleSendMessage = async (messageText?: string, isAutoStart = false) => {
     const message = messageText || inputMessage.trim()

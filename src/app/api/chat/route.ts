@@ -4,7 +4,8 @@ import { generateGeminiResponse } from '@/lib/gemini'
 import { 
   TripPlanningPromptEngine, 
   ConversationStateManager,
-  WhatsAppMessageFormatter 
+  WhatsAppMessageFormatter,
+  ConversationState
 } from '@/lib/conversation-flow'
 
 const chatRequestSchema = z.object({
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
         response: getAdvancedDemoResponse(message, conversationState), 
         isDemo: true,
         provider: 'demo',
-        conversationState
+        conversationState: conversationState as Record<string, unknown>
       })
     }
 
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
       response: aiResponse, 
       isDemo: false,
       provider: 'gemini-2.0-flash-exp',
-      conversationState
+      conversationState: conversationState as Record<string, unknown>
     })
 
   } catch (error) {
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
 /**
  * Advanced demo responses using conversation flow
  */
-function getAdvancedDemoResponse(message: string, state: Record<string, unknown>): string {
+function getAdvancedDemoResponse(message: string, state: ConversationState): string {
   const { phase, collectedInfo } = state
   
   switch (phase) {
@@ -126,8 +127,8 @@ function getPersonalizedInsight(message: string): string {
   return "Le Sénégal va vous surprendre par sa diversité !"
 }
 
-function getOptionsForQuestion(state: Record<string, unknown>): string {
-  const collectedInfo = state.collectedInfo as Record<string, unknown> || {}
+function getOptionsForQuestion(state: ConversationState): string {
+  const { collectedInfo } = state
   
   if (!collectedInfo.duration) {
     return "Exemples : 'une semaine', '10 jours', '2 semaines'"

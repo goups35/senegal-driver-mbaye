@@ -19,6 +19,7 @@ export interface ConversationState {
   questionsAsked: string[]
   isComplete: boolean
   nextQuestionPriority: number
+  [key: string]: unknown
 }
 
 export class TripPlanningPromptEngine {
@@ -248,8 +249,8 @@ CONTRAINTES:
     const updatedInfo = { ...state.collectedInfo }
 
     // Duration extraction
-    if (message.match(/\d+\s*(jour|semaine|mois)/)) {
-      const duration = message.match(/\d+\s*(jour|semaine|mois)/)?.[0]
+    if (message.match(/\d+\s*(jours?|semaines?|mois)/)) {
+      const duration = message.match(/\d+\s*(jours?|semaines?|mois)/)?.[0]
       if (duration) updatedInfo.duration = duration
     }
 
@@ -269,7 +270,7 @@ CONTRAINTES:
     }
 
     // Number of travelers
-    const travelers = message.match(/\d+\s*(personne|voyageur|gens)/)?.[0]
+    const travelers = message.match(/\d+\s*(personnes?|voyageurs?|gens)/)?.[0]
     if (travelers) updatedInfo.travelers = travelers
 
     // Specific destinations extraction
@@ -395,7 +396,7 @@ RÉCAPITULATIF PERSONNALISÉ`
     ).join('\n')
   }
 
-  private static generateHighlights(info: Record<string, unknown>): string {
+  private static generateHighlights(info: ConversationState['collectedInfo']): string {
     const highlights = []
     if (info.interests?.includes('culture')) {
       highlights.push("- Immersion dans la culture sénégalaise authentique")
@@ -420,7 +421,7 @@ RÉCAPITULATIF PERSONNALISÉ`
     return num
   }
 
-  private static selectDestinations(info: Record<string, unknown>) {
+  private static selectDestinations(info: ConversationState['collectedInfo']) {
     // Destination selection logic based on preferences
     const baseDestinations = [
       { city: "Dakar", activities: "Découverte de la capitale, île de Gorée" },
