@@ -114,3 +114,82 @@ body {
 .text-primary {
   color: var(--primary) !important;
 }
+
+/* Mobile Container Optimization */
+/* Support for modern viewport units with fallbacks */
+@supports (height: 100dvh) {
+  .h-dvh {
+    height: 100dvh;
+  }
+}
+
+@supports not (height: 100dvh) {
+  .h-dvh {
+    height: 100vh;
+  }
+}
+
+/* Mobile-specific optimizations for chat interface */
+@media (max-width: 768px) {
+  /* Ensure mobile browsers handle viewport correctly */
+  html {
+    height: -webkit-fill-available;
+  }
+  
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: calc(var(--vh, 1vh) * 100);
+  }
+  
+  /* Mobile chat container optimization */
+  .mobile-chat-container {
+    height: 100vh;
+    height: 100dvh;
+    height: -webkit-fill-available;
+    height: calc(var(--vh, 1vh) * 100);
+    max-height: -webkit-fill-available;
+    max-height: calc(var(--vh, 1vh) * 100);
+  }
+  
+  /* Handle iOS Safari address bar behavior */
+  @supports (-webkit-touch-callout: none) {
+    .mobile-chat-container {
+      height: -webkit-fill-available;
+      min-height: -webkit-fill-available;
+    }
+  }
+  
+  /* Ensure proper scrolling on mobile */
+  .mobile-chat-messages {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    /* Optimize scrolling performance */
+    will-change: scroll-position;
+  }
+  
+  /* Handle virtual keyboard */
+  .mobile-chat-input {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem;
+    z-index: 10;
+    /* Ensure input area remains accessible with virtual keyboard */
+    padding-bottom: env(safe-area-inset-bottom, 0.75rem);
+  }
+  
+  /* Optimize button sizes for mobile touch */
+  .mobile-chat-input button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Ensure proper input field sizing on mobile */
+  .mobile-chat-input input {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
+}
