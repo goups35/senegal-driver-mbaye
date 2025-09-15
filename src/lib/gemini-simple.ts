@@ -84,7 +84,7 @@ export async function checkGeminiHealth(): Promise<boolean> {
     }
 
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const result = await model.generateContent("Test");
+    await model.generateContent("Test");
     return true;
   } catch (error) {
     console.error('Gemini health check failed:', error);

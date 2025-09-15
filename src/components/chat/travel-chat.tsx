@@ -22,6 +22,8 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isDemo, setIsDemo] = useState(false)
   const [showWhatsAppButton, setShowWhatsAppButton] = useState(false)
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
+  const [conversationPhase, setConversationPhase] = useState('greeting')
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -30,14 +32,14 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages])
+  }, [messages.length])
 
   useEffect(() => {
-    // Message d'accueil automatique personnalisé
+    // Message d'accueil personnalisé avec la nouvelle stratégie
     if (messages.length === 0) {
       const welcomeMessage: Message = {
         role: 'assistant',
-        content: 'Bonjour, je suis ravi de vous aider à planifier votre voyage. 2 choix s&apos;offrent à vous :\n\n1. cliquer sur un des boutons pour pré-sélectionner un type de voyage.\n\n2. Ecrivez directement la durée du voyage, les endroits que vous souhaitez visiter et je vous ferai une proposition de voyage à revoir ensemble !',
+        content: '🇸🇳 Bonjour ! Je suis Maxime, votre conseiller voyage spécialisé Sénégal.\n\nJe vais vous aider à créer un voyage personnalisé jour par jour, parfaitement adapté à vos envies !\n\nCommencez par me parler de votre projet : qu&apos;est-ce qui vous attire dans l&apos;idée de découvrir le Sénégal ? 😊',
         timestamp: new Date()
       }
       setMessages([welcomeMessage])
@@ -67,6 +69,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
+          sessionId,
           conversationHistory: isAutoStart ? [] : messages.map(msg => ({
             role: msg.role,
             content: msg.content
@@ -81,6 +84,11 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       const data = await response.json()
       
       setIsDemo(data.isDemo || false)
+      
+      // Mettre à jour la phase de conversation
+      if (data.conversationState?.phase) {
+        setConversationPhase(data.conversationState.phase)
+      }
 
       const assistantMessage: Message = {
         role: 'assistant',
@@ -94,10 +102,10 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
         setMessages(prev => [...prev, assistantMessage])
       }
 
-      // Vérifier si l'IA indique que le plan est prêt (contient "GO" ou des mots-clés finaux)
+      // Vérifier si nous sommes arrivés au récapitulatif final
       if (data.response.includes('RÉCAPITULATIF PERSONNALISÉ') || 
-          data.response.includes('VOTRE VOYAGE') ||
-          data.response.includes('Envoyer via WhatsApp')) {
+          data.conversationState?.phase === 'summary' ||
+          data.response.includes('Jour 1:') && data.response.includes('Jour 2:')) {
         setShowWhatsAppButton(true)
         onTravelPlanReady?.(data.response)
       }
@@ -143,16 +151,23 @@ Généré via Transport Sénégal - Votre conseiller voyage`
   return (
     <Card className="w-full max-w-4xl mx-auto h-[600px] flex flex-col">
       <CardHeader className="flex-shrink-0">
-        <CardTitle className="flex items-center gap-2">
-          Maxime, l&apos;assistant IA de Mbaye
+        <CardTitle className="flex items-center gap-2 flex-wrap">
+          Maxime, votre conseiller voyage Sénégal
           {isDemo && (
             <span className="text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
               DÉMO
             </span>
           )}
+          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded capitalize">
+            {conversationPhase === 'greeting' && '👋 Accueil'}
+            {conversationPhase === 'discovery' && '🔍 Découverte'}
+            {conversationPhase === 'planning' && '🗺️ Planification'}
+            {conversationPhase === 'refinement' && '✨ Affinement'}
+            {conversationPhase === 'summary' && '🎉 Récapitulatif'}
+          </span>
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Discutez avec notre expert IA pour planifier votre voyage sur-mesure au Sénégal
+          Création d&apos;un voyage personnalisé jour par jour - Phase {conversationPhase === 'greeting' ? '1' : conversationPhase === 'discovery' ? '2' : conversationPhase === 'planning' ? '3' : conversationPhase === 'refinement' ? '4' : '5'}/5
         </p>
       </CardHeader>
       
@@ -225,38 +240,57 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           </div>
           
           <div className="flex gap-2 flex-wrap">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleSendMessage('Une semaine, budget moyen, j\'aime la culture et les plages')}
-              disabled={isLoading}
-            >
-              💡 1 semaine culture + plages
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleWhatsAppExport}
-              disabled={isLoading || !showWhatsAppButton}
-            >
-              ✅ Valider le programme
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleSendMessage('je souhaite découvrir le plus possible le Sénégal en 1 semaine')}
-              disabled={isLoading}
-            >
-              🌍 1 semaine roots
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleSendMessage('je souhaite organiser moi-même ma semaine, j\'ai déjà en tête les endroits à visiter')}
-              disabled={isLoading}
-            >
-              🎯 1 semaine Guy
-            </Button>
+            {conversationPhase === 'greeting' && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleSendMessage('J\'aimerais découvrir la culture sénégalaise pendant une semaine')}
+                  disabled={isLoading}
+                >
+                  🎨 Culture & traditions
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleSendMessage('Je rêve de plages paradisiaques et de nature pour 10 jours')}
+                  disabled={isLoading}
+                >
+                  🏖️ Plages & nature
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleSendMessage('Je veux tout voir en 2 semaines : culture, plages et aventure')}
+                  disabled={isLoading}
+                >
+                  🌍 Découverte complète
+                </Button>
+              </>
+            )}
+            
+            {(conversationPhase === 'refinement' || conversationPhase === 'summary') && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSendMessage('Parfait, je valide cet itinéraire !')}
+                disabled={isLoading}
+              >
+                ✅ Valider l&apos;itinéraire
+              </Button>
+            )}
+            
+            {showWhatsAppButton && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleWhatsAppExport}
+                disabled={isLoading}
+                className="bg-green-50 border-green-300 hover:bg-green-100"
+              >
+                📱 Copier pour WhatsApp
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>
