@@ -25,6 +25,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
   const [conversationPhase, setConversationPhase] = useState('greeting')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -33,6 +34,33 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   useEffect(() => {
     scrollToBottom()
   }, [messages.length])
+
+  // Mobile detection and viewport handling
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    const handleResize = () => {
+      checkMobile()
+      // Handle mobile browser address bar hide/show
+      if (window.innerWidth < 768) {
+        const vh = window.innerHeight * 0.01
+        document.documentElement.style.setProperty('--vh', `${vh}px`)
+      }
+    }
+    
+    checkMobile()
+    handleResize()
+    
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('orientationchange', handleResize)
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('orientationchange', handleResize)
+    }
+  }, [])
 
   useEffect(() => {
     // Message d'accueil personnalisé avec la nouvelle stratégie
@@ -149,7 +177,12 @@ Généré via Transport Sénégal - Votre conseiller voyage`
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto h-[600px] flex flex-col">
+    <div className={`w-full ${isMobile ? 'h-full' : 'max-w-4xl mx-auto'}`}>
+      <Card className={`w-full flex flex-col ${
+        isMobile 
+          ? 'h-full mobile-chat-container border-0 rounded-none' 
+          : 'max-w-4xl mx-auto h-[600px] md:h-[700px] lg:h-[600px]'
+      }`}>
       <CardHeader className="flex-shrink-0">
         <CardTitle className="flex items-center gap-2 flex-wrap">
           Maxime, votre conseiller voyage Sénégal
@@ -173,7 +206,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
       
       <CardContent className="flex-1 flex flex-col overflow-hidden">
         {/* Zone des messages */}
-        <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-slate-50 rounded">
+        <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-slate-50 rounded mobile-chat-messages">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -209,7 +242,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
         </div>
 
         {/* Zone de saisie */}
-        <div className="flex-shrink-0 space-y-3">
+        <div className="flex-shrink-0 space-y-3 mobile-chat-input">
           {showWhatsAppButton && (
             <div className="text-center">
               <Button
@@ -295,5 +328,6 @@ Généré via Transport Sénégal - Votre conseiller voyage`
         </div>
       </CardContent>
     </Card>
+    </div>
   )
 }
