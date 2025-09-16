@@ -1,0 +1,55 @@
+SENEGAL DRIVER MVP - PROGRESS UX IMPROVEMENTS
+==============================================
+
+BRANCHE ACTUELLE: feature/auto-scroll-behavior
+
+AMÉLIORATIONS RÉALISÉES ✅
+--------------------------
+
+1. POINT 1: Mobile Container Optimization (TERMINÉ)
+   - Optimisation des conteneurs mobiles pour la page de chat IA
+   - Ajout de styles CSS mobile-optimisés (h-dvh, -webkit-fill-available)
+   - STATUT: Déployé en production avec succès
+
+2. POINT 2: Auto-scroll Behavior Optimization (TERMINÉ)
+   - Smart Zones System implémenté avec:
+     * Indicateur de scroll visuel avec barre de progression
+     * Détection de zones (80% seuil pour zone auto-scroll)
+     * Feedback visuel: bordure verte pour zone live, overlay gris pour zone manuelle
+     * Animations de nouveaux messages avec effets de pulse
+     * Hints éducatifs et tooltips pour guider l'utilisateur
+     * CSS complet avec support mobile et mode haute contraste
+
+CORRECTIONS DE BUGS RÉALISÉES ✅
+---------------------------------
+- Navigation buttons fixed: Correction des boutons d'accueil non cliquables (z-index et pointer-events)
+- Scroll behavior fixed: Correction du scroll automatique qui cassait l'input
+- Input focus handling: Gestion intelligente du focus sur l'input avec paramètre fromInputFocus
+
+PROBLÈME EN COURS 🔧
+--------------------
+- Boutons d'accueil toujours non cliquables malgré corrections CSS
+- Tentatives: pointerEvents, zIndex: 30
+- Solution recommandée par agent: conversion en vrais boutons <button>
+- Temps estimé: 30 minutes
+
+ALTERNATIVE PROPOSÉE
+--------------------
+- Migration vers App Router Next.js (nouvelles pages /transport, /chat)
+- Temps estimé: 6-8 heures
+- Avantages: URLs propres, meilleur SEO, navigation intuitive
+
+POINTS RESTANTS À FAIRE ❌
+---------------------------
+- POINT 3: Position du bouton "Retour aux options"
+- POINT 4: Messages utilisateur sans arrière-plan (invisibles)  
+- POINT 5: Optimisations UX générales du chat
+
+FICHIERS MODIFIÉS
+-----------------
+- src/components/home-client.tsx
+- src/app/globals.css
+- src/components/chat/travel-chat.tsx
+
+DATE: 2025-09-16
+STATUS: 2/5 points UX majeurs terminés + Smart Zones system sophistiqué
