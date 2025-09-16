@@ -161,6 +161,10 @@ body {
   overscroll-behavior: contain;
   scroll-behavior: smooth;
   will-change: scroll-position;
+
+  /* Enhanced smooth scrolling for better UX */
+  scroll-padding-top: 20px;
+  scroll-padding-bottom: 20px;
   
   /* Enhanced scrollbar styling - hidden to use custom indicator */
   scrollbar-width: none;
@@ -585,12 +589,25 @@ body {
   box-shadow: 0 0 12px rgba(0, 166, 81, 0.4);
 }
 
-/* Smooth transitions for zone changes */
-.smart-zones-container,
-.smart-input-zone,
-.smart-scroll-indicator,
+/* Smooth transitions for zone changes - Enhanced timing */
+.smart-zones-container {
+  transition: border-left 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.smart-input-zone {
+  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-top 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.smart-scroll-indicator {
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .scroll-progress-bar {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: height 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Mobile optimizations for Smart Zones */

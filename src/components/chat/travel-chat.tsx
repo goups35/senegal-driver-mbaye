@@ -38,6 +38,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [lastMessageCount, setLastMessageCount] = useState(0)
   const [showScrollHint, setShowScrollHint] = useState(false)
   const [hasUserScrolled, setHasUserScrolled] = useState(false)
+  const [lastUserScrollTime, setLastUserScrollTime] = useState(0)
 
   // Enhanced scroll function with Smart Zones logic
   const updateScrollMetrics = useCallback(() => {
@@ -97,6 +98,11 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       if (fromInputFocus && isNearBottom) {
         return
       }
+
+      // Enhanced: Prevent scroll if user is actively scrolling
+      if (hasUserScrolled && !force && (Date.now() - lastUserScrollTime) < 1000) {
+        return
+      }
       
       // Additional safety: don't auto-scroll if input is actively focused and user didn't explicitly request it
       if (isInputFocused && !force && !fromInputFocus) {
@@ -115,22 +121,23 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
         // Use a slight delay to ensure DOM updates are complete
         requestAnimationFrame(() => {
           smoothScroll()
-          // Update metrics after scroll
-          setTimeout(updateScrollMetrics, 100)
+          // Update metrics after scroll with optimized timing
+          setTimeout(updateScrollMetrics, force ? 50 : 150)
         })
       }
     }
-  }, [isInputFocused, updateScrollMetrics])
+  }, [isInputFocused, updateScrollMetrics, hasUserScrolled, lastUserScrollTime])
 
   // Enhanced scroll tracking on scroll events
   const handleScroll = useCallback((e: React.UIEvent) => {
     e.stopPropagation()
     updateScrollMetrics()
-    
+
     // Track that user has manually scrolled
     if (!hasUserScrolled) {
       setHasUserScrolled(true)
     }
+    setLastUserScrollTime(Date.now())
   }, [updateScrollMetrics, hasUserScrolled])
 
   useEffect(() => {
