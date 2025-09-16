@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select } from '@/components/ui/select'
 import { tripRequestSchema, type TripRequestInput } from '@/schemas/trip'
 import type { TripQuote } from '@/types'
 
@@ -15,11 +14,6 @@ interface TripRequestFormProps {
   onQuoteGenerated: (quote: TripQuote, tripData: TripRequestInput) => void
 }
 
-const vehicleOptions = [
-  { value: 'standard', label: 'Standard (4 places)', description: 'Véhicule économique' },
-  { value: 'premium', label: 'Premium (4 places)', description: 'Confort supérieur' },
-  { value: 'suv', label: 'SUV (7 places)', description: 'Espace famille' }
-]
 
 export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
   const [isLoading, setIsLoading] = useState(false)
@@ -34,7 +28,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
     resolver: zodResolver(tripRequestSchema),
     defaultValues: {
       passengers: 1,
-      vehicleType: 'standard'
+      duration: 7
     }
   })
 
@@ -75,32 +69,6 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="departure">Lieu de départ</Label>
-              <Input
-                id="departure"
-                placeholder="Ex: Dakar, Place de l'Indépendance"
-                {...register('departure')}
-              />
-              {errors.departure && (
-                <p className="text-sm text-destructive">{errors.departure.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="destination">Destination</Label>
-              <Input
-                id="destination"
-                placeholder="Ex: Aéroport Léopold Sédar Senghor"
-                {...register('destination')}
-              />
-              {errors.destination && (
-                <p className="text-sm text-destructive">{errors.destination.message}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
               <Label htmlFor="date">Date du voyage</Label>
               <Input
                 id="date"
@@ -112,20 +80,6 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="time">Heure de départ</Label>
-              <Input
-                id="time"
-                type="time"
-                {...register('time')}
-              />
-              {errors.time && (
-                <p className="text-sm text-destructive">{errors.time.message}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="passengers">Nombre de passagers</Label>
               <Input
@@ -139,20 +93,20 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
                 <p className="text-sm text-destructive">{errors.passengers.message}</p>
               )}
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="vehicleType">Type de véhicule</Label>
-              <Select {...register('vehicleType')}>
-                {vehicleOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label} - {option.description}
-                  </option>
-                ))}
-              </Select>
-              {errors.vehicleType && (
-                <p className="text-sm text-destructive">{errors.vehicleType.message}</p>
-              )}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="duration">Durée du voyage (en jours)</Label>
+            <Input
+              id="duration"
+              type="number"
+              min="1"
+              max="30"
+              {...register('duration', { valueAsNumber: true })}
+            />
+            {errors.duration && (
+              <p className="text-sm text-destructive">{errors.duration.message}</p>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -181,7 +135,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="customerEmail">Email (optionnel)</Label>
+              <Label htmlFor="customerEmail">Email</Label>
               <Input
                 id="customerEmail"
                 type="email"

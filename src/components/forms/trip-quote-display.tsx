@@ -9,15 +9,12 @@ import type { TripQuote } from '@/types'
 interface TripQuoteDisplayProps {
   quote: TripQuote
   tripData: {
-    departure: string
-    destination: string
     date: string
-    time: string
     customerName: string
     customerPhone: string
-    customerEmail?: string
+    customerEmail: string
     passengers?: number
-    vehicleType?: string
+    duration?: number
     specialRequests?: string
   }
 }
@@ -27,10 +24,11 @@ export function TripQuoteDisplay({ quote, tripData }: TripQuoteDisplayProps) {
     const message = `Bonjour,
 
 Je souhaite réserver un transport:
-📍 De: ${tripData.departure}
-📍 Vers: ${tripData.destination}
+📍 De: Dakar
+📍 Vers: Aéroport Léopold Sédar Senghor
 📅 Date: ${tripData.date}
-🕐 Heure: ${tripData.time}
+🕐 Heure: 08:00
+📆 Durée: ${tripData.duration || 7} jours
 
 💰 Devis: ${quote.totalPrice.toLocaleString()} FCFA
 🚗 Véhicule: ${quote.vehicleInfo.name}
@@ -39,6 +37,7 @@ Je souhaite réserver un transport:
 
 Nom: ${tripData.customerName}
 Téléphone: ${tripData.customerPhone}
+Email: ${tripData.customerEmail}
 
 Merci de confirmer la disponibilité.`
 
@@ -67,7 +66,7 @@ Merci de confirmer la disponibilité.`
             🚗 Devis de Transport
           </CardTitle>
           <CardDescription>
-            Itinéraire de {tripData.departure} vers {tripData.destination}
+            Itinéraire de Dakar vers Aéroport Léopold Sédar Senghor
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -130,9 +129,12 @@ Merci de confirmer la disponibilité.`
             <h3 className="font-semibold mb-2">📋 Récapitulatif de votre demande</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
               <div><strong>Date:</strong> {new Date(tripData.date).toLocaleDateString('fr-FR')}</div>
-              <div><strong>Heure:</strong> {tripData.time}</div>
+              <div><strong>Heure:</strong> 08:00</div>
+              <div><strong>Durée:</strong> {tripData.duration || 7} jours</div>
+              <div><strong>Passagers:</strong> {tripData.passengers || 1}</div>
               <div><strong>Client:</strong> {tripData.customerName}</div>
               <div><strong>Téléphone:</strong> {tripData.customerPhone}</div>
+              <div><strong>Email:</strong> {tripData.customerEmail}</div>
             </div>
           </div>
 

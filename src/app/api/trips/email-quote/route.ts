@@ -7,13 +7,13 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 interface EmailQuoteRequest {
   quote: TripQuote
   tripData: {
-    departure: string
-    destination: string
     date: string
-    time: string
     customerName: string
     customerPhone: string
-    customerEmail?: string
+    customerEmail: string
+    passengers?: number
+    duration?: number
+    specialRequests?: string
   }
 }
 
@@ -21,12 +21,7 @@ export async function POST(request: NextRequest) {
   try {
     const { quote, tripData }: EmailQuoteRequest = await request.json()
 
-    if (!tripData.customerEmail) {
-      return NextResponse.json(
-        { error: 'Adresse email requise' },
-        { status: 400 }
-      )
-    }
+    // Email is now required in the schema, so no need to check
 
     const emailHtml = `
     <!DOCTYPE html>
@@ -57,10 +52,13 @@ export async function POST(request: NextRequest) {
               <h2>📋 Détails du voyage</h2>
               <p><strong>Client:</strong> ${tripData.customerName}</p>
               <p><strong>Téléphone:</strong> ${tripData.customerPhone}</p>
-              <p><strong>De:</strong> ${tripData.departure}</p>
-              <p><strong>Vers:</strong> ${tripData.destination}</p>
+              <p><strong>Email:</strong> ${tripData.customerEmail}</p>
+              <p><strong>De:</strong> Dakar</p>
+              <p><strong>Vers:</strong> Aéroport Léopold Sédar Senghor</p>
               <p><strong>Date:</strong> ${new Date(tripData.date).toLocaleDateString('fr-FR')}</p>
-              <p><strong>Heure:</strong> ${tripData.time}</p>
+              <p><strong>Heure:</strong> 08:00</p>
+              <p><strong>Durée:</strong> ${tripData.duration || 7} jours</p>
+              <p><strong>Passagers:</strong> ${tripData.passengers || 1}</p>
             </div>
 
             <div class="section">
@@ -104,7 +102,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await resend.emails.send({
       from: 'Transport Sénégal <noreply@votre-domaine.com>',
       to: [tripData.customerEmail],
-      subject: `Devis de transport: ${tripData.departure} → ${tripData.destination}`,
+      subject: `Devis de transport: Dakar → Aéroport Léopold Sédar Senghor`,
       html: emailHtml,
     })
 

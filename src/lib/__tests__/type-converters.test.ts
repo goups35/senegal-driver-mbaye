@@ -7,12 +7,9 @@ import type { TripRequestInput } from '@/schemas/trip'
 
 describe('Type Converters', () => {
   const sampleTripRequestInput: TripRequestInput = {
-    departure: 'Dakar',
-    destination: 'Saint-Louis',
     date: '2024-12-25',
-    time: '08:00',
     passengers: 2,
-    vehicleType: 'standard',
+    duration: 7,
     customerName: 'Test User',
     customerPhone: '+221771234567',
     customerEmail: 'test@example.com',
@@ -24,12 +21,9 @@ describe('Type Converters', () => {
       const result = convertTripRequestInputToTripRequest(sampleTripRequestInput)
 
       // Should preserve all original fields
-      expect(result.departure).toBe(sampleTripRequestInput.departure)
-      expect(result.destination).toBe(sampleTripRequestInput.destination)
       expect(result.date).toBe(sampleTripRequestInput.date)
-      expect(result.time).toBe(sampleTripRequestInput.time)
       expect(result.passengers).toBe(sampleTripRequestInput.passengers)
-      expect(result.vehicleType).toBe(sampleTripRequestInput.vehicleType)
+      expect(result.duration).toBe(sampleTripRequestInput.duration)
       expect(result.customerName).toBe(sampleTripRequestInput.customerName)
       expect(result.customerPhone).toBe(sampleTripRequestInput.customerPhone)
       expect(result.customerEmail).toBe(sampleTripRequestInput.customerEmail)
@@ -75,14 +69,12 @@ describe('Type Converters', () => {
 
     test('should return true for minimal valid data', () => {
       const minimalData = {
-        departure: 'Dakar',
-        destination: 'Saly',
         date: '2024-12-25',
-        time: '10:00',
         passengers: 1,
-        vehicleType: 'standard',
+        duration: 7,
         customerName: 'Test',
-        customerPhone: '+221771234567'
+        customerPhone: '+221771234567',
+        customerEmail: 'test@example.com'
       }
 
       expect(isCompatibleTripData(minimalData)).toBe(true)
@@ -95,12 +87,8 @@ describe('Type Converters', () => {
         'string',
         123,
         [],
-        { departure: 123 }, // wrong type
-        { departure: 'Dakar' }, // missing fields
-        {
-          ...sampleTripRequestInput,
-          vehicleType: 'invalid' // invalid enum value
-        },
+        { date: 123 }, // wrong type
+        { date: '2024-12-25' }, // missing fields
         {
           ...sampleTripRequestInput,
           passengers: '2' // wrong type (string instead of number)

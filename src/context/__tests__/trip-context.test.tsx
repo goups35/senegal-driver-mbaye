@@ -44,14 +44,12 @@ function TestComponent() {
         data-testid="set-trip-data"
         onClick={() => context.setTripData({
           id: 'test-trip',
-          departure: 'Dakar',
-          destination: 'Saint-Louis',
           date: '2024-12-25',
-          time: '08:00',
           passengers: 2,
-          vehicleType: 'standard',
+          duration: 7,
           customerName: 'Test User',
-          customerPhone: '+221771234567'
+          customerPhone: '+221771234567',
+          customerEmail: 'test@example.com'
         })}
       >
         Set Trip Data
@@ -83,14 +81,12 @@ function TestComponent() {
           },
           {
             id: 'both-trip',
-            departure: 'Dakar',
-            destination: 'Casamance',
             date: '2024-12-30',
-            time: '09:00',
             passengers: 4,
-            vehicleType: 'premium',
+            duration: 10,
             customerName: 'Test Premium',
-            customerPhone: '+221772345678'
+            customerPhone: '+221772345678',
+            customerEmail: 'premium@example.com'
           }
         )}
       >
@@ -168,8 +164,8 @@ describe('TripContext', () => {
       expect(tripElement).not.toHaveTextContent('null')
 
       const tripData = JSON.parse(tripElement.textContent!)
-      expect(tripData.departure).toBe('Dakar')
-      expect(tripData.destination).toBe('Saint-Louis')
+      expect(tripData.date).toBe('2024-12-25')
+      expect(tripData.passengers).toBe(2)
       expect(tripData.customerName).toBe('Test User')
     })
 
@@ -226,7 +222,7 @@ describe('TripContext', () => {
       expect(quoteData.id).toBe('both-quote')
       expect(quoteData.vehicleInfo.type).toBe('premium')
       expect(tripData.customerName).toBe('Test Premium')
-      expect(tripData.destination).toBe('Casamance')
+      expect(tripData.customerEmail).toBe('premium@example.com')
 
       expect(screen.getByTestId('has-complete-quote')).toHaveTextContent('true')
     })
@@ -294,14 +290,12 @@ describe('TripContext', () => {
         },
         tripData: {
           id: 'trip-1',
-          departure: 'Dakar',
-          destination: 'Saint-Louis',
           date: '2024-12-25',
-          time: '08:00',
           passengers: 2,
-          vehicleType: 'standard' as const,
+          duration: 7,
           customerName: 'Test',
-          customerPhone: '+221771234567'
+          customerPhone: '+221771234567',
+          customerEmail: 'test@example.com'
         },
         setCurrentQuote: jest.fn(),
         setTripData: jest.fn(),

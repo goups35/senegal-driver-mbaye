@@ -3,15 +3,16 @@
 -- Table des demandes de voyage
 CREATE TABLE trip_requests (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  departure TEXT NOT NULL,
-  destination TEXT NOT NULL,
+  departure TEXT DEFAULT 'Dakar',
+  destination TEXT DEFAULT 'Aéroport Léopold Sédar Senghor',
   date DATE NOT NULL,
-  time TIME NOT NULL,
+  time TIME DEFAULT '08:00',
   passengers INTEGER NOT NULL CHECK (passengers >= 1 AND passengers <= 8),
-  vehicle_type TEXT NOT NULL CHECK (vehicle_type IN ('standard', 'premium', 'suv')),
+  duration INTEGER NOT NULL DEFAULT 7 CHECK (duration >= 1 AND duration <= 30),
+  vehicle_type TEXT DEFAULT 'standard' CHECK (vehicle_type IN ('standard', 'premium', 'suv')),
   customer_name TEXT NOT NULL,
   customer_phone TEXT NOT NULL,
-  customer_email TEXT,
+  customer_email TEXT NOT NULL,
   special_requests TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL

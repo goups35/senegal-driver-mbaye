@@ -33,11 +33,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const tripData = tripRequestSchema.parse(body)
 
-    const vehicleInfo = vehicleDatabase[tripData.vehicleType]
+    // Use default vehicle type since it's no longer in the form
+    const vehicleInfo = vehicleDatabase['standard']
 
-    // Version DEMO - utilisation de données simulées
+    // Version DEMO - utilisation de données simulées avec des valeurs par défaut
     const { getDemoRoute } = await import('@/lib/demo-data')
-    const demoRoute = getDemoRoute(tripData.departure, tripData.destination)
+    const demoRoute = getDemoRoute('Dakar', 'Aéroport Léopold Sédar Senghor')
 
     // Simulation réaliste avec un petit délai
     await new Promise(resolve => setTimeout(resolve, 1000))
@@ -73,15 +74,16 @@ export async function POST(request: NextRequest) {
         const { data: savedTrip, error: tripError } = await supabase
           .from('trip_requests')
           .insert([{
-            departure: tripData.departure,
-            destination: tripData.destination,
+            departure: 'Dakar', // Default departure location
+            destination: 'Aéroport Léopold Sédar Senghor', // Default destination
             date: tripData.date,
-            time: tripData.time,
+            time: '08:00', // Default departure time
             passengers: tripData.passengers,
-            vehicle_type: tripData.vehicleType,
+            duration: tripData.duration,
+            vehicle_type: 'standard', // Default vehicle type
             customer_name: tripData.customerName,
             customer_phone: tripData.customerPhone,
-            customer_email: tripData.customerEmail || null,
+            customer_email: tripData.customerEmail,
             special_requests: tripData.specialRequests || null
           }])
           .select()

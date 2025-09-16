@@ -34,13 +34,11 @@ export function isCompatibleTripData(data: unknown): data is TripRequestInput {
   const obj = data as Record<string, unknown>
 
   return (
-    typeof obj.departure === 'string' &&
-    typeof obj.destination === 'string' &&
     typeof obj.date === 'string' &&
-    typeof obj.time === 'string' &&
     typeof obj.passengers === 'number' &&
-    ['standard', 'premium', 'suv'].includes(obj.vehicleType as string) &&
+    typeof obj.duration === 'number' &&
     typeof obj.customerName === 'string' &&
-    typeof obj.customerPhone === 'string'
+    typeof obj.customerPhone === 'string' &&
+    typeof obj.customerEmail === 'string'
   )
 }

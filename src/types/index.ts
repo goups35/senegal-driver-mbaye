@@ -1,14 +1,11 @@
 export interface TripRequest {
   id?: string
-  departure: string
-  destination: string
   date: string
-  time: string
   passengers: number
-  vehicleType: 'standard' | 'premium' | 'suv'
+  duration: number
   customerName: string
   customerPhone: string
-  customerEmail?: string
+  customerEmail: string
   specialRequests?: string
   created_at?: string
 }
