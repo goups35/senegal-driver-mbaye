@@ -1,27 +1,17 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Navbar } from '@/components/navigation/navbar'
 // import { ErrorBoundary } from '@/components/common/error-boundary'
-import { TravelPlannerWrapper } from '@/components/features/travel-planner/travel-planner-wrapper'
-
-type AppMode = 'home' | 'chat'
 
 export function HomeClient() {
-  const [mode, setMode] = useState<AppMode>('home')
   const router = useRouter()
-
-  const resetToHome = () => {
-    setMode('home')
-  }
 
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
       
-      {mode === 'home' && (
-        <div className="relative min-h-screen">
+      <div className="relative min-h-screen">
           {/* Hero Background */}
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
@@ -77,7 +67,7 @@ export function HomeClient() {
                   className="hero-action-button bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
                   onClick={() => {
                     console.log('Chat button clicked');
-                    setMode('chat');
+                    router.push('/chat');
                   }}
                   type="button"
                 >
@@ -116,40 +106,6 @@ export function HomeClient() {
             </div>
           </div>
         </div>
-      )}
-
-
-      {mode === 'chat' && (
-        <div className="min-h-screen bg-white">
-          <div className="container mx-auto px-4 py-8">
-            <div className="space-y-6">
-              <div className="text-center">
-                <button
-                  onClick={resetToHome}
-                  className="text-primary hover:underline text-sm mb-4"
-                >
-                  ← Retour aux options
-                </button>
-              </div>
-              
-              <TravelPlannerWrapper onTravelPlanReady={(plan) => console.log('Plan ready:', plan)} />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Footer (visible sur toutes les pages) */}
-      {mode !== 'home' && (
-        <footer className="bg-white mt-16 text-center text-sm text-muted-foreground py-8">
-          <div className="max-w-md mx-auto space-y-2">
-            <p>🇸🇳 Service de transport professionnel au Sénégal</p>
-            <p>📱 Disponible 24h/24 • 🚗 Flotte moderne • ✨ Devis instantané</p>
-            <p className="text-xs">
-              Propulsé par l&apos;IA • Made with ❤️ for Sénégal
-            </p>
-          </div>
-        </footer>
-      )}
     </div>
   )
 }
