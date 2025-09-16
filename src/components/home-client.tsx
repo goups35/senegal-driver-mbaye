@@ -1,35 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Navbar } from '@/components/navigation/navbar'
 // import { ErrorBoundary } from '@/components/common/error-boundary'
 import { TravelPlannerWrapper } from '@/components/features/travel-planner/travel-planner-wrapper'
-import { TransportQuoteWrapper } from '@/components/features/transport-quote/transport-quote-wrapper'
-import type { TripQuote } from '@/types'
-import { TripRequestInput } from '@/schemas/trip'
 
-type AppMode = 'home' | 'transport' | 'chat'
+type AppMode = 'home' | 'chat'
 
 export function HomeClient() {
   const [mode, setMode] = useState<AppMode>('home')
-  const [currentQuote, setCurrentQuote] = useState<TripQuote | null>(null)
-  const [tripData, setTripData] = useState<TripRequestInput | null>(null)
-
-
-  const handleQuoteGenerated = (quote: TripQuote, data: TripRequestInput) => {
-    setCurrentQuote(quote)
-    setTripData(data)
-  }
+  const router = useRouter()
 
   const resetToHome = () => {
     setMode('home')
-    setCurrentQuote(null)
-    setTripData(null)
-  }
-
-  const resetTransportForm = () => {
-    setCurrentQuote(null)
-    setTripData(null)
   }
 
   return (
@@ -63,11 +47,11 @@ export function HomeClient() {
             <div className="max-w-5xl mx-auto relative z-50">
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Mode Transport Direct */}
-                <button 
+                <button
                   className="hero-action-button bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
                   onClick={() => {
                     console.log('Transport button clicked');
-                    setMode('transport');
+                    router.push('/transport');
                   }}
                   type="button"
                 >
@@ -134,29 +118,6 @@ export function HomeClient() {
         </div>
       )}
 
-      {mode === 'transport' && (
-        <div className="min-h-screen bg-white">
-          <div className="container mx-auto px-4 py-8">
-            <div className="space-y-6">
-              <div className="text-center">
-                <button
-                  onClick={resetToHome}
-                  className="text-primary hover:underline text-sm mb-4"
-                >
-                  ← Retour aux options
-                </button>
-              </div>
-              
-              <TransportQuoteWrapper
-                currentQuote={currentQuote}
-                tripData={tripData}
-                onQuoteGenerated={handleQuoteGenerated}
-                onReset={resetTransportForm}
-              />
-            </div>
-          </div>
-        </div>
-      )}
 
       {mode === 'chat' && (
         <div className="min-h-screen bg-white">

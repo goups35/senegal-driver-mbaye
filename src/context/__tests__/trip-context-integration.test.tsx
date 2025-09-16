@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { TripProvider, useTripContext } from '../trip-context'
-import type { TripRequest } from '@/types'
+// import type { TripRequest } from '@/types'
 import type { TripRequestInput } from '@/schemas/trip'
 
 // Test du problème d'incompatibilité de types
@@ -95,15 +95,8 @@ describe('TripContext Type Compatibility', () => {
 
       // Simule comment HomeClient utilise actuellement TripRequestInput
       const handleFormSubmission = (formData: TripRequestInput) => {
-        // PROBLÈME: HomeClient passe TripRequestInput au Context qui attend TripRequest
-        // Cette conversion est nécessaire:
-        const convertedData: TripRequest = {
-          ...formData,
-          id: `trip_${Date.now()}`,
-          created_at: new Date().toISOString()
-        }
-
-        context.setTripData(convertedData)
+        // RÉSOLU: TripContext utilise maintenant TripRequestInput directement
+        context.setTripData(formData)
       }
 
       return (
@@ -148,8 +141,9 @@ describe('TripContext Type Compatibility', () => {
       expect(storedData.departure).toBe('Dakar')
       expect(storedData.destination).toBe('Casamance')
       expect(storedData.customerName).toBe('Integration Test')
-      expect(storedData.id).toBeDefined()
-      expect(storedData.created_at).toBeDefined()
+      // Plus besoin d'id et created_at dans le Context
+      expect(storedData.id).toBeUndefined()
+      expect(storedData.created_at).toBeUndefined()
 
       console.log('Real-world integration test passed')
     })
@@ -159,7 +153,7 @@ describe('TripContext Type Compatibility', () => {
     test('should validate Context stability for production', () => {
       const results = {
         contextImplementation: 'STABLE',
-        typeCompatibility: 'NEEDS_CONVERSION',
+        typeCompatibility: 'RESOLVED',
         breakingChanges: 'NONE_DETECTED',
         existingFunctionality: 'PRESERVED'
       }
@@ -167,8 +161,8 @@ describe('TripContext Type Compatibility', () => {
       // Le Context fonctionne
       expect(results.contextImplementation).toBe('STABLE')
 
-      // Il faut juste une conversion de types
-      expect(results.typeCompatibility).toBe('NEEDS_CONVERSION')
+      // Le problème de types a été résolu
+      expect(results.typeCompatibility).toBe('RESOLVED')
 
       // Pas de breaking changes
       expect(results.breakingChanges).toBe('NONE_DETECTED')
