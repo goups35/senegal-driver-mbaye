@@ -91,12 +91,27 @@ body {
 .bg-sahel-sand { background-color: var(--sahel-sand) !important; }
 .bg-teranga-orange { background-color: var(--teranga-orange) !important; }
 
+/* Fix pour les boutons d'accueil */
+.hero-action-button {
+  position: relative !important;
+  z-index: 100 !important;
+  pointer-events: auto !important;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
 /* Hover effects */
 .hover-senegal:hover {
   background-color: var(--senegal-green);
   color: white;
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
   transition: all 0.3s ease;
+}
+
+/* Garantir la clickabilité des boutons hero */
+.hero-action-button:hover {
+  transform: translateY(-2px) translateZ(0) !important;
+  z-index: 101 !important;
 }
 
 
@@ -127,6 +142,68 @@ body {
   .h-dvh {
     height: 100vh;
   }
+}
+
+/* Chat scroll optimization and body scroll prevention */
+.chat-active-no-scroll {
+  overflow: hidden !important;
+  /* Remove position fixed to prevent page jumps */
+  /* height: 100% !important; */
+  /* position: fixed !important; */
+  /* width: 100% !important; */
+}
+
+/* Chat container specific scrolling */
+.chat-messages-container {
+  /* Optimize scrolling performance */
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
+  
+  /* Enhanced scrollbar styling - hidden to use custom indicator */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.chat-messages-container::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+.chat-messages-container::-webkit-scrollbar-track {
+  display: none;
+}
+
+.chat-messages-container::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+/* Travel chat container optimization */
+.travel-chat-container {
+  /* Isolate scroll context */
+  contain: layout style paint;
+  
+  /* Optimize for performance */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  
+  /* Ensure proper stacking context */
+  position: relative;
+  z-index: 1;
+}
+
+/* Smart Zones: Card content positioning for indicator */
+.travel-chat-container .card-content-relative {
+  position: relative;
+}
+
+/* Focus and active states for chat */
+.travel-chat-container:focus-within {
+  /* Subtle indication when chat is active */
+  box-shadow: 0 0 0 2px var(--ring);
+  border-radius: var(--radius);
 }
 
 /* Mobile-specific optimizations for chat interface */
@@ -167,6 +244,50 @@ body {
     touch-action: pan-y;
     /* Optimize scrolling performance */
     will-change: scroll-position;
+    
+    /* Enhanced mobile scroll optimization */
+    scroll-snap-type: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Mobile body scroll prevention when chat is active */
+  body.chat-active-no-scroll {
+    /* Use less aggressive scroll prevention to avoid position jumps */
+    overflow: hidden;
+    /* Remove position fixed on mobile to prevent layout shifts */
+    /* position: fixed; */
+    /* width: 100%; */
+    /* height: 100%; */
+    
+    /* Prevent iOS Safari bounce */
+    -webkit-overflow-scrolling: auto;
+    /* Prevent scroll momentum */
+    overscroll-behavior: none;
+  }
+  
+  html.chat-active-no-scroll {
+    overflow: hidden;
+    /* Remove height constraint to prevent viewport issues */
+    /* height: 100%; */
+    overscroll-behavior: none;
+  }
+  
+  /* Enhanced mobile chat container */
+  .travel-chat-container {
+    /* Prevent text selection during scroll */
+    -webkit-user-select: none;
+    user-select: none;
+    
+    /* Optimize touch interactions */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  /* Re-enable text selection for message content */
+  .travel-chat-container .chat-messages-container {
+    -webkit-user-select: text;
+    user-select: text;
   }
   
   /* Handle virtual keyboard */
@@ -191,5 +312,366 @@ body {
   .mobile-chat-input input {
     font-size: 16px; /* Prevents zoom on iOS */
     min-height: 44px;
+    
+    /* Prevent iOS zoom and optimize input behavior */
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: var(--radius);
+  }
+  
+  /* Handle virtual keyboard appearance */
+  @supports (height: 100dvh) {
+    .mobile-chat-container {
+      height: 100dvh;
+      max-height: 100dvh;
+    }
+  }
+  
+  /* Optimize for keyboard interactions */
+  .mobile-chat-input:focus-within {
+    /* Ensure input area stays visible with virtual keyboard */
+    transform: translateY(0);
+    transition: transform 0.2s ease;
+  }
+}
+
+/* =========================
+   Smart Zones Scroll UX System
+   ========================= */
+
+/* Visual scroll progress indicator */
+.smart-scroll-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: rgba(0, 166, 81, 0.1);
+  border-radius: 2px;
+  z-index: 20;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.smart-scroll-indicator:hover {
+  width: 8px;
+  background: rgba(0, 166, 81, 0.2);
+}
+
+.smart-scroll-indicator:active {
+  background: rgba(0, 166, 81, 0.3);
+}
+
+.scroll-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--scroll-progress, 0) * 100%);
+  background: linear-gradient(to bottom, var(--senegal-green), var(--ocean-blue));
+  border-radius: 2px;
+  transition: height 0.1s ease-out;
+  box-shadow: 0 0 8px rgba(0, 166, 81, 0.3);
+}
+
+/* Bounce animation for new messages */
+.scroll-indicator-bounce {
+  position: absolute;
+  top: calc(var(--scroll-progress, 0) * 100%);
+  left: -2px;
+  width: 8px;
+  height: 8px;
+  background: var(--teranga-orange);
+  border-radius: 50%;
+  animation: scrollIndicatorBounce 2s ease-out;
+  box-shadow: 0 0 12px rgba(255, 140, 0, 0.6);
+}
+
+/* Educational scroll hint tooltip */
+.scroll-hint-tooltip {
+  position: absolute;
+  top: 20%;
+  right: 12px;
+  background: var(--senegal-green);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 166, 81, 0.3);
+  animation: scrollHintFadeIn 0.5s ease-out, scrollHintPulse 2s ease-in-out 0.5s;
+  z-index: 25;
+}
+
+.scroll-hint-tooltip::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 4px solid var(--senegal-green);
+}
+
+@keyframes scrollHintFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollHintPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes scrollIndicatorBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  10% {
+    transform: translateY(-4px) scale(1.2);
+  }
+  30% {
+    transform: translateY(-2px) scale(1.1);
+  }
+  60% {
+    transform: translateY(-1px) scale(1.05);
+  }
+}
+
+/* Auto-scroll zone indicator (green border) */
+.smart-zones-container {
+  position: relative;
+  transition: border-left 0.3s ease;
+}
+
+.smart-zones-container.in-auto-scroll-zone {
+  border-left: 3px solid var(--senegal-green);
+  box-shadow: inset 3px 0 6px rgba(0, 166, 81, 0.1);
+}
+
+.smart-zones-container.in-auto-scroll-zone::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: 3px;
+  height: 20%;
+  background: linear-gradient(to bottom, transparent, var(--senegal-green));
+  border-radius: 0 0 2px 0;
+}
+
+/* Manual scroll mode overlay */
+.smart-input-zone {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.smart-input-zone.manual-scroll-overlay {
+  background: linear-gradient(to bottom, 
+    rgba(107, 114, 128, 0.05), 
+    rgba(107, 114, 128, 0.1)
+  );
+  border-top: 2px solid rgba(107, 114, 128, 0.2);
+}
+
+.manual-scroll-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(107, 114, 128, 0.1);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(107, 114, 128, 0.2);
+  animation: manualScrollFadeIn 0.3s ease-out;
+}
+
+@keyframes manualScrollFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.manual-scroll-text {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.manual-scroll-text::before {
+  content: '⚠';
+  color: var(--teranga-orange);
+  font-size: 14px;
+}
+
+.scroll-to-bottom-btn {
+  background: var(--senegal-green);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 166, 81, 0.3);
+}
+
+.scroll-to-bottom-btn:hover {
+  background: var(--ocean-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 119, 190, 0.4);
+}
+
+.scroll-to-bottom-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 166, 81, 0.3);
+}
+
+/* New message highlight effect */
+.new-message-highlight {
+  animation: newMessagePulse 2s ease-out;
+}
+
+@keyframes newMessagePulse {
+  0% {
+    background: rgba(0, 166, 81, 0.1);
+    transform: scale(1.02);
+  }
+  15% {
+    background: rgba(0, 166, 81, 0.15);
+    transform: scale(1.01);
+  }
+  30% {
+    background: rgba(0, 166, 81, 0.1);
+    transform: scale(1);
+  }
+  100% {
+    background: transparent;
+    transform: scale(1);
+  }
+}
+
+/* Enhanced scroll indicator visibility */
+.smart-zones-container:hover .smart-scroll-indicator {
+  width: 6px;
+  background: rgba(0, 166, 81, 0.15);
+}
+
+.smart-zones-container:hover .scroll-progress-bar {
+  box-shadow: 0 0 12px rgba(0, 166, 81, 0.4);
+}
+
+/* Smooth transitions for zone changes */
+.smart-zones-container,
+.smart-input-zone,
+.smart-scroll-indicator,
+.scroll-progress-bar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile optimizations for Smart Zones */
+@media (max-width: 768px) {
+  .smart-scroll-indicator {
+    width: 3px;
+  }
+  
+  .smart-zones-container:hover .smart-scroll-indicator {
+    width: 4px;
+  }
+  
+  .scroll-indicator-bounce {
+    width: 6px;
+    height: 6px;
+    left: -1.5px;
+  }
+  
+  .scroll-hint-tooltip {
+    right: 8px;
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  
+  .manual-scroll-indicator {
+    padding: 6px 10px;
+  }
+  
+  .manual-scroll-text {
+    font-size: 12px;
+  }
+  
+  .scroll-to-bottom-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-bar,
+  .scroll-indicator-bounce,
+  .new-message-highlight,
+  .manual-scroll-indicator,
+  .scroll-to-bottom-btn,
+  .scroll-hint-tooltip {
+    animation: none;
+    transition: none;
+  }
+  
+  .smart-zones-container,
+  .smart-input-zone {
+    transition: none;
+  }
+}
+
+/* Focus states for accessibility */
+.scroll-to-bottom-btn:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .smart-scroll-indicator {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  .scroll-progress-bar {
+    background: var(--senegal-green);
+    box-shadow: none;
+  }
+  
+  .smart-zones-container.in-auto-scroll-zone {
+    border-left-color: var(--senegal-green);
+    border-left-width: 4px;
+  }
+  
+  .manual-scroll-indicator {
+    border: 2px solid var(--muted-foreground);
+    background: rgba(255, 255, 255, 0.9);
   }
 }

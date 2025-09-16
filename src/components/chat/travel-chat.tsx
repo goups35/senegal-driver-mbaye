@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -25,15 +25,197 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
   const [conversationPhase, setConversationPhase] = useState('greeting')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [isChatActive, setIsChatActive] = useState(false)
+  const [isInputFocused, setIsInputFocused] = useState(false)
+  
+  // Smart Zones state
+  const [scrollProgress, setScrollProgress] = useState(1)
+  const [isInAutoScrollZone, setIsInAutoScrollZone] = useState(true)
+  const [isManualScrollMode, setIsManualScrollMode] = useState(false)
+  const [newMessageIndicator, setNewMessageIndicator] = useState(false)
+  const [lastMessageCount, setLastMessageCount] = useState(0)
+  const [showScrollHint, setShowScrollHint] = useState(false)
+  const [hasUserScrolled, setHasUserScrolled] = useState(false)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+  // Enhanced scroll function with Smart Zones logic
+  const updateScrollMetrics = useCallback(() => {
+    if (messagesContainerRef.current) {
+      const container = messagesContainerRef.current
+      const scrollHeight = container.scrollHeight
+      const containerHeight = container.clientHeight
+      const currentScrollTop = container.scrollTop
+      const maxScrollTop = scrollHeight - containerHeight
+      
+      // Calculate scroll progress (0 to 1)
+      const progress = maxScrollTop > 0 ? currentScrollTop / maxScrollTop : 1
+      setScrollProgress(progress)
+      
+      // Define auto-scroll zone (bottom 20%)
+      const autoScrollThreshold = 0.8
+      const isInZone = progress >= autoScrollThreshold
+      setIsInAutoScrollZone(isInZone)
+      
+      // Set manual scroll mode if user scrolled up significantly
+      const isManualMode = progress < autoScrollThreshold
+      setIsManualScrollMode(isManualMode)
+    }
+  }, [])
+
+  // Enhanced scroll to position function
+  const scrollToPosition = useCallback((targetProgress: number) => {
+    if (messagesContainerRef.current) {
+      const container = messagesContainerRef.current
+      const scrollHeight = container.scrollHeight
+      const containerHeight = container.clientHeight
+      const maxScrollTop = scrollHeight - containerHeight
+      const targetScrollTop = Math.max(0, targetProgress * maxScrollTop)
+      
+      container.scrollTo({
+        top: targetScrollTop,
+        behavior: 'smooth'
+      })
+      
+      // Update metrics after scroll
+      setTimeout(updateScrollMetrics, 100)
+    }
+  }, [updateScrollMetrics])
+
+  const scrollToBottom = useCallback((force = false, fromInputFocus = false) => {
+    if (messagesContainerRef.current && messagesEndRef.current) {
+      const container = messagesContainerRef.current
+      const scrollHeight = container.scrollHeight
+      const containerHeight = container.clientHeight
+      const currentScrollTop = container.scrollTop
+      const maxScrollTop = scrollHeight - containerHeight
+      
+      // Only auto-scroll if user is near bottom or force is true
+      const isNearBottom = currentScrollTop >= maxScrollTop - 100
+      
+      // Prevent aggressive scrolling when user focuses input unless absolutely necessary
+      if (fromInputFocus && isNearBottom) {
+        return
+      }
+      
+      // Additional safety: don't auto-scroll if input is actively focused and user didn't explicitly request it
+      if (isInputFocused && !force && !fromInputFocus) {
+        return
+      }
+      
+      if (force || isNearBottom) {
+        // Use requestAnimationFrame for smooth scrolling optimization
+        const smoothScroll = () => {
+          container.scrollTo({
+            top: maxScrollTop,
+            behavior: force && !fromInputFocus ? 'auto' : 'smooth'
+          })
+        }
+        
+        // Use a slight delay to ensure DOM updates are complete
+        requestAnimationFrame(() => {
+          smoothScroll()
+          // Update metrics after scroll
+          setTimeout(updateScrollMetrics, 100)
+        })
+      }
+    }
+  }, [isInputFocused, updateScrollMetrics])
+
+  // Enhanced scroll tracking on scroll events
+  const handleScroll = useCallback((e: React.UIEvent) => {
+    e.stopPropagation()
+    updateScrollMetrics()
+    
+    // Track that user has manually scrolled
+    if (!hasUserScrolled) {
+      setHasUserScrolled(true)
+    }
+  }, [updateScrollMetrics, hasUserScrolled])
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages.length])
+    // Force scroll on first load or when messages are added
+    scrollToBottom(messages.length <= 1, false)
+    
+    // Track new messages for indicator
+    if (messages.length > lastMessageCount && lastMessageCount > 0) {
+      setNewMessageIndicator(true)
+      // Clear indicator after animation
+      setTimeout(() => setNewMessageIndicator(false), 2000)
+      
+      // Show scroll hint after several messages if user hasn't scrolled
+      if (messages.length >= 4 && !hasUserScrolled && !showScrollHint) {
+        setShowScrollHint(true)
+        setTimeout(() => setShowScrollHint(false), 5000)
+      }
+    }
+    setLastMessageCount(messages.length)
+  }, [messages.length, lastMessageCount, scrollToBottom, hasUserScrolled, showScrollHint])
+
+  // Initialize scroll metrics
+  useEffect(() => {
+    const timer = setTimeout(updateScrollMetrics, 100)
+    return () => clearTimeout(timer)
+  }, [updateScrollMetrics])
+
+  // Body scroll prevention when chat is active
+  useEffect(() => {
+    const preventBodyScroll = () => {
+      if (isChatActive) {
+        document.body.classList.add('chat-active-no-scroll')
+        document.documentElement.classList.add('chat-active-no-scroll')
+      } else {
+        document.body.classList.remove('chat-active-no-scroll')
+        document.documentElement.classList.remove('chat-active-no-scroll')
+      }
+    }
+
+    preventBodyScroll()
+    
+    return () => {
+      document.body.classList.remove('chat-active-no-scroll')
+      document.documentElement.classList.remove('chat-active-no-scroll')
+    }
+  }, [isChatActive])
+
+  // Set chat as active when user interacts
+  useEffect(() => {
+    const handleChatInteraction = (e: Event) => {
+      // Only activate if not clicking on input (input has its own handler)
+      const target = e.target as HTMLElement
+      if (!target.closest('input')) {
+        setIsChatActive(true)
+      }
+    }
+
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      const chatContainer = document.querySelector('.travel-chat-container')
+      
+      if (chatContainer && !chatContainer.contains(target)) {
+        setIsChatActive(false)
+        setIsInputFocused(false)
+      }
+    }
+
+    // Add listeners for chat interaction
+    const chatContainer = document.querySelector('.travel-chat-container')
+    if (chatContainer) {
+      chatContainer.addEventListener('click', handleChatInteraction)
+      chatContainer.addEventListener('focus', handleChatInteraction, true)
+    }
+
+    // Add global click listener to detect clicks outside chat
+    document.addEventListener('click', handleGlobalClick)
+
+    return () => {
+      if (chatContainer) {
+        chatContainer.removeEventListener('click', handleChatInteraction)
+        chatContainer.removeEventListener('focus', handleChatInteraction, true)
+      }
+      document.removeEventListener('click', handleGlobalClick)
+    }
+  }, [])
 
   // Mobile detection and viewport handling
   useEffect(() => {
@@ -177,7 +359,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
   }
 
   return (
-    <div className={`w-full ${isMobile ? 'h-full' : 'max-w-4xl mx-auto'}`}>
+    <div className={`w-full travel-chat-container ${isMobile ? 'h-full' : 'max-w-4xl mx-auto'}`}>
       <Card className={`w-full flex flex-col ${
         isMobile 
           ? 'h-full mobile-chat-container border-0 rounded-none' 
@@ -204,27 +386,72 @@ Généré via Transport Sénégal - Votre conseiller voyage`
         </p>
       </CardHeader>
       
-      <CardContent className="flex-1 flex flex-col overflow-hidden">
-        {/* Zone des messages */}
-        <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-slate-50 rounded mobile-chat-messages">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${
-                message.role === 'user' ? 'justify-end' : 'justify-start'
-              }`}
-            >
-              <div
-                className={`max-w-[80%] p-3 rounded-lg whitespace-pre-wrap ${
-                  message.role === 'user'
-                    ? 'bg-primary text-primary-foreground ml-4'
-                    : 'bg-white border border-border mr-4'
-                }`}
-              >
-                {message.content}
-              </div>
+      <CardContent className="flex-1 flex flex-col overflow-hidden card-content-relative">
+        {/* Smart Zones: Visual scroll indicator */}
+        <div 
+          className="smart-scroll-indicator" 
+          style={{ '--scroll-progress': scrollProgress } as React.CSSProperties}
+          onClick={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect()
+            const y = e.clientY - rect.top
+            const progress = Math.max(0, Math.min(1, y / rect.height))
+            scrollToPosition(progress)
+          }}
+        >
+          <div className="scroll-progress-bar"></div>
+          {newMessageIndicator && (
+            <div className="scroll-indicator-bounce"></div>
+          )}
+          {showScrollHint && (
+            <div className="scroll-hint-tooltip">
+              Scroll to explore
             </div>
-          ))}
+          )}
+        </div>
+
+        {/* Zone des messages avec Smart Zones */}
+        <div 
+          ref={messagesContainerRef}
+          className={`flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-slate-50 rounded mobile-chat-messages chat-messages-container smart-zones-container ${
+            isInAutoScrollZone ? 'in-auto-scroll-zone' : ''
+          }`}
+          onScroll={handleScroll}
+          onTouchStart={() => {
+            // Activate chat when user touches message area
+            setIsChatActive(true)
+          }}
+          onFocus={() => {
+            // Activate chat when focused
+            setIsChatActive(true)
+          }}
+          tabIndex={0}
+          role="log"
+          aria-live="polite"
+          aria-label="Messages de conversation"
+        >
+          {messages.map((message, index) => {
+            const isLastMessage = index === messages.length - 1
+            const isNewMessage = isLastMessage && newMessageIndicator
+            
+            return (
+              <div
+                key={index}
+                className={`flex ${
+                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                } ${isNewMessage ? 'new-message-highlight' : ''}`}
+              >
+                <div
+                  className={`max-w-[80%] p-3 rounded-lg whitespace-pre-wrap ${
+                    message.role === 'user'
+                      ? 'bg-primary text-primary-foreground ml-4'
+                      : 'bg-white border border-border mr-4'
+                  }`}
+                >
+                  {message.content}
+                </div>
+              </div>
+            )
+          })}
           
           {isLoading && (
             <div className="flex justify-start">
@@ -241,8 +468,22 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Zone de saisie */}
-        <div className="flex-shrink-0 space-y-3 mobile-chat-input">
+        {/* Zone de saisie avec Smart Zones overlay */}
+        <div className={`flex-shrink-0 space-y-3 mobile-chat-input smart-input-zone ${
+          isManualScrollMode ? 'manual-scroll-overlay' : ''
+        }`}>
+          {isManualScrollMode && (
+            <div className="manual-scroll-indicator">
+              <span className="manual-scroll-text">Scroll down to resume auto-updates</span>
+              <button 
+                className="scroll-to-bottom-btn"
+                onClick={() => scrollToBottom(true)}
+                aria-label="Scroll to bottom"
+              >
+                ↓
+              </button>
+            </div>
+          )}
           {showWhatsAppButton && (
             <div className="text-center">
               <Button
@@ -260,9 +501,39 @@ Généré via Transport Sénégal - Votre conseiller voyage`
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
+              onFocus={() => {
+                setIsChatActive(true)
+                setIsInputFocused(true)
+                // Only scroll if user is significantly above the bottom to avoid unwanted jumps
+                if (messagesContainerRef.current) {
+                  const container = messagesContainerRef.current
+                  const scrollHeight = container.scrollHeight
+                  const containerHeight = container.clientHeight
+                  const currentScrollTop = container.scrollTop
+                  const maxScrollTop = scrollHeight - containerHeight
+                  const isSignificantlyAbove = currentScrollTop < maxScrollTop - 200
+                  
+                  if (isSignificantlyAbove) {
+                    // Use a shorter delay and gentler scroll for input focus
+                    setTimeout(() => scrollToBottom(false, true), 50)
+                  }
+                }
+              }}
+              onBlur={() => {
+                setIsInputFocused(false)
+              }}
+              onClick={(e) => {
+                // Prevent any unwanted scroll behavior when clicking input
+                e.stopPropagation()
+                setIsChatActive(true)
+                setIsInputFocused(true)
+              }}
               placeholder="Décrivez vos envies de voyage au Sénégal..."
               disabled={isLoading}
               className="flex-1"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="sentences"
             />
             <Button 
               onClick={() => handleSendMessage()} 

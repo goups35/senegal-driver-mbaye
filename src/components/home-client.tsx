@@ -15,6 +15,7 @@ export function HomeClient() {
   const [currentQuote, setCurrentQuote] = useState<TripQuote | null>(null)
   const [tripData, setTripData] = useState<TripRequestInput | null>(null)
 
+
   const handleQuoteGenerated = (quote: TripQuote, data: TripRequestInput) => {
     setCurrentQuote(quote)
     setTripData(data)
@@ -39,7 +40,7 @@ export function HomeClient() {
         <div className="relative min-h-screen">
           {/* Hero Background */}
           <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
             style={{ backgroundImage: 'url(/images/senegal-1.jpg)' }}
           >
             {/* Overlay gradient pour améliorer la lisibilité */}
@@ -59,12 +60,16 @@ export function HomeClient() {
             </div>
 
             {/* Deux grandes sections dans le hero */}
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-5xl mx-auto relative z-50">
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Mode Transport Direct */}
-                <div 
-                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group"
-                  onClick={() => setMode('transport')}
+                <button 
+                  className="hero-action-button bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
+                  onClick={() => {
+                    console.log('Transport button clicked');
+                    setMode('transport');
+                  }}
+                  type="button"
                 >
                   <div className="text-center space-y-4">
                     <div className="text-6xl group-hover:scale-110 transition-transform">
@@ -81,12 +86,16 @@ export function HomeClient() {
                       ⚡ Devis immédiat • 🗺️ Devis 24h • 📱 Contact WhatsApp
                     </div>
                   </div>
-                </div>
+                </button>
 
                 {/* Mode Chat IA */}
-                <div 
-                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
-                  onClick={() => setMode('chat')}
+                <button 
+                  className="hero-action-button bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
+                  onClick={() => {
+                    console.log('Chat button clicked');
+                    setMode('chat');
+                  }}
+                  type="button"
                 >
                   <div className="text-center space-y-4 relative z-10">
                     <div className="text-6xl group-hover:scale-110 transition-transform">
@@ -118,7 +127,7 @@ export function HomeClient() {
                   <div className="absolute top-2 right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full">
                     NOUVEAUTÉ IA
                   </div>
-                </div>
+                </button>
               </div>
             </div>
           </div>
