@@ -73,6 +73,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
               <Input
                 id="date"
                 type="date"
+                inputMode="none"
                 className="mobile-form-input mobile-touch-safe"
                 {...register('date')}
               />
@@ -86,6 +87,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
               <Input
                 id="passengers"
                 type="number"
+                inputMode="numeric"
                 min="1"
                 max="8"
                 className="mobile-form-input mobile-touch-safe"
@@ -102,6 +104,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
             <Input
               id="duration"
               type="number"
+              inputMode="numeric"
               min="1"
               max="30"
               className="mobile-form-input mobile-touch-safe"
@@ -117,6 +120,8 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
               <Label htmlFor="customerName" className="mobile-form-label">Votre nom</Label>
               <Input
                 id="customerName"
+                type="text"
+                autoComplete="name"
                 placeholder="Ex: Amadou Diallo"
                 className="mobile-form-input mobile-touch-safe"
                 {...register('customerName')}
@@ -130,6 +135,9 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
               <Label htmlFor="customerPhone" className="mobile-form-label">Téléphone</Label>
               <Input
                 id="customerPhone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
                 placeholder="Ex: +221 77 123 45 67"
                 className="mobile-form-input mobile-touch-safe"
                 {...register('customerPhone')}
@@ -144,6 +152,8 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
               <Input
                 id="customerEmail"
                 type="email"
+                inputMode="email"
+                autoComplete="email"
                 placeholder="votre@email.com"
                 className="mobile-form-input mobile-touch-safe"
                 {...register('customerEmail')}
@@ -157,6 +167,8 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
               <Label htmlFor="specialRequests" className="mobile-form-label">Demandes spéciales (optionnel)</Label>
               <Input
                 id="specialRequests"
+                type="text"
+                autoComplete="off"
                 placeholder="Ex: Siège enfant, climatisation..."
                 className="mobile-form-input mobile-touch-safe"
                 {...register('specialRequests')}

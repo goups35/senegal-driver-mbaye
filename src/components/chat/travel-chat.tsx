@@ -519,7 +519,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
                   const currentScrollTop = container.scrollTop
                   const maxScrollTop = scrollHeight - containerHeight
                   const isSignificantlyAbove = currentScrollTop < maxScrollTop - 200
-                  
+
                   if (isSignificantlyAbove) {
                     // Use a shorter delay and gentler scroll for input focus
                     setTimeout(() => scrollToBottom(false, true), 50)
@@ -535,12 +535,15 @@ Généré via Transport Sénégal - Votre conseiller voyage`
                 setIsChatActive(true)
                 setIsInputFocused(true)
               }}
+              type="text"
+              inputMode="text"
               placeholder="Décrivez vos envies de voyage au Sénégal..."
               disabled={isLoading}
               className="flex-1 mobile-form-input mobile-touch-safe"
               autoComplete="off"
-              autoCorrect="off"
+              autoCorrect="on"
               autoCapitalize="sentences"
+              spellCheck="true"
             />
             <Button
               onClick={() => handleSendMessage()}
