@@ -17,16 +17,16 @@ export function ChatClient() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white mobile-container mobile-safe-area">
       <Navbar />
 
-      <div className="min-h-screen bg-white">
-        <div className="container mx-auto px-4 py-8">
-          <div className="space-y-6">
-            <div className="text-center">
+      <div className="bg-white mobile-chat-container">
+        <div className="container mx-auto px-4 py-8 mobile-padding-md">
+          <div className="space-y-6 mobile-chat-content">
+            <div className="text-center mobile-navigation-area">
               <button
                 onClick={handleBackToHome}
-                className="text-primary hover:underline text-sm mb-4"
+                className="text-primary hover:underline text-sm mb-4 mobile-touch-safe mobile-back-button p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors border border-primary/20"
               >
                 ← Retour aux options
               </button>
@@ -38,11 +38,11 @@ export function ChatClient() {
       </div>
 
       {/* Footer cohérent avec l'existant */}
-      <footer className="bg-white mt-16 text-center text-sm text-muted-foreground py-8">
-        <div className="max-w-md mx-auto space-y-2">
-          <p>🇸🇳 Service de transport professionnel au Sénégal</p>
-          <p>📱 Disponible 24h/24 • 🚗 Flotte moderne • ✨ Devis instantané</p>
-          <p className="text-xs">
+      <footer className="bg-white mt-16 text-center text-sm text-muted-foreground py-8 mobile-footer">
+        <div className="max-w-md mx-auto space-y-2 mobile-footer-content mobile-padding-sm">
+          <p className="mobile-text-readable">🇸🇳 Service de transport professionnel au Sénégal</p>
+          <p className="mobile-text-readable">📱 Disponible 24h/24 • 🚗 Flotte moderne • ✨ Devis instantané</p>
+          <p className="text-xs mobile-text-small">
             Propulsé par l&apos;IA • Made with ❤️ for Sénégal
           </p>
         </div>

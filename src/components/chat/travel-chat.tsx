@@ -30,17 +30,17 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [isChatActive, setIsChatActive] = useState(false)
   const [isInputFocused, setIsInputFocused] = useState(false)
   
-  // Smart Zones state
+  // Phase 2: Simplified scroll state for mobile optimization
   const [scrollProgress, setScrollProgress] = useState(1)
-  const [isInAutoScrollZone, setIsInAutoScrollZone] = useState(true)
-  const [isManualScrollMode, setIsManualScrollMode] = useState(false)
+  const [isNearBottom, setIsNearBottom] = useState(true)
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false)
   const [newMessageIndicator, setNewMessageIndicator] = useState(false)
   const [lastMessageCount, setLastMessageCount] = useState(0)
-  const [showScrollHint, setShowScrollHint] = useState(false)
-  const [hasUserScrolled, setHasUserScrolled] = useState(false)
-  const [lastUserScrollTime, setLastUserScrollTime] = useState(0)
+  const [isUserScrolling, setIsUserScrolling] = useState(false)
+  const [keyboardVisible, setKeyboardVisible] = useState(false)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Enhanced scroll function with Smart Zones logic
+  // Phase 2: Optimized scroll metrics with mobile focus
   const updateScrollMetrics = useCallback(() => {
     if (messagesContainerRef.current) {
       const container = messagesContainerRef.current
@@ -48,23 +48,23 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       const containerHeight = container.clientHeight
       const currentScrollTop = container.scrollTop
       const maxScrollTop = scrollHeight - containerHeight
-      
+
       // Calculate scroll progress (0 to 1)
       const progress = maxScrollTop > 0 ? currentScrollTop / maxScrollTop : 1
       setScrollProgress(progress)
-      
-      // Define auto-scroll zone (bottom 20%)
-      const autoScrollThreshold = 0.8
-      const isInZone = progress >= autoScrollThreshold
-      setIsInAutoScrollZone(isInZone)
-      
-      // Set manual scroll mode if user scrolled up significantly
-      const isManualMode = progress < autoScrollThreshold
-      setIsManualScrollMode(isManualMode)
-    }
-  }, [])
 
-  // Enhanced scroll to position function
+      // Mobile-optimized threshold - larger area for mobile touch
+      const nearBottomThreshold = isMobile ? 100 : 50
+      const nearBottom = (maxScrollTop - currentScrollTop) <= nearBottomThreshold
+      setIsNearBottom(nearBottom)
+
+      // Show scroll to bottom button when significantly away from bottom
+      const showButton = !nearBottom && progress < 0.8
+      setShowScrollToBottom(showButton)
+    }
+  }, [isMobile])
+
+  // Phase 2: Simplified scroll to position for mobile performance
   const scrollToPosition = useCallback((targetProgress: number) => {
     if (messagesContainerRef.current) {
       const container = messagesContainerRef.current
@@ -72,98 +72,134 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       const containerHeight = container.clientHeight
       const maxScrollTop = scrollHeight - containerHeight
       const targetScrollTop = Math.max(0, targetProgress * maxScrollTop)
-      
+
+      // Use instant scroll on mobile for better performance
       container.scrollTo({
         top: targetScrollTop,
-        behavior: 'smooth'
+        behavior: isMobile ? 'auto' : 'smooth'
       })
-      
-      // Update metrics after scroll
-      setTimeout(updateScrollMetrics, 100)
-    }
-  }, [updateScrollMetrics])
 
-  const scrollToBottom = useCallback((force = false, fromInputFocus = false) => {
+      // Debounced metrics update
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
+      scrollTimeoutRef.current = setTimeout(updateScrollMetrics, isMobile ? 50 : 100)
+    }
+  }, [updateScrollMetrics, isMobile])
+
+  // Phase 2: Mobile-optimized scroll to bottom with keyboard awareness
+  const scrollToBottom = useCallback((force = false, fromKeyboard = false) => {
     if (messagesContainerRef.current && messagesEndRef.current) {
       const container = messagesContainerRef.current
       const scrollHeight = container.scrollHeight
       const containerHeight = container.clientHeight
-      const currentScrollTop = container.scrollTop
       const maxScrollTop = scrollHeight - containerHeight
-      
-      // Only auto-scroll if user is near bottom or force is true
-      const isNearBottom = currentScrollTop >= maxScrollTop - 100
-      
-      // Prevent aggressive scrolling when user focuses input unless absolutely necessary
-      if (fromInputFocus && isNearBottom) {
+
+      // Mobile keyboard adjustment - add extra space when keyboard is visible
+      const keyboardOffset = keyboardVisible && isMobile ? 20 : 0
+      const targetScroll = Math.max(0, maxScrollTop + keyboardOffset)
+
+      // Prevent scroll during active user scrolling (unless forced)
+      if (isUserScrolling && !force && !fromKeyboard) {
         return
       }
 
-      // Enhanced: Prevent scroll if user is actively scrolling
-      if (hasUserScrolled && !force && (Date.now() - lastUserScrollTime) < 1000) {
-        return
-      }
-      
-      // Additional safety: don't auto-scroll if input is actively focused and user didn't explicitly request it
-      if (isInputFocused && !force && !fromInputFocus) {
-        return
-      }
-      
-      if (force || isNearBottom) {
-        // Use requestAnimationFrame for smooth scrolling optimization
-        const smoothScroll = () => {
-          container.scrollTo({
-            top: maxScrollTop,
-            behavior: force && !fromInputFocus ? 'auto' : 'smooth'
-          })
-        }
-        
-        // Use a slight delay to ensure DOM updates are complete
-        requestAnimationFrame(() => {
-          smoothScroll()
-          // Update metrics after scroll with optimized timing
-          setTimeout(updateScrollMetrics, force ? 50 : 150)
+      // Mobile-optimized conditions
+      const shouldScroll = force || isNearBottom || fromKeyboard
+
+      if (shouldScroll) {
+        // Use instant scroll on mobile for better performance
+        const scrollBehavior = (isMobile && !force) ? 'auto' : 'smooth'
+
+        container.scrollTo({
+          top: targetScroll,
+          behavior: scrollBehavior
         })
+
+        // Debounced metrics update
+        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
+        scrollTimeoutRef.current = setTimeout(updateScrollMetrics, 50)
       }
     }
-  }, [isInputFocused, updateScrollMetrics, hasUserScrolled, lastUserScrollTime])
+  }, [isNearBottom, isUserScrolling, keyboardVisible, isMobile, updateScrollMetrics])
 
-  // Enhanced scroll tracking on scroll events
-  const handleScroll = useCallback((e: React.UIEvent) => {
-    e.stopPropagation()
-    updateScrollMetrics()
+  // Phase 2: Optimized scroll tracking with debouncing for mobile performance
+  const handleScroll = useCallback(() => {
+    // Set user scrolling state immediately for responsiveness
+    setIsUserScrolling(true)
 
-    // Track that user has manually scrolled
-    if (!hasUserScrolled) {
-      setHasUserScrolled(true)
-    }
-    setLastUserScrollTime(Date.now())
-  }, [updateScrollMetrics, hasUserScrolled])
+    // Debounce expensive scroll calculations
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
+    scrollTimeoutRef.current = setTimeout(() => {
+      updateScrollMetrics()
+      setIsUserScrolling(false)
+    }, isMobile ? 100 : 50)
+  }, [updateScrollMetrics, isMobile])
 
+  // Phase 2: Simplified message scroll handling
   useEffect(() => {
-    // Force scroll on first load or when messages are added
-    scrollToBottom(messages.length <= 1, false)
-    
-    // Track new messages for indicator
-    if (messages.length > lastMessageCount && lastMessageCount > 0) {
-      setNewMessageIndicator(true)
-      // Clear indicator after animation
-      setTimeout(() => setNewMessageIndicator(false), 2000)
-      
-      // Show scroll hint after several messages if user hasn't scrolled
-      if (messages.length >= 4 && !hasUserScrolled && !showScrollHint) {
-        setShowScrollHint(true)
-        setTimeout(() => setShowScrollHint(false), 5000)
+    // Always scroll to bottom on new messages for better mobile UX
+    if (messages.length > lastMessageCount) {
+      if (messages.length <= 1) {
+        // Force scroll on first message
+        scrollToBottom(true)
+      } else {
+        // Auto-scroll for new messages if near bottom
+        scrollToBottom(false)
+      }
+
+      // New message indicator
+      if (lastMessageCount > 0) {
+        setNewMessageIndicator(true)
+        setTimeout(() => setNewMessageIndicator(false), 1500)
       }
     }
     setLastMessageCount(messages.length)
-  }, [messages.length, lastMessageCount, scrollToBottom, hasUserScrolled, showScrollHint])
+  }, [messages.length, lastMessageCount, scrollToBottom])
 
-  // Initialize scroll metrics
+  // Phase 2: Mobile keyboard detection and scroll initialization
   useEffect(() => {
+    // Initialize scroll metrics
     const timer = setTimeout(updateScrollMetrics, 100)
-    return () => clearTimeout(timer)
-  }, [updateScrollMetrics])
+
+    // Mobile keyboard detection
+    const handleResize = () => {
+      if (isMobile) {
+        const currentHeight = window.innerHeight
+        const initialHeight = window.screen.height
+        const heightDifference = initialHeight - currentHeight
+
+        // Detect keyboard (threshold of 150px for mobile keyboards)
+        const keyboardIsVisible = heightDifference > 150
+        setKeyboardVisible(keyboardIsVisible)
+
+        // Scroll to bottom when keyboard appears if input is focused
+        if (keyboardIsVisible && isInputFocused) {
+          setTimeout(() => scrollToBottom(false, true), 150)
+        }
+      }
+    }
+
+    // Listen for resize events to detect keyboard
+    if (isMobile) {
+      window.addEventListener('resize', handleResize)
+      // Also listen for visual viewport changes on modern browsers
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', handleResize)
+      }
+    }
+
+    return () => {
+      clearTimeout(timer)
+      if (isMobile) {
+        window.removeEventListener('resize', handleResize)
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', handleResize)
+        }
+      }
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
+  }, [updateScrollMetrics, isMobile, isInputFocused, scrollToBottom])
 
   // Body scroll prevention when chat is active
   useEffect(() => {
@@ -394,9 +430,9 @@ Généré via Transport Sénégal - Votre conseiller voyage`
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col overflow-hidden card-content-relative">
-        {/* Smart Zones: Visual scroll indicator */}
-        <div 
-          className="smart-scroll-indicator" 
+        {/* Phase 2: Simplified scroll indicator for mobile performance */}
+        <div
+          className="smart-scroll-indicator"
           style={{ '--scroll-progress': scrollProgress } as React.CSSProperties}
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect()
@@ -409,26 +445,19 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           {newMessageIndicator && (
             <div className="scroll-indicator-bounce"></div>
           )}
-          {showScrollHint && (
-            <div className="scroll-hint-tooltip">
-              Scroll to explore
-            </div>
-          )}
         </div>
 
-        {/* Zone des messages avec Smart Zones */}
-        <div 
+        {/* Phase 2: Optimized messages area with mobile-first scroll */}
+        <div
           ref={messagesContainerRef}
           className={`flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-slate-50 rounded mobile-chat-messages chat-messages-container smart-zones-container ${
-            isInAutoScrollZone ? 'in-auto-scroll-zone' : ''
+            isNearBottom ? 'in-auto-scroll-zone' : ''
           }`}
           onScroll={handleScroll}
           onTouchStart={() => {
-            // Activate chat when user touches message area
             setIsChatActive(true)
           }}
           onFocus={() => {
-            // Activate chat when focused
             setIsChatActive(true)
           }}
           tabIndex={0}
@@ -475,19 +504,18 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Zone de saisie avec Smart Zones overlay */}
+        {/* Phase 2: Simplified input zone with mobile keyboard optimization */}
         <div className={`flex-shrink-0 space-y-3 mobile-chat-input smart-input-zone mobile-form-actions ${
-          isManualScrollMode ? 'manual-scroll-overlay' : ''
+          keyboardVisible ? 'keyboard-active' : ''
         }`}>
-          {isManualScrollMode && (
-            <div className="manual-scroll-indicator">
-              <span className="manual-scroll-text">Scroll down to resume auto-updates</span>
-              <button 
+          {showScrollToBottom && (
+            <div className="scroll-to-bottom-indicator">
+              <button
                 className="scroll-to-bottom-btn mobile-touch-safe"
                 onClick={() => scrollToBottom(true)}
-                aria-label="Scroll to bottom"
+                aria-label="Scroll to latest messages"
               >
-                ↓
+                ↓ New messages
               </button>
             </div>
           )}
@@ -511,26 +539,15 @@ Généré via Transport Sénégal - Votre conseiller voyage`
               onFocus={() => {
                 setIsChatActive(true)
                 setIsInputFocused(true)
-                // Only scroll if user is significantly above the bottom to avoid unwanted jumps
-                if (messagesContainerRef.current) {
-                  const container = messagesContainerRef.current
-                  const scrollHeight = container.scrollHeight
-                  const containerHeight = container.clientHeight
-                  const currentScrollTop = container.scrollTop
-                  const maxScrollTop = scrollHeight - containerHeight
-                  const isSignificantlyAbove = currentScrollTop < maxScrollTop - 200
-
-                  if (isSignificantlyAbove) {
-                    // Use a shorter delay and gentler scroll for input focus
-                    setTimeout(() => scrollToBottom(false, true), 50)
-                  }
+                // Mobile-optimized keyboard handling - gentle scroll only if far from bottom
+                if (isMobile && !isNearBottom) {
+                  setTimeout(() => scrollToBottom(false, true), 300)
                 }
               }}
               onBlur={() => {
                 setIsInputFocused(false)
               }}
               onClick={(e) => {
-                // Prevent any unwanted scroll behavior when clicking input
                 e.stopPropagation()
                 setIsChatActive(true)
                 setIsInputFocused(true)

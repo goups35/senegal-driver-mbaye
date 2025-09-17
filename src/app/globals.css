@@ -255,26 +255,32 @@ body {
     transform: translateZ(0);
   }
   
-  /* Mobile body scroll prevention when chat is active */
+  /* Phase 2: Optimized body scroll prevention */
   body.chat-active-no-scroll {
-    /* Use less aggressive scroll prevention to avoid position jumps */
+    /* Less aggressive approach to prevent layout jumps */
     overflow: hidden;
-    /* Remove position fixed on mobile to prevent layout shifts */
-    /* position: fixed; */
-    /* width: 100%; */
-    /* height: 100%; */
-    
-    /* Prevent iOS Safari bounce */
+    /* Prevent iOS bounce without position fixed */
     -webkit-overflow-scrolling: auto;
-    /* Prevent scroll momentum */
     overscroll-behavior: none;
+    /* Maintain scroll position */
+    position: relative;
   }
-  
+
   html.chat-active-no-scroll {
     overflow: hidden;
-    /* Remove height constraint to prevent viewport issues */
-    /* height: 100%; */
     overscroll-behavior: none;
+    /* Prevent momentum scrolling */
+    -webkit-overflow-scrolling: auto;
+  }
+
+  /* Phase 2: Enhanced keyboard-aware body handling */
+  body.keyboard-visible {
+    /* Maintain stability during keyboard transitions */
+    position: relative;
+    overflow: hidden;
+    /* Prevent viewport jumping */
+    height: 100vh;
+    height: -webkit-fill-available;
   }
   
   /* Enhanced mobile chat container */
@@ -342,24 +348,38 @@ body {
     outline-offset: 2px;
   }
 
-  /* Handle virtual keyboard appearance */
+  /* Phase 2: Enhanced virtual keyboard handling */
   @supports (height: 100dvh) {
     .mobile-chat-container {
       height: 100dvh;
       max-height: 100dvh;
+      /* Prevent layout shifts during keyboard transitions */
+      contain: layout;
     }
   }
-  
-  /* Optimize for keyboard interactions */
+
+  /* Phase 2: Optimized keyboard input interactions */
   .mobile-chat-input:focus-within {
-    /* Ensure input area stays visible with virtual keyboard */
-    transform: translateY(0);
-    transition: transform 0.2s ease;
+    /* Stable positioning with virtual keyboard */
+    transform: translateZ(0);
+    transition: transform 0.15s ease;
+    /* Ensure visibility */
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+  }
+
+  /* Phase 2: Keyboard transition optimization */
+  .mobile-chat-input input:focus {
+    /* Prevent aggressive scroll behavior */
+    scroll-margin-bottom: 20px;
+    /* Smooth focus transition */
+    transition: border-color 0.15s ease;
   }
 }
 
 /* =========================
-   Smart Zones Scroll UX System
+   Phase 2: Optimized Scroll UX System
    ========================= */
 
 /* Visual scroll progress indicator */
@@ -629,40 +649,100 @@ body {
               box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Mobile optimizations for Smart Zones */
+/* Phase 2: Mobile scroll optimizations */
 @media (max-width: 768px) {
   .smart-scroll-indicator {
-    width: 3px;
+    width: 2px;
+    background: rgba(0, 166, 81, 0.08);
   }
-  
-  .smart-zones-container:hover .smart-scroll-indicator {
+
+  .smart-zones-container:active .smart-scroll-indicator {
     width: 4px;
+    background: rgba(0, 166, 81, 0.15);
   }
-  
+
   .scroll-indicator-bounce {
-    width: 6px;
-    height: 6px;
-    left: -1.5px;
+    width: 4px;
+    height: 4px;
+    left: -1px;
+    animation-duration: 1s;
   }
-  
-  .scroll-hint-tooltip {
-    right: 8px;
-    font-size: 10px;
-    padding: 4px 8px;
+
+  /* Simplified mobile scroll to bottom */
+  .scroll-to-bottom-indicator {
+    position: sticky;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8px;
+    margin: 0 -4px;
+    border-radius: 8px 8px 0 0;
+    border-top: 1px solid rgba(0, 166, 81, 0.2);
+    backdrop-filter: blur(4px);
   }
-  
-  .manual-scroll-indicator {
-    padding: 6px 10px;
-  }
-  
-  .manual-scroll-text {
-    font-size: 12px;
-  }
-  
+
   .scroll-to-bottom-btn {
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
+    width: auto;
+    height: auto;
+    min-height: 36px;
+    padding: 8px 16px;
+    font-size: 12px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--senegal-green), var(--ocean-blue));
+    color: white;
+    border: none;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 166, 81, 0.25);
+    transition: all 0.2s ease;
+  }
+
+  .scroll-to-bottom-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 1px 4px rgba(0, 166, 81, 0.3);
+  }
+
+  /* Phase 2: Enhanced mobile keyboard handling */
+  .keyboard-active {
+    /* Ensure stable positioning with virtual keyboard */
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+    z-index: 50;
+    /* Prevent keyboard from causing layout shifts */
+    contain: layout;
+  }
+
+  /* Optimize scroll performance during keyboard interactions */
+  .mobile-chat-messages {
+    /* Enhanced scroll optimization */
+    scroll-behavior: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    will-change: scroll-position;
+    contain: layout style;
+  }
+
+  /* Prevent layout thrashing on keyboard show/hide */
+  .mobile-chat-container {
+    /* Stabilize during keyboard transitions */
+    contain: layout style;
+  }
+
+  /* Handle iOS Safari specific keyboard behavior */
+  @supports (-webkit-touch-callout: none) {
+    .keyboard-active {
+      position: -webkit-sticky;
+      /* iOS-specific safe area handling */
+      padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+    }
+
+    .mobile-chat-messages {
+      /* Enhanced iOS scroll performance */
+      -webkit-overflow-scrolling: touch;
+      /* Prevent momentum scroll conflicts */
+      overflow: auto;
+    }
   }
 }
 
