@@ -40,6 +40,18 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [keyboardVisible, setKeyboardVisible] = useState(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Phase 3: Enhanced mobile interactions
+  const [isPullToRefresh, setIsPullToRefresh] = useState(false)
+  const [pullDistance, setPullDistance] = useState(0)
+  const [touchStartY, setTouchStartY] = useState(0)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [swipeGestureActive, setSwipeGestureActive] = useState(false)
+  const [quickReplyOptions, setQuickReplyOptions] = useState<string[]>([])
+  const [showEnhancedLoading, setShowEnhancedLoading] = useState(false)
+  const [hapticFeedbackEnabled, setHapticFeedbackEnabled] = useState(false)
+  const pullThreshold = 80
+  const swipeThreshold = 100
+
   // Phase 2: Optimized scroll metrics with mobile focus
   const updateScrollMetrics = useCallback(() => {
     if (messagesContainerRef.current) {
@@ -154,6 +166,142 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
     }
     setLastMessageCount(messages.length)
   }, [messages.length, lastMessageCount, scrollToBottom])
+
+  // Phase 3: Haptic feedback detection
+  useEffect(() => {
+    // Check if device supports haptic feedback
+    if ('vibrate' in navigator || 'hapticFeedback' in navigator) {
+      setHapticFeedbackEnabled(true)
+    }
+  }, [])
+
+  // Phase 3: Enhanced quick reply system
+  useEffect(() => {
+    const generateQuickReplies = () => {
+      switch (conversationPhase) {
+        case 'greeting':
+          return [
+            '🎨 Culture & traditions',
+            '🏖️ Plages & nature',
+            '🌍 Découverte complète'
+          ]
+        case 'discovery':
+          return [
+            '💰 Budget modéré',
+            '✨ Expérience premium',
+            '🎒 Voyage aventure'
+          ]
+        case 'planning':
+          return [
+            '⏰ Plus de temps libre',
+            '🗺️ Plus d\'activités',
+            '🍽️ Plus de gastronomie'
+          ]
+        case 'refinement':
+          return [
+            '✅ C\'est parfait !',
+            '🔄 Quelques ajustements',
+            '📱 Envoyer via WhatsApp'
+          ]
+        default:
+          return []
+      }
+    }
+    setQuickReplyOptions(generateQuickReplies())
+  }, [conversationPhase])
+
+  // Phase 3: Enhanced haptic feedback helper
+  const triggerHapticFeedback = useCallback((type: 'light' | 'medium' | 'heavy' = 'light') => {
+    if (!hapticFeedbackEnabled) return
+
+    if ('vibrate' in navigator) {
+      const patterns = {
+        light: [10],
+        medium: [20],
+        heavy: [50]
+      }
+      navigator.vibrate(patterns[type])
+    }
+  }, [hapticFeedbackEnabled])
+
+  // Phase 3: Pull-to-refresh functionality
+  const handlePullToRefresh = useCallback(async () => {
+    if (isRefreshing) return
+
+    setIsRefreshing(true)
+    triggerHapticFeedback('medium')
+
+    try {
+      // Simulate refresh with a brief delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      // Scroll to top and show first message
+      scrollToPosition(0)
+
+      // Show success feedback
+      triggerHapticFeedback('light')
+    } catch (error) {
+      console.error('Refresh failed:', error)
+    } finally {
+      setIsRefreshing(false)
+      setIsPullToRefresh(false)
+      setPullDistance(0)
+    }
+  }, [isRefreshing, scrollToPosition, triggerHapticFeedback])
+
+  // Phase 3: Touch gesture handlers
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    setTouchStartY(touch.clientY)
+    setSwipeGestureActive(false)
+  }, [])
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!messagesContainerRef.current) return
+
+    const touch = e.touches[0]
+    const deltaY = touch.clientY - touchStartY
+    const container = messagesContainerRef.current
+    const isAtTop = container.scrollTop === 0
+
+    // Pull-to-refresh logic
+    if (isAtTop && deltaY > 0 && !isPullToRefresh) {
+      setIsPullToRefresh(true)
+      const distance = Math.min(deltaY * 0.5, pullThreshold * 1.5)
+      setPullDistance(distance)
+
+      // Haptic feedback at threshold
+      if (distance >= pullThreshold && pullDistance < pullThreshold) {
+        triggerHapticFeedback('medium')
+      }
+    }
+
+    // Swipe gesture detection
+    const absDeltaY = Math.abs(deltaY)
+    if (absDeltaY > swipeThreshold && !swipeGestureActive) {
+      setSwipeGestureActive(true)
+
+      if (deltaY > 0) {
+        // Swipe down - scroll to top
+        scrollToPosition(0)
+      } else {
+        // Swipe up - scroll to bottom
+        scrollToPosition(1)
+      }
+
+      triggerHapticFeedback('light')
+    }
+  }, [touchStartY, isPullToRefresh, pullDistance, pullThreshold, swipeGestureActive, scrollToPosition, triggerHapticFeedback])
+
+  const handleTouchEnd = useCallback(() => {
+    if (isPullToRefresh && pullDistance >= pullThreshold) {
+      handlePullToRefresh()
+    } else {
+      setIsPullToRefresh(false)
+      setPullDistance(0)
+    }
+    setSwipeGestureActive(false)
+  }, [isPullToRefresh, pullDistance, pullThreshold, handlePullToRefresh])
 
   // Phase 2: Mobile keyboard detection and scroll initialization
   useEffect(() => {
@@ -299,9 +447,13 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
     }
   }, [messages.length])
 
-  const handleSendMessage = async (messageText?: string, isAutoStart = false) => {
+  const handleSendMessage = useCallback(async (messageText?: string, isAutoStart = false) => {
     const message = messageText || inputMessage.trim()
     if (!message && !isAutoStart) return
+
+    // Phase 3: Enhanced loading with haptic feedback
+    triggerHapticFeedback('light')
+    setShowEnhancedLoading(true)
 
     const userMessage: Message = {
       role: 'user',
@@ -373,10 +525,13 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       setMessages(prev => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
+      setShowEnhancedLoading(false)
     }
-  }
+  }, [inputMessage, sessionId, messages, onTravelPlanReady, triggerHapticFeedback])
 
   const handleWhatsAppExport = () => {
+    triggerHapticFeedback('medium')
+
     const lastMessage = messages[messages.length - 1]
     if (lastMessage && lastMessage.role === 'assistant') {
       const travelPlan = `🇸🇳 MON VOYAGE AU SÉNÉGAL - Programme personnalisé
@@ -387,7 +542,7 @@ ${lastMessage.content}
 Généré via Transport Sénégal - Votre conseiller voyage`
 
       const whatsappUrl = formatWhatsAppUrl(
-        process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER || '+33626388794', 
+        process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER || '+33626388794',
         travelPlan
       )
       window.open(whatsappUrl, '_blank')
@@ -400,6 +555,12 @@ Généré via Transport Sénégal - Votre conseiller voyage`
       handleSendMessage()
     }
   }
+
+  // Phase 3: Quick reply handler
+  const handleQuickReply = useCallback((reply: string) => {
+    triggerHapticFeedback('light')
+    handleSendMessage(reply)
+  }, [handleSendMessage, triggerHapticFeedback])
 
   return (
     <div className={`w-full travel-chat-container ${isMobile ? 'h-full' : 'max-w-4xl mx-auto'}`}>
@@ -447,16 +608,40 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           )}
         </div>
 
-        {/* Phase 2: Optimized messages area with mobile-first scroll */}
+        {/* Phase 3: Pull-to-refresh indicator */}
+        {isPullToRefresh && (
+          <div
+            className="pull-to-refresh-indicator"
+            style={{
+              transform: `translateY(${Math.min(pullDistance, pullThreshold)}px)`,
+              opacity: Math.min(pullDistance / pullThreshold, 1)
+            }}
+          >
+            <div className="pull-to-refresh-content">
+              {isRefreshing ? (
+                <div className="refresh-spinner">🔄</div>
+              ) : pullDistance >= pullThreshold ? (
+                <div className="refresh-ready">↗️ Relâchez pour actualiser</div>
+              ) : (
+                <div className="refresh-hint">⬇️ Tirez pour actualiser</div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Phase 3: Enhanced messages area with gesture support */}
         <div
           ref={messagesContainerRef}
           className={`flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-slate-50 rounded mobile-chat-messages chat-messages-container smart-zones-container ${
             isNearBottom ? 'in-auto-scroll-zone' : ''
-          }`}
+          } enhanced-mobile-interactions`}
           onScroll={handleScroll}
-          onTouchStart={() => {
+          onTouchStart={(e) => {
             setIsChatActive(true)
+            handleTouchStart(e)
           }}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           onFocus={() => {
             setIsChatActive(true)
           }}
@@ -468,7 +653,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           {messages.map((message, index) => {
             const isLastMessage = index === messages.length - 1
             const isNewMessage = isLastMessage && newMessageIndicator
-            
+
             return (
               <div
                 key={index}
@@ -477,13 +662,21 @@ Généré via Transport Sénégal - Votre conseiller voyage`
                 } ${isNewMessage ? 'new-message-highlight' : ''}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-lg whitespace-pre-wrap ${
+                  className={`max-w-[85%] enhanced-message-bubble ${
                     message.role === 'user'
-                      ? 'bg-primary text-primary-foreground ml-4'
-                      : 'bg-white border border-border mr-4'
+                      ? 'user-message-bubble bg-primary text-primary-foreground ml-4'
+                      : 'assistant-message-bubble bg-white border border-border mr-4'
                   }`}
                 >
-                  {message.content}
+                  <div className="message-content">
+                    {message.content}
+                  </div>
+                  <div className="message-timestamp">
+                    {message.timestamp.toLocaleTimeString('fr-FR', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </div>
                 </div>
               </div>
             )
@@ -491,11 +684,16 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white border border-border p-3 rounded-lg mr-4">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className={`enhanced-loading-bubble bg-white border border-border mr-4 ${
+                showEnhancedLoading ? 'enhanced-loading-active' : ''
+              }`}>
+                <div className="enhanced-typing-indicator">
+                  <div className="typing-dots">
+                    <div className="typing-dot"></div>
+                    <div className="typing-dot"></div>
+                    <div className="typing-dot"></div>
+                  </div>
+                  <div className="typing-text">Maxime réfléchit...</div>
                 </div>
               </div>
             </div>
@@ -504,8 +702,8 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Phase 2: Simplified input zone with mobile keyboard optimization */}
-        <div className={`flex-shrink-0 space-y-3 mobile-chat-input smart-input-zone mobile-form-actions ${
+        {/* Phase 3: Enhanced input zone with quick replies and advanced interactions */}
+        <div className={`flex-shrink-0 space-y-3 mobile-chat-input smart-input-zone mobile-form-actions enhanced-input-zone ${
           keyboardVisible ? 'keyboard-active' : ''
         }`}>
           {showScrollToBottom && (
@@ -571,59 +769,55 @@ Généré via Transport Sénégal - Votre conseiller voyage`
             </Button>
           </div>
           
-          <div className="flex gap-2 flex-wrap mobile-button-group-horizontal">
-            {conversationPhase === 'greeting' && (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleSendMessage('J\'aimerais découvrir la culture sénégalaise pendant une semaine')}
-                  disabled={isLoading}
-                >
-                  🎨 Culture & traditions
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleSendMessage('Je rêve de plages paradisiaques et de nature pour 10 jours')}
-                  disabled={isLoading}
-                >
-                  🏖️ Plages & nature
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleSendMessage('Je veux tout voir en 2 semaines : culture, plages et aventure')}
-                  disabled={isLoading}
-                >
-                  🌍 Découverte complète
-                </Button>
-              </>
-            )}
-            
-            {(conversationPhase === 'refinement' || conversationPhase === 'summary') && (
+          {/* Phase 3: Enhanced quick reply system */}
+          {quickReplyOptions.length > 0 && (
+            <div className="quick-reply-container">
+              <div className="quick-reply-label">Réponses rapides :</div>
+              <div className="flex gap-2 flex-wrap mobile-button-group-horizontal quick-reply-buttons">
+                {quickReplyOptions.map((option, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleQuickReply(
+                      option === '🎨 Culture & traditions' ? 'J\'aimerais découvrir la culture sénégalaise pendant une semaine' :
+                      option === '🏖️ Plages & nature' ? 'Je rêve de plages paradisiaques et de nature pour 10 jours' :
+                      option === '🌍 Découverte complète' ? 'Je veux tout voir en 2 semaines : culture, plages et aventure' :
+                      option === '💰 Budget modéré' ? 'Je recherche un voyage avec un budget modéré' :
+                      option === '✨ Expérience premium' ? 'Je veux une expérience premium et luxueuse' :
+                      option === '🎒 Voyage aventure' ? 'Je préfère un voyage d\'aventure et découverte' :
+                      option === '⏰ Plus de temps libre' ? 'J\'aimerais plus de temps libre dans le programme' :
+                      option === '🗺️ Plus d\'activités' ? 'Pouvez-vous ajouter plus d\'activités ?' :
+                      option === '🍽️ Plus de gastronomie' ? 'J\'aimerais découvrir plus la gastronomie locale' :
+                      option === '✅ C\'est parfait !' ? 'Parfait, je valide cet itinéraire !' :
+                      option === '🔄 Quelques ajustements' ? 'J\'aimerais faire quelques petits ajustements' :
+                      option === '📱 Envoyer via WhatsApp' ? 'Pouvez-vous m\'envoyer ce programme via WhatsApp ?' :
+                      option
+                    )}
+                    disabled={isLoading}
+                    className="quick-reply-button mobile-touch-safe enhanced-touch-target"
+                  >
+                    {option}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Enhanced WhatsApp button */}
+          {showWhatsAppButton && (
+            <div className="enhanced-whatsapp-section">
               <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleSendMessage('Parfait, je valide cet itinéraire !')}
-                disabled={isLoading}
-              >
-                ✅ Valider l&apos;itinéraire
-              </Button>
-            )}
-            
-            {showWhatsAppButton && (
-              <Button
-                variant="outline"
-                size="sm"
                 onClick={handleWhatsAppExport}
-                disabled={isLoading}
-                className="bg-green-50 border-green-300 hover:bg-green-100"
+                className="enhanced-whatsapp-button mobile-touch-safe"
+                size="lg"
               >
-                📱 Copier pour WhatsApp
+                <span className="whatsapp-icon">💬</span>
+                <span className="whatsapp-text">Envoyer via WhatsApp</span>
+                <span className="whatsapp-arrow">→</span>
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
