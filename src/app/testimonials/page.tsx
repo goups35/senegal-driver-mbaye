@@ -5,9 +5,9 @@ export default function TestimonialsPage() {
   const testimonials = [
     {
       id: 1,
-      name: "Marie & Pierre Dubois",
+      name: "MaximeS",
       location: "Paris, France",
-      date: "Mars 2024",
+      date: "Juin 2025",
       rating: 5,
       text: "Mbaye a transformé notre voyage au Sénégal en une expérience magique. Sa connaissance du pays, sa gentillesse et sa disponibilité ont fait de ces 10 jours des moments inoubliables. Nous recommandons vivement !",
       trip: "Circuit 10 jours Dakar-Saint-Louis-Saly"

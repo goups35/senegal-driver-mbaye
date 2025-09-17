@@ -66,34 +66,42 @@ export async function POST(request: NextRequest) {
 
     // Tentative de sauvegarde en base (optionnelle en mode démo)
     let savedTripId = 'demo-' + Date.now()
-    
+
     try {
       if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co') {
+        console.log('🔄 Tentative de sauvegarde en base Supabase...')
         const { supabase } = await import('@/lib/supabase')
-        
+
+        const tripRequestData = {
+          departure: 'Dakar', // Default departure location
+          destination: 'Aéroport Léopold Sédar Senghor', // Default destination
+          date: tripData.date,
+          time: '08:00', // Default departure time
+          passengers: tripData.passengers,
+          duration: tripData.duration,
+          vehicle_type: 'standard', // Default vehicle type
+          customer_name: tripData.customerName,
+          customer_phone: tripData.customerPhone,
+          customer_email: tripData.customerEmail,
+          special_requests: tripData.specialRequests || null
+        }
+
+        console.log('📝 Données à sauvegarder:', tripRequestData)
+
         const { data: savedTrip, error: tripError } = await supabase
           .from('trip_requests')
-          .insert([{
-            departure: 'Dakar', // Default departure location
-            destination: 'Aéroport Léopold Sédar Senghor', // Default destination
-            date: tripData.date,
-            time: '08:00', // Default departure time
-            passengers: tripData.passengers,
-            duration: tripData.duration,
-            vehicle_type: 'standard', // Default vehicle type
-            customer_name: tripData.customerName,
-            customer_phone: tripData.customerPhone,
-            customer_email: tripData.customerEmail,
-            special_requests: tripData.specialRequests || null
-          }])
+          .insert([tripRequestData])
           .select()
           .single()
 
-        if (!tripError && savedTrip?.id) {
+        if (tripError) {
+          console.error('❌ Erreur lors de la sauvegarde trip_requests:', tripError)
+        } else if (savedTrip?.id) {
+          console.log('✅ Trip request sauvegardé avec succès, ID:', savedTrip.id)
           savedTripId = savedTrip.id
-          
+
           // Sauvegarder le devis
-          await supabase.from('trip_quotes').insert([{
+          const quoteData = {
             trip_request_id: savedTrip.id,
             distance: validatedResponse.distance_km,
             duration: `${validatedResponse.duration_minutes} minutes`,
@@ -101,11 +109,23 @@ export async function POST(request: NextRequest) {
             total_price: totalPrice,
             route: route,
             vehicle_info: vehicleInfo
-          }])
+          }
+
+          console.log('📝 Sauvegarde du devis:', quoteData)
+
+          const { error: quoteError } = await supabase.from('trip_quotes').insert([quoteData])
+
+          if (quoteError) {
+            console.error('❌ Erreur lors de la sauvegarde trip_quotes:', quoteError)
+          } else {
+            console.log('✅ Devis sauvegardé avec succès')
+          }
         }
+      } else {
+        console.log('⚠️ Mode démo - URL Supabase non configurée')
       }
     } catch (error) {
-      console.log('Mode démo - base de données non disponible:', error)
+      console.error('❌ Erreur lors de la sauvegarde en base:', error)
     }
 
     const quote: TripQuote = {

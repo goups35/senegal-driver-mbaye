@@ -45,19 +45,6 @@ Merci de confirmer la disponibilité.`
     window.open(whatsappUrl, '_blank')
   }
 
-  const handleEmailContact = async () => {
-    try {
-      await fetch('/api/trips/email-quote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quote, tripData })
-      })
-      alert('Email envoyé avec succès!')
-    } catch {
-      alert('Erreur lors de l\'envoi de l\'email')
-    }
-  }
-
   return (
     <div className="space-y-6">
       <Card>
@@ -66,10 +53,11 @@ Merci de confirmer la disponibilité.`
             🚗 Devis de Transport
           </CardTitle>
           <CardDescription>
-            Itinéraire de Dakar vers Aéroport Léopold Sédar Senghor
+            Votre devis pour Dakar → Aéroport Léopold Sédar Senghor
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
+          {/* Résumé du devis */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-secondary rounded-lg">
               <div className="text-2xl font-bold text-primary">
@@ -77,14 +65,14 @@ Merci de confirmer la disponibilité.`
               </div>
               <div className="text-sm text-muted-foreground">Prix total</div>
             </div>
-            
+
             <div className="text-center p-4 bg-secondary rounded-lg">
               <div className="text-2xl font-bold text-primary">
                 {quote.distance} km
               </div>
               <div className="text-sm text-muted-foreground">Distance</div>
             </div>
-            
+
             <div className="text-center p-4 bg-secondary rounded-lg">
               <div className="text-2xl font-bold text-primary">
                 {quote.duration}
@@ -93,65 +81,42 @@ Merci de confirmer la disponibilité.`
             </div>
           </div>
 
-          <div className="border rounded-lg p-4">
-            <h3 className="font-semibold mb-2">🚙 Véhicule sélectionné</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-              <div><strong>Modèle:</strong> {quote.vehicleInfo.name}</div>
-              <div><strong>Capacité:</strong> {quote.vehicleInfo.capacity} passagers</div>
-              <div><strong>Type:</strong> {quote.vehicleInfo.type}</div>
-              <div><strong>Tarif/km:</strong> {quote.vehicleInfo.pricePerKm} FCFA</div>
-            </div>
-            <div className="mt-2">
-              <strong>Équipements:</strong> {quote.vehicleInfo.features.join(', ')}
-            </div>
-          </div>
-
-          <div className="border rounded-lg p-4">
-            <h3 className="font-semibold mb-2">🗺️ Itinéraire détaillé</h3>
-            <div className="space-y-2">
-              {quote.route.map((step, index) => (
-                <div key={index} className="flex items-start gap-3 text-sm">
-                  <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div>{step.instruction}</div>
-                    <div className="text-muted-foreground text-xs">
-                      {step.distance} • {step.duration}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
+          {/* Récapitulatif de la demande */}
           <div className="border rounded-lg p-4 bg-muted/50">
-            <h3 className="font-semibold mb-2">📋 Récapitulatif de votre demande</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+            <h3 className="font-semibold mb-3">📋 Récapitulatif de votre demande</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
               <div><strong>Date:</strong> {new Date(tripData.date).toLocaleDateString('fr-FR')}</div>
               <div><strong>Heure:</strong> 08:00</div>
               <div><strong>Durée:</strong> {tripData.duration || 7} jours</div>
               <div><strong>Passagers:</strong> {tripData.passengers || 1}</div>
               <div><strong>Client:</strong> {tripData.customerName}</div>
               <div><strong>Téléphone:</strong> {tripData.customerPhone}</div>
-              <div><strong>Email:</strong> {tripData.customerEmail}</div>
+              <div className="md:col-span-2"><strong>Email:</strong> {tripData.customerEmail}</div>
+              {tripData.specialRequests && (
+                <div className="md:col-span-2"><strong>Demandes spéciales:</strong> {tripData.specialRequests}</div>
+              )}
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-3 pt-4">
-            <Button 
+          {/* Bouton WhatsApp et alternative email */}
+          <div className="text-center space-y-4">
+            <Button
               onClick={handleWhatsAppContact}
-              className="flex-1 bg-green-600 hover:bg-green-700"
+              className="w-full md:w-auto bg-green-600 hover:bg-green-700 px-8 py-3"
+              size="lg"
             >
-              💬 Réserver via WhatsApp
+              💬 Réserver par WhatsApp
             </Button>
-            <Button 
-              onClick={handleEmailContact}
-              variant="outline"
-              className="flex-1"
-            >
-              📧 Recevoir par email
-            </Button>
+
+            <p className="text-sm text-muted-foreground">
+              Vous n'avez pas WhatsApp ? Envoyez-nous votre demande par email avec{' '}
+              <a
+                href="mailto:legoupil.alexandre@gmail.com?subject=Demande%20de%20transport%20Sénégal&body=Bonjour%2C%0A%0AJe%20souhaite%20faire%20une%20demande%20de%20transport%20au%20Sénégal.%0A%0AMerci"
+                className="text-primary hover:underline font-medium"
+              >
+                legoupil.alexandre@gmail.com
+              </a>
+            </p>
           </div>
         </CardContent>
       </Card>
