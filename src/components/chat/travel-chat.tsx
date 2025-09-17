@@ -525,8 +525,15 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           : 'max-w-4xl mx-auto h-[600px] md:h-[700px] lg:h-[600px]'
       }`}>
       <CardHeader className="flex-shrink-0 mobile-padding-md">
-        <CardTitle className="mobile-heading-2">
-          Conseiller voyage Sénégal
+        <CardTitle className="flex items-center gap-2 flex-wrap mobile-heading-2">
+          Maxime, l&apos;assistant IA de Mbaye
+          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded capitalize">
+            {conversationPhase === 'greeting' && '👋 Accueil'}
+            {conversationPhase === 'discovery' && '🔍 Découverte'}
+            {conversationPhase === 'planning' && '🗺️ Planification'}
+            {conversationPhase === 'refinement' && '✨ Affinement'}
+            {conversationPhase === 'summary' && '🎉 Récapitulatif'}
+          </span>
         </CardTitle>
       </CardHeader>
       

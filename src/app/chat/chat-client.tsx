@@ -23,16 +23,6 @@ export function ChatClient() {
         </div>
       </div>
 
-      {/* Footer cohérent avec l'existant */}
-      <footer className="bg-white mt-16 text-center text-sm text-muted-foreground py-8 mobile-footer">
-        <div className="max-w-md mx-auto space-y-2 mobile-footer-content mobile-padding-sm">
-          <p className="mobile-text-readable">🇸🇳 Service de transport professionnel au Sénégal</p>
-          <p className="mobile-text-readable">📱 Disponible 24h/24 • 🚗 Flotte moderne • ✨ Devis instantané</p>
-          <p className="text-xs mobile-text-small">
-            Propulsé par l&apos;IA • Made with ❤️ for Sénégal
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }
