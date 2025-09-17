@@ -22,23 +22,23 @@ export function HomeClient() {
           </div>
           
           {/* Hero Content */}
-          <div className="relative z-10 container mx-auto px-4 py-16">
+          <div className="relative z-10 container mx-auto px-4 py-16 mobile-container mobile-safe-area">
             {/* Slogan Hero */}
             <div className="text-center mb-20 pt-12">
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg mobile-heading-1">
                 Découvrez le Sénégal
               </h1>
-              <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto leading-relaxed drop-shadow-lg font-medium">
+              <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto leading-relaxed drop-shadow-lg font-medium mobile-text-readable">
                 Voyagez en confiance avec votre chauffeur Mbaye
               </p>
             </div>
 
             {/* Deux grandes sections dans le hero */}
             <div className="max-w-5xl mx-auto relative z-50">
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-8 mobile-grid-2">
                 {/* Mode Transport Direct */}
                 <button
-                  className="hero-action-button bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
+                  className="hero-action-button bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden mobile-touch-safe mobile-padding-lg"
                   onClick={() => {
                     console.log('Transport button clicked');
                     router.push('/transport');
@@ -51,7 +51,7 @@ export function HomeClient() {
                         <path d="M5 11l1.5-4.5h11L19 11m-1.5 5a1.5 1.5 0 01-3 0 1.5 1.5 0 013 0m-8 0a1.5 1.5 0 01-3 0 1.5 1.5 0 013 0M17 16H7m10 0a3 3 0 003-3V9a1 1 0 00-1-1H5a1 1 0 00-1 1v4a3 3 0 003 3m10 0v1a2 2 0 01-2 2H7a2 2 0 01-2-2v-1m10 0H7"/>
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-black group-hover:text-white transition-colors">Formulaire de contact</h3>
+                    <h3 className="text-xl font-bold text-black group-hover:text-white transition-colors mobile-heading-3">Formulaire de contact</h3>
                     <p className="text-black group-hover:text-white transition-colors text-sm">
                       Destination connue ? Obtenez votre devis de transport instantané 
                       avec Mbaye. Itinéraires optimisés, tarifs transparents.
@@ -63,8 +63,8 @@ export function HomeClient() {
                 </button>
 
                 {/* Mode Chat IA */}
-                <button 
-                  className="hero-action-button bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden"
+                <button
+                  className="hero-action-button bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover-senegal transition-all duration-300 cursor-pointer border border-sahel-sand group relative overflow-hidden mobile-touch-safe mobile-padding-lg"
                   onClick={() => {
                     console.log('Chat button clicked');
                     router.push('/chat');
@@ -90,7 +90,7 @@ export function HomeClient() {
                         </g>
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-black group-hover:text-white transition-colors">Votre itinéraire personnalisé avec l&apos;IA</h3>
+                    <h3 className="text-xl font-bold text-black group-hover:text-white transition-colors mobile-heading-3">Votre itinéraire personnalisé avec l&apos;IA</h3>
                     <p className="text-black group-hover:text-white transition-colors text-sm">
                       Première visite ? L&apos;assistant IA personnel de Mbaye va vous guider et vous aider à choisir vos destinations.
                     </p>
