@@ -20,7 +20,6 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [isDemo, setIsDemo] = useState(false)
   const [showWhatsAppButton, setShowWhatsAppButton] = useState(false)
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
   const [conversationPhase, setConversationPhase] = useState('greeting')
@@ -46,8 +45,6 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
   const [touchStartY, setTouchStartY] = useState(0)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [swipeGestureActive, setSwipeGestureActive] = useState(false)
-  const [quickReplyOptions, setQuickReplyOptions] = useState<string[]>([])
-  const [showEnhancedLoading, setShowEnhancedLoading] = useState(false)
   const [hapticFeedbackEnabled, setHapticFeedbackEnabled] = useState(false)
   const pullThreshold = 80
   const swipeThreshold = 100
@@ -175,40 +172,6 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
     }
   }, [])
 
-  // Phase 3: Enhanced quick reply system
-  useEffect(() => {
-    const generateQuickReplies = () => {
-      switch (conversationPhase) {
-        case 'greeting':
-          return [
-            '🎨 Culture & traditions',
-            '🏖️ Plages & nature',
-            '🌍 Découverte complète'
-          ]
-        case 'discovery':
-          return [
-            '💰 Budget modéré',
-            '✨ Expérience premium',
-            '🎒 Voyage aventure'
-          ]
-        case 'planning':
-          return [
-            '⏰ Plus de temps libre',
-            '🗺️ Plus d\'activités',
-            '🍽️ Plus de gastronomie'
-          ]
-        case 'refinement':
-          return [
-            '✅ C\'est parfait !',
-            '🔄 Quelques ajustements',
-            '📱 Envoyer via WhatsApp'
-          ]
-        default:
-          return []
-      }
-    }
-    setQuickReplyOptions(generateQuickReplies())
-  }, [conversationPhase])
 
   // Phase 3: Enhanced haptic feedback helper
   const triggerHapticFeedback = useCallback((type: 'light' | 'medium' | 'heavy' = 'light') => {
@@ -453,7 +416,6 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
 
     // Phase 3: Enhanced loading with haptic feedback
     triggerHapticFeedback('light')
-    setShowEnhancedLoading(true)
 
     const userMessage: Message = {
       role: 'user',
@@ -488,7 +450,6 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
 
       const data = await response.json()
       
-      setIsDemo(data.isDemo || false)
       
       // Mettre à jour la phase de conversation
       if (data.conversationState?.phase) {
@@ -525,7 +486,6 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
       setMessages(prev => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
-      setShowEnhancedLoading(false)
     }
   }, [inputMessage, sessionId, messages, onTravelPlanReady, triggerHapticFeedback])
 
@@ -556,11 +516,6 @@ Généré via Transport Sénégal - Votre conseiller voyage`
     }
   }
 
-  // Phase 3: Quick reply handler
-  const handleQuickReply = useCallback((reply: string) => {
-    triggerHapticFeedback('light')
-    handleSendMessage(reply)
-  }, [handleSendMessage, triggerHapticFeedback])
 
   return (
     <div className={`w-full travel-chat-container ${isMobile ? 'h-full' : 'max-w-4xl mx-auto'}`}>
@@ -570,24 +525,9 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           : 'max-w-4xl mx-auto h-[600px] md:h-[700px] lg:h-[600px]'
       }`}>
       <CardHeader className="flex-shrink-0 mobile-padding-md">
-        <CardTitle className="flex items-center gap-2 flex-wrap mobile-heading-2">
-          Maxime, votre conseiller voyage Sénégal
-          {isDemo && (
-            <span className="text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
-              DÉMO
-            </span>
-          )}
-          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded capitalize">
-            {conversationPhase === 'greeting' && '👋 Accueil'}
-            {conversationPhase === 'discovery' && '🔍 Découverte'}
-            {conversationPhase === 'planning' && '🗺️ Planification'}
-            {conversationPhase === 'refinement' && '✨ Affinement'}
-            {conversationPhase === 'summary' && '🎉 Récapitulatif'}
-          </span>
+        <CardTitle className="mobile-heading-2">
+          Conseiller voyage Sénégal
         </CardTitle>
-        <p className="text-sm text-muted-foreground mobile-helper-text">
-          Création d&apos;un voyage personnalisé jour par jour - Phase {conversationPhase === 'greeting' ? '1' : conversationPhase === 'discovery' ? '2' : conversationPhase === 'planning' ? '3' : conversationPhase === 'refinement' ? '4' : '5'}/5
-        </p>
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col overflow-hidden card-content-relative">
@@ -662,10 +602,10 @@ Généré via Transport Sénégal - Votre conseiller voyage`
                 } ${isNewMessage ? 'new-message-highlight' : ''}`}
               >
                 <div
-                  className={`max-w-[85%] enhanced-message-bubble ${
+                  className={`max-w-[85%] p-3 rounded-lg ${
                     message.role === 'user'
-                      ? 'user-message-bubble bg-primary text-primary-foreground ml-4'
-                      : 'assistant-message-bubble bg-white border border-border mr-4'
+                      ? 'bg-primary text-primary-foreground ml-4'
+                      : 'bg-muted mr-4'
                   }`}
                 >
                   <div className="message-content">
@@ -684,16 +624,9 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           
           {isLoading && (
             <div className="flex justify-start">
-              <div className={`enhanced-loading-bubble bg-white border border-border mr-4 ${
-                showEnhancedLoading ? 'enhanced-loading-active' : ''
-              }`}>
-                <div className="enhanced-typing-indicator">
-                  <div className="typing-dots">
-                    <div className="typing-dot"></div>
-                    <div className="typing-dot"></div>
-                    <div className="typing-dot"></div>
-                  </div>
-                  <div className="typing-text">Maxime réfléchit...</div>
+              <div className="p-3 rounded-lg bg-muted mr-4">
+                <div className="text-muted-foreground">
+                  Maxime réfléchit...
                 </div>
               </div>
             </div>
@@ -769,40 +702,6 @@ Généré via Transport Sénégal - Votre conseiller voyage`
             </Button>
           </div>
           
-          {/* Phase 3: Enhanced quick reply system */}
-          {quickReplyOptions.length > 0 && (
-            <div className="quick-reply-container">
-              <div className="quick-reply-label">Réponses rapides :</div>
-              <div className="flex gap-2 flex-wrap mobile-button-group-horizontal quick-reply-buttons">
-                {quickReplyOptions.map((option, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleQuickReply(
-                      option === '🎨 Culture & traditions' ? 'J\'aimerais découvrir la culture sénégalaise pendant une semaine' :
-                      option === '🏖️ Plages & nature' ? 'Je rêve de plages paradisiaques et de nature pour 10 jours' :
-                      option === '🌍 Découverte complète' ? 'Je veux tout voir en 2 semaines : culture, plages et aventure' :
-                      option === '💰 Budget modéré' ? 'Je recherche un voyage avec un budget modéré' :
-                      option === '✨ Expérience premium' ? 'Je veux une expérience premium et luxueuse' :
-                      option === '🎒 Voyage aventure' ? 'Je préfère un voyage d\'aventure et découverte' :
-                      option === '⏰ Plus de temps libre' ? 'J\'aimerais plus de temps libre dans le programme' :
-                      option === '🗺️ Plus d\'activités' ? 'Pouvez-vous ajouter plus d\'activités ?' :
-                      option === '🍽️ Plus de gastronomie' ? 'J\'aimerais découvrir plus la gastronomie locale' :
-                      option === '✅ C\'est parfait !' ? 'Parfait, je valide cet itinéraire !' :
-                      option === '🔄 Quelques ajustements' ? 'J\'aimerais faire quelques petits ajustements' :
-                      option === '📱 Envoyer via WhatsApp' ? 'Pouvez-vous m\'envoyer ce programme via WhatsApp ?' :
-                      option
-                    )}
-                    disabled={isLoading}
-                    className="quick-reply-button mobile-touch-safe enhanced-touch-target"
-                  >
-                    {option}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Enhanced WhatsApp button */}
           {showWhatsAppButton && (

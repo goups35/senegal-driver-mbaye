@@ -2,14 +2,8 @@
 
 import { Navbar } from '@/components/navigation/navbar'
 import { TravelPlannerWrapper } from '@/components/features/travel-planner/travel-planner-wrapper'
-import { useRouter } from 'next/navigation'
-
 export function ChatClient() {
-  const router = useRouter()
 
-  const handleBackToHome = () => {
-    router.push('/')
-  }
 
   const handleTravelPlanReady = (plan: string) => {
     console.log('Plan ready:', plan)
@@ -23,14 +17,6 @@ export function ChatClient() {
       <div className="bg-white mobile-chat-container">
         <div className="container mx-auto px-4 py-8 mobile-padding-md">
           <div className="space-y-6 mobile-chat-content">
-            <div className="text-center mobile-navigation-area">
-              <button
-                onClick={handleBackToHome}
-                className="text-primary hover:underline text-sm mb-4 mobile-touch-safe mobile-back-button p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors border border-primary/20"
-              >
-                ← Retour aux options
-              </button>
-            </div>
 
             <TravelPlannerWrapper onTravelPlanReady={handleTravelPlanReady} />
           </div>
