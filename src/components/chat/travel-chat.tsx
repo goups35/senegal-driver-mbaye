@@ -372,8 +372,8 @@ Généré via Transport Sénégal - Votre conseiller voyage`
           ? 'h-full mobile-chat-container border-0 rounded-none' 
           : 'max-w-4xl mx-auto h-[600px] md:h-[700px] lg:h-[600px]'
       }`}>
-      <CardHeader className="flex-shrink-0">
-        <CardTitle className="flex items-center gap-2 flex-wrap">
+      <CardHeader className="flex-shrink-0 mobile-padding-md">
+        <CardTitle className="flex items-center gap-2 flex-wrap mobile-heading-2">
           Maxime, votre conseiller voyage Sénégal
           {isDemo && (
             <span className="text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
@@ -388,7 +388,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
             {conversationPhase === 'summary' && '🎉 Récapitulatif'}
           </span>
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground mobile-helper-text">
           Création d&apos;un voyage personnalisé jour par jour - Phase {conversationPhase === 'greeting' ? '1' : conversationPhase === 'discovery' ? '2' : conversationPhase === 'planning' ? '3' : conversationPhase === 'refinement' ? '4' : '5'}/5
         </p>
       </CardHeader>
@@ -476,14 +476,14 @@ Généré via Transport Sénégal - Votre conseiller voyage`
         </div>
 
         {/* Zone de saisie avec Smart Zones overlay */}
-        <div className={`flex-shrink-0 space-y-3 mobile-chat-input smart-input-zone ${
+        <div className={`flex-shrink-0 space-y-3 mobile-chat-input smart-input-zone mobile-form-actions ${
           isManualScrollMode ? 'manual-scroll-overlay' : ''
         }`}>
           {isManualScrollMode && (
             <div className="manual-scroll-indicator">
               <span className="manual-scroll-text">Scroll down to resume auto-updates</span>
               <button 
-                className="scroll-to-bottom-btn"
+                className="scroll-to-bottom-btn mobile-touch-safe"
                 onClick={() => scrollToBottom(true)}
                 aria-label="Scroll to bottom"
               >
@@ -495,7 +495,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
             <div className="text-center">
               <Button
                 onClick={handleWhatsAppExport}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 mobile-form-button mobile-touch-safe"
                 size="lg"
               >
                 💬 Envoyer le programme via WhatsApp
@@ -503,7 +503,7 @@ Généré via Transport Sénégal - Votre conseiller voyage`
             </div>
           )}
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 mobile-input-group">
             <Input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
@@ -537,20 +537,21 @@ Généré via Transport Sénégal - Votre conseiller voyage`
               }}
               placeholder="Décrivez vos envies de voyage au Sénégal..."
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 mobile-form-input mobile-touch-safe"
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="sentences"
             />
-            <Button 
-              onClick={() => handleSendMessage()} 
+            <Button
+              onClick={() => handleSendMessage()}
               disabled={isLoading || !inputMessage.trim()}
+              className="mobile-form-button mobile-touch-safe"
             >
               Envoyer
             </Button>
           </div>
           
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap mobile-button-group-horizontal">
             {conversationPhase === 'greeting' && (
               <>
                 <Button
