@@ -52,34 +52,8 @@ Merci de confirmer la disponibilité.`
           <CardTitle className="flex items-center gap-2">
             🚗 Devis de Transport
           </CardTitle>
-          <CardDescription>
-            Votre devis pour Dakar → Aéroport Léopold Sédar Senghor
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Résumé du devis */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-secondary rounded-lg">
-              <div className="text-2xl font-bold text-primary">
-                {quote.totalPrice.toLocaleString()} FCFA
-              </div>
-              <div className="text-sm text-muted-foreground">Prix total</div>
-            </div>
-
-            <div className="text-center p-4 bg-secondary rounded-lg">
-              <div className="text-2xl font-bold text-primary">
-                {quote.distance} km
-              </div>
-              <div className="text-sm text-muted-foreground">Distance</div>
-            </div>
-
-            <div className="text-center p-4 bg-secondary rounded-lg">
-              <div className="text-2xl font-bold text-primary">
-                {quote.duration}
-              </div>
-              <div className="text-sm text-muted-foreground">Durée estimée</div>
-            </div>
-          </div>
 
           {/* Récapitulatif de la demande */}
           <div className="border rounded-lg p-4 bg-muted/50">
@@ -109,13 +83,7 @@ Merci de confirmer la disponibilité.`
             </Button>
 
             <p className="text-sm text-muted-foreground">
-              Vous n'avez pas WhatsApp ? Envoyez-nous votre demande par email avec{' '}
-              <a
-                href="mailto:legoupil.alexandre@gmail.com?subject=Demande%20de%20transport%20Sénégal&body=Bonjour%2C%0A%0AJe%20souhaite%20faire%20une%20demande%20de%20transport%20au%20Sénégal.%0A%0AMerci"
-                className="text-primary hover:underline font-medium"
-              >
-                legoupil.alexandre@gmail.com
-              </a>
+              Vous n'avez pas WhatsApp mais avez Instagram ? Envoyez votre demande à Mbaye sur Instagram.
             </p>
           </div>
         </CardContent>
