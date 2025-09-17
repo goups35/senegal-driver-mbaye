@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { formatWhatsAppUrl } from '@/lib/utils'
 import type { TripQuote } from '@/types'
@@ -83,7 +83,7 @@ Merci de confirmer la disponibilité.`
             </Button>
 
             <p className="text-sm text-muted-foreground">
-              Vous n'avez pas WhatsApp mais avez Instagram ? Envoyez votre demande à Mbaye sur Instagram.
+              Vous n&apos;avez pas WhatsApp mais avez Instagram ? Envoyez votre demande à Mbaye sur Instagram.
             </p>
           </div>
         </CardContent>
