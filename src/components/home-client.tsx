@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation'
 import { Navbar } from '@/components/navigation/navbar'
 import { QuickStatsBar } from '@/components/homepage/quick-stats-bar'
+import { IAAssistantSection } from '@/components/homepage/ia-assistant-section'
+import { TestimonialSection } from '@/components/homepage/testimonial-section'
 // import { ErrorBoundary } from '@/components/common/error-boundary'
 
 export function HomeClient() {
@@ -145,11 +147,13 @@ export function HomeClient() {
                 />
               </div>
 
-              {/* Grid Container for future sections - Phase 1 foundation */}
-              <div className="max-w-6xl mx-auto px-4">
-                <div className="grid gap-8 md:gap-12 mobile-grid">
-                  {/* Future IA section will go here - Phase 2 */}
-                  {/* Future Testimonial section will go here - Phase 2 */}
+              {/* Grid Container - Phase 2 Implementation */}
+              <div className="max-w-6xl mx-auto px-4 mt-16">
+                <div className="grid gap-8 md:gap-12 md:grid-cols-2 mobile-grid">
+                  {/* IA Assistant Section - Phase 2 */}
+                  <IAAssistantSection />
+                  {/* Testimonial Section - Phase 2 */}
+                  <TestimonialSection />
                 </div>
               </div>
 
