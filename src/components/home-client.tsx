@@ -8,18 +8,18 @@ export function HomeClient() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <Navbar />
-      
+
       <div className="relative min-h-screen">
-          {/* Hero Background */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
-            style={{ backgroundImage: 'url(/images/senegal-1.jpg)' }}
-          >
-            {/* Overlay gradient pour améliorer la lisibilité */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40"></div>
-          </div>
+        {/* Hero Background optimisé */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
+          style={{ backgroundImage: 'url(/images/senegal-1.jpg)' }}
+        >
+          {/* Overlay gradient renforcé pour meilleur contraste */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/55"></div>
+        </div>
           
           {/* Hero Content */}
           <div className="relative z-10 container mx-auto px-4 py-16 mobile-container mobile-safe-area">
