@@ -91,13 +91,15 @@ body {
 .bg-sahel-sand { background-color: var(--sahel-sand) !important; }
 .bg-teranga-orange { background-color: var(--teranga-orange) !important; }
 
-/* Fix pour les boutons d'accueil */
+/* Fix pour les boutons d'accueil - Optimized without !important */
 .hero-action-button {
-  position: relative !important;
-  z-index: 100 !important;
-  pointer-events: auto !important;
+  position: relative;
+  z-index: 100;
+  pointer-events: auto;
   isolation: isolate;
   transform: translateZ(0);
+  /* Enhanced specificity for reliable styling */
+  will-change: transform, box-shadow;
 }
 
 /* Hover effects */
@@ -105,13 +107,13 @@ body {
   background-color: var(--senegal-green);
   color: white;
   transform: translateY(-2px) translateZ(0);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Garantir la clickabilité des boutons hero */
+/* Garantir la clickabilité des boutons hero - Specific transitions */
 .hero-action-button:hover {
-  transform: translateY(-2px) translateZ(0) !important;
-  z-index: 101 !important;
+  transform: translateY(-2px) translateZ(0);
+  z-index: 101;
 }
 
 
@@ -775,19 +777,39 @@ body {
   .smart-scroll-indicator {
     background: rgba(0, 0, 0, 0.3);
   }
-  
+
   .scroll-progress-bar {
     background: var(--senegal-green);
     box-shadow: none;
   }
-  
+
   .smart-zones-container.in-auto-scroll-zone {
     border-left-color: var(--senegal-green);
     border-left-width: 4px;
   }
-  
+
   .manual-scroll-indicator {
     border: 2px solid var(--muted-foreground);
     background: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Hero CTAs high-contrast fallbacks */
+  .hero-action-button {
+    background: var(--high-contrast-bg, #000000) !important;
+    border: 2px solid var(--high-contrast-border, #ffffff) !important;
+    color: var(--high-contrast-text, #ffffff) !important;
+    backdrop-filter: none !important;
+  }
+
+  .hero-action-button:hover {
+    background: var(--senegal-green) !important;
+    border-color: var(--senegal-green) !important;
+    color: white !important;
+  }
+
+  /* Gradient CTA simplification for high contrast */
+  .hero-action-button[style*="gradient"] {
+    background: var(--senegal-green) !important;
+    border: 2px solid var(--senegal-green) !important;
   }
 }
