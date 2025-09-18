@@ -4,7 +4,6 @@ interface QuickStatsBarProps {
   stats: {
     rating: string;
     trips: string;
-    satisfaction: string;
   }
 }
 
@@ -25,23 +24,12 @@ export function QuickStatsBar({ stats }: QuickStatsBarProps) {
         {/* Divider */}
         <div className="w-px h-4 bg-sahel-sand"></div>
 
-        {/* Trips Stat */}
+        {/* Trips/Reviews Stat */}
         <div className="flex items-center gap-2">
           <svg className="w-4 h-4 text-ocean-blue" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
           </svg>
-          <span className="text-xs font-medium text-baobab-brown">{stats.trips} voyages</span>
-        </div>
-
-        {/* Divider */}
-        <div className="w-px h-4 bg-sahel-sand"></div>
-
-        {/* Satisfaction Stat */}
-        <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-senegal-green" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z" clipRule="evenodd" />
-          </svg>
-          <span className="text-xs font-medium text-baobab-brown">{stats.satisfaction} satisfaction</span>
+          <span className="text-xs font-medium text-baobab-brown">{stats.trips}</span>
         </div>
       </div>
     </div>

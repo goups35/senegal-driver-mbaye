@@ -136,13 +136,14 @@ export function HomeClient() {
               </div>
 
               {/* Quick Stats Bar - Phase 1 */}
-              <QuickStatsBar
-                stats={{
-                  rating: '4.9/5',
-                  trips: '150+',
-                  satisfaction: '98%'
-                }}
-              />
+              <div className="mt-8">
+                <QuickStatsBar
+                  stats={{
+                    rating: '4.9/5',
+                    trips: '+10 avis'
+                  }}
+                />
+              </div>
 
               {/* Grid Container for future sections - Phase 1 foundation */}
               <div className="max-w-6xl mx-auto px-4">
