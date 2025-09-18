@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { Navbar } from '@/components/navigation/navbar'
+import { QuickStatsBar } from '@/components/homepage/quick-stats-bar'
 // import { ErrorBoundary } from '@/components/common/error-boundary'
 
 export function HomeClient() {
@@ -132,6 +133,23 @@ export function HomeClient() {
                     </h3>
                   </div>
                 </button>
+              </div>
+
+              {/* Quick Stats Bar - Phase 1 */}
+              <QuickStatsBar
+                stats={{
+                  rating: '4.9/5',
+                  trips: '150+',
+                  satisfaction: '98%'
+                }}
+              />
+
+              {/* Grid Container for future sections - Phase 1 foundation */}
+              <div className="max-w-6xl mx-auto px-4">
+                <div className="grid gap-8 md:gap-12 mobile-grid">
+                  {/* Future IA section will go here - Phase 2 */}
+                  {/* Future Testimonial section will go here - Phase 2 */}
+                </div>
               </div>
 
             </div>
