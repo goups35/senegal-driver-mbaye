@@ -10,7 +10,7 @@ export function IAAssistantSection({ className = "" }: IAAssistantSectionProps) 
   const router = useRouter()
 
   return (
-    <div className={`bg-white/90 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-sm border border-sahel-sand mobile-touch-safe ${className}`}>
+    <div className={`bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl border border-sahel-sand/30 mobile-touch-safe transition-shadow duration-300 ${className}`}>
       {/* Mobile-first layout: stack vertically on mobile, horizontal on desktop */}
       <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
 

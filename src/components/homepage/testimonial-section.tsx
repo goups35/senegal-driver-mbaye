@@ -44,7 +44,7 @@ export function TestimonialSection({ className = "" }: TestimonialSectionProps) 
   }
 
   return (
-    <div className={`bg-white/90 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-sm border border-sahel-sand ${className}`}>
+    <div className={`bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl border border-sahel-sand/30 mobile-touch-safe transition-shadow duration-300 ${className}`}>
       {/* Section Header */}
       <div className="text-center md:text-left mb-6">
         <h2 className="text-lg md:text-xl font-bold text-baobab-brown mb-2 mobile-heading-2">
