@@ -60,7 +60,7 @@ export function MobileMenu() {
                   <WhatsAppLogo className="w-5 h-5" />
                   <div className="flex flex-col items-start">
                     <span className="text-sm font-medium">Contacter Mbaye</span>
-                    <span className="text-xs opacity-90">+33 6 26 38 87 94</span>
+                    <span className="text-xs opacity-90">+221 77 576 22 03</span>
                   </div>
                 </a>
               </div>

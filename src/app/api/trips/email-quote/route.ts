@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
 
           <div class="footer">
             <p>Pour confirmer votre réservation, contactez-nous:</p>
-            <p>📱 WhatsApp: ${process.env.WHATSAPP_PHONE_NUMBER || '+33 6 26 38 87 94'}</p>
+            <p>📱 WhatsApp: ${process.env.WHATSAPP_PHONE_NUMBER || '+221 77 576 22 03'}</p>
             <p>🕒 Disponible 24h/24, 7j/7</p>
           </div>
         </div>

@@ -22,7 +22,7 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock environment variables
-process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER = '+33626388794'
+process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER = '+221775762203'
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-key'
 

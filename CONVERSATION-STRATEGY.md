@@ -220,7 +220,7 @@ interface ConversationState {
 ### Variables d'Environnement
 ```env
 GEMINI_API_KEY=your_gemini_key
-NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER=+33626388794
+NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER=+221775762203
 ```
 
 ### Activation

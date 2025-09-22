@@ -17,18 +17,12 @@ export function MbayeTrustSection({ className = "" }: MbayeTrustSectionProps) {
         {/* Image Section - Left side on desktop, top on mobile */}
         <div className="flex-shrink-0 w-full md:w-auto">
           <div className="relative w-32 h-32 md:w-40 md:h-40 mx-auto md:mx-0">
-            {/* Placeholder image with Mbaye photo - circular design */}
-            <div className="w-full h-full bg-gradient-to-br from-senegal-green/20 via-ocean-blue/20 to-teranga-orange/20 rounded-full flex items-center justify-center border-3 border-senegal-green/30 overflow-hidden">
-              {/* Driver/Person Icon as placeholder */}
-              <svg
-                className="w-16 h-16 md:w-20 md:h-20 text-senegal-green"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-              </svg>
-            </div>
+            {/* Mbaye photo */}
+            <img
+              src="/images/senegal-6.png"
+              alt="Mbaye Diop - Votre chauffeur de confiance au Sénégal"
+              className="w-full h-full object-cover rounded-full border-3 border-senegal-green/30"
+            />
           </div>
         </div>
 
@@ -41,7 +35,7 @@ export function MbayeTrustSection({ className = "" }: MbayeTrustSectionProps) {
 
           {/* Description narrative */}
           <p className="text-sm md:text-base text-baobab-brown/90 mb-6 leading-relaxed mobile-text-readable">
-            Fort de plus de 10 ans d&apos;expérience dans le transport touristique, Mbaye est votre guide de confiance pour découvrir les merveilles du Sénégal. Passionné par son pays et sa culture, il saura vous faire vivre une expérience authentique et mémorable, en toute sécurité et dans le respect des traditions locales.
+            Fort de plus de 10 ans d&apos;expérience dans le transport touristique, Mbaye Diop est votre guide de confiance pour découvrir les merveilles du Sénégal. Passionné par son pays et sa culture, il saura vous faire vivre une expérience authentique et mémorable, en toute sécurité et dans le respect des traditions locales.
           </p>
 
           {/* CTA Button */}

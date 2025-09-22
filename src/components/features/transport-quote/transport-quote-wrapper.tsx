@@ -33,7 +33,7 @@ export function TransportQuoteWrapper({
           Vous pouvez nous contacter directement via WhatsApp.
         </p>
         <a
-          href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER || '+33626388794'}?text=Bonjour, je souhaite obtenir un devis de transport au Sénégal`}
+          href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER || '+221775762203'}?text=Bonjour, je souhaite obtenir un devis de transport au Sénégal`}
           className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
           target="_blank"
           rel="noopener noreferrer"

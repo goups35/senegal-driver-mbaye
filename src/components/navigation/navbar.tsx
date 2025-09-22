@@ -21,7 +21,7 @@ export function Navbar() {
               className="bg-[#25D366] hover:bg-[#20BA5A] text-white px-4 py-2 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg flex items-center space-x-2"
             >
               <WhatsAppLogo className="w-4 h-4" />
-              <span className="text-sm">+33 6 26 38 87 94</span>
+              <span className="text-sm">+221 77 576 22 03</span>
             </a>
           </div>
 

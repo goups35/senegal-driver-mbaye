@@ -502,7 +502,7 @@ ${lastMessage.content}
 Généré via Transport Sénégal - Votre conseiller voyage`
 
       const whatsappUrl = formatWhatsAppUrl(
-        process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER || '+33626388794',
+        process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER || '+221775762203',
         travelPlan
       )
       window.open(whatsappUrl, '_blank')

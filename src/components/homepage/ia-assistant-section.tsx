@@ -17,24 +17,12 @@ export function IAAssistantSection({ className = "" }: IAAssistantSectionProps) 
         {/* Image Section - Left side on desktop, top on mobile */}
         <div className="flex-shrink-0 w-full md:w-auto">
           <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto md:mx-0">
-            {/* Placeholder image with AI/chat icon */}
-            <div className="w-full h-full bg-gradient-to-br from-senegal-green/20 via-ocean-blue/20 to-teranga-orange/20 rounded-2xl flex items-center justify-center border-2 border-senegal-green/30">
-              {/* AI Assistant Icon */}
-              <svg
-                className="w-12 h-12 md:w-16 md:h-16 text-senegal-green"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                />
-              </svg>
-            </div>
+            {/* Senegal image */}
+            <img
+              src="/images/senegal-4.jpg"
+              alt="Voyage au Sénégal"
+              className="w-full h-full object-cover rounded-2xl border-2 border-senegal-green/30"
+            />
           </div>
         </div>
 

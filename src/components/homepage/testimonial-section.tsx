@@ -19,10 +19,10 @@ export function TestimonialSection({ className = "" }: TestimonialSectionProps) 
 
   // Sample testimonial data - this could be made props or fetched from API in the future
   const testimonial: Testimonial = {
-    name: "Marie Dubois",
+    name: "MaximeS",
     location: "Paris, France",
     rating: 5,
-    comment: "Mbaye est un excellent guide ! Transport sûr et expérience inoubliable.",
+    comment: "Nous avons voyagé une semaine avec Mbaye à trois. Plus qu'un chauffeur, il a traduit, évité les problèmes, orienté. Il connaît bien le pays, reste professionnel et s'adapte. Il a de l'humour et est attentionné. Je le recommande vivement.",
     avatar: "/images/testimonial-avatar-placeholder.jpg" // Placeholder for future integration
   }
 

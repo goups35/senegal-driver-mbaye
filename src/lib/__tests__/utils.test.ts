@@ -23,7 +23,7 @@ describe('Utils', () => {
 
   describe('formatWhatsAppUrl', () => {
     it('creates correct WhatsApp URL with message', () => {
-      const phone = '+33626388794'
+      const phone = '+221775762203'
       const message = 'Bonjour, je souhaite un devis'
       
       const result = formatWhatsAppUrl(phone, message)
@@ -33,22 +33,22 @@ describe('Utils', () => {
     })
 
     it('handles phone numbers with different formats', () => {
-      expect(formatWhatsAppUrl('+33 6 26 38 87 94', 'test')).toContain('33626388794')
-      expect(formatWhatsAppUrl('06.26.38.87.94', 'test')).toContain('626388794')
-      expect(formatWhatsAppUrl('0626388794', 'test')).toContain('626388794')
+      expect(formatWhatsAppUrl('+221 77 576 22 03', 'test')).toContain('221775762203')
+      expect(formatWhatsAppUrl('+221.77.576.22.03', 'test')).toContain('775762203')
+      expect(formatWhatsAppUrl('77 576 22 03', 'test')).toContain('775762203')
     })
 
     it('encodes special characters in message', () => {
       const message = 'Bonjour test'
-      const result = formatWhatsAppUrl('+33626388794', message)
+      const result = formatWhatsAppUrl('+221775762203', message)
       
       expect(result).toContain('https://wa.me/33626388794')
       expect(result).toContain('text=Bonjour%20test')
     })
 
     it('handles empty message', () => {
-      const result = formatWhatsAppUrl('+33626388794', '')
-      expect(result).toContain('https://wa.me/33626388794')
+      const result = formatWhatsAppUrl('+221775762203', '')
+      expect(result).toContain('https://wa.me/221775762203')
     })
   })
 })

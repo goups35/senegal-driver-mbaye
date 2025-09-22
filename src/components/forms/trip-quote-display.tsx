@@ -41,7 +41,7 @@ Email: ${tripData.customerEmail}
 
 Merci de confirmer la disponibilité.`
 
-    const whatsappUrl = formatWhatsAppUrl(process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '+33626388794', message)
+    const whatsappUrl = formatWhatsAppUrl(process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '+221775762203', message)
     window.open(whatsappUrl, '_blank')
   }
 
@@ -83,7 +83,7 @@ Merci de confirmer la disponibilité.`
             </Button>
 
             <p className="text-sm text-muted-foreground">
-              Vous n&apos;avez pas WhatsApp mais avez Instagram ? Envoyez votre demande à Mbaye sur Instagram.
+              Vous n&apos;avez pas WhatsApp mais avez Instagram ou Facebook ? Envoyez votre demande à Mbaye sur Instagram ou Facebook.
             </p>
           </div>
         </CardContent>

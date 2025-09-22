@@ -17,7 +17,7 @@ export function HomeClient() {
       <Navbar />
 
       {/* Hero Section - Limited Height */}
-      <div className="relative bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/senegal-1.jpg)', minHeight: '75vh' }}>
+      <div className="relative bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/senegal-3.jpeg)', minHeight: '75vh' }}>
         {/* Overlay gradient renforcé pour meilleur contraste */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/55"></div>
 
@@ -29,7 +29,7 @@ export function HomeClient() {
               Découvrez le Sénégal
             </h1>
             <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto leading-relaxed drop-shadow-lg font-medium mobile-text-readable mb-8">
-              Voyagez en confiance avec votre chauffeur Mbaye
+              Voyagez en confiance avec votre chauffeur Mbaye Diop
             </p>
 
             {/* Badges de réassurance - Consolidated backdrop-blur */}
@@ -97,7 +97,7 @@ export function HomeClient() {
               >
                 <div className="relative text-center">
                   <h3 className="text-xl md:text-2xl font-bold transition-colors duration-300">
-                    Planifier mon voyage
+                    Planifier mon voyage (IA)
                   </h3>
                 </div>
               </button>
