@@ -95,10 +95,6 @@ export default function TestimonialsPage() {
               <div className="text-3xl font-bold text-ocean-blue">150+</div>
               <div className="text-sm text-gray-500">Voyages réalisés</div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-teranga-orange">98%</div>
-              <div className="text-sm text-gray-500">Clients satisfaits</div>
-            </div>
           </div>
         </div>
 
