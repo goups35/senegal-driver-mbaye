@@ -1,6 +1,7 @@
 'use client'
 
 import { Navbar } from '@/components/navigation/navbar'
+import { Footer } from '@/components/footer/footer'
 import { TransportQuoteWrapper } from '@/components/features/transport-quote/transport-quote-wrapper'
 import { useTripContext } from '@/context/trip-context'
 import { useRouter } from 'next/navigation'
@@ -41,16 +42,7 @@ export function TransportClient() {
         </div>
       </div>
 
-      {/* Footer cohérent avec l'existant */}
-      <footer className="bg-white mt-16 text-center text-sm text-muted-foreground py-8">
-        <div className="max-w-md mx-auto space-y-2">
-          <p>🇸🇳 Service de transport professionnel au Sénégal</p>
-          <p>📱 Disponible 24h/24 • 🚗 Flotte moderne • ✨ Devis instantané</p>
-          <p className="text-xs">
-            Propulsé par l&apos;IA • Made with ❤️ for Sénégal
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

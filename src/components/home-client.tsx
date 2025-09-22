@@ -6,6 +6,7 @@ import { QuickStatsBar } from '@/components/homepage/quick-stats-bar'
 import { IAAssistantSection } from '@/components/homepage/ia-assistant-section'
 import { TestimonialSection } from '@/components/homepage/testimonial-section'
 import { MbayeTrustSection } from '@/components/homepage/mbaye-trust-section'
+import { Footer } from '@/components/footer/footer'
 import { calculateTestimonialStats } from '@/data/testimonials'
 
 export function HomeClient() {
@@ -166,6 +167,8 @@ export function HomeClient() {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }

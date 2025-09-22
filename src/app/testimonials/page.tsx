@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/navigation/navbar'
+import { Footer } from '@/components/footer/footer'
 import Link from 'next/link'
 import { testimonials, calculateTestimonialStats } from '@/data/testimonials'
 
@@ -130,6 +131,8 @@ export default function TestimonialsPage() {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }

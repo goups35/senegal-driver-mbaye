@@ -101,8 +101,6 @@ describe('TransportClient', () => {
   it('renders footer correctly', () => {
     renderWithContext(<TransportClient />)
 
-    expect(screen.getByText('🇸🇳 Service de transport professionnel au Sénégal')).toBeInTheDocument()
-    expect(screen.getByText('📱 Disponible 24h/24 • 🚗 Flotte moderne • ✨ Devis instantané')).toBeInTheDocument()
-    expect(screen.getByText('Propulsé par l\'IA • Made with ❤️ for Sénégal')).toBeInTheDocument()
+    expect(screen.getByText('Propulsé par l\'IA ⚪ Site développé avec ❤️ par des anciens clients de Mbaye')).toBeInTheDocument()
   })
 })
