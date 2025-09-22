@@ -14,7 +14,7 @@ export default function MbayePage() {
               Découvrez Mbaye
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Votre chauffeur Mbaye - guide expérimenté au Sénégal
+              Votre chauffeur Mbaye - chauffeur expérimenté au Sénégal
             </p>
           </div>
 
@@ -42,7 +42,7 @@ export default function MbayePage() {
                 <div className="space-y-4 text-gray-700">
                   <p>
                     Fort de plus de 10 ans d&apos;expérience dans le transport touristique, 
-                    Mbaye est votre guide de confiance pour découvrir les merveilles du Sénégal.
+                    Mbaye est votre chauffeur de confiance pour découvrir les merveilles du Sénégal.
                   </p>
                   <p>
                     Passionné par son pays et sa culture, il saura vous faire vivre une 
@@ -86,9 +86,9 @@ export default function MbayePage() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-baobab-brown mb-2">Trilingue (FR/EN/Wolof)</h4>
+                  <h4 className="font-semibold text-baobab-brown mb-2">Bilingue (FR/Wolof)</h4>
                   <p className="text-gray-600 text-sm">
-                    Communication fluide avec tous les voyageurs internationaux
+                    Communication fluide en français et wolof
                   </p>
                 </div>
               </div>
