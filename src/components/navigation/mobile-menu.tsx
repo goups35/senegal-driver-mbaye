@@ -53,7 +53,7 @@ export function MobileMenu() {
               {/* Mobile CTA WhatsApp */}
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <a
-                  href="https://wa.me/33626388794?text=Bonjour%20Mbaye%2C%20j%27aimerais%20avoir%20des%20informations%20sur%20vos%20services%20de%20transport%20au%20S%C3%A9n%C3%A9gal"
+                  href="https://wa.me/221775762203?text=Bonjour%20Mbaye%2C%20j%27aimerais%20avoir%20des%20informations%20sur%20vos%20services%20de%20transport%20au%20S%C3%A9n%C3%A9gal"
                   className="flex items-center justify-center space-x-3 bg-[#25D366] hover:bg-[#20BA5A] text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 shadow-lg"
                   onClick={closeMenu}
                 >

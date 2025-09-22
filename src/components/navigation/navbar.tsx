@@ -17,7 +17,7 @@ export function Navbar() {
           {/* CTA Button Desktop - WhatsApp Style */}
           <div className="hidden md:block">
             <a
-              href="https://wa.me/33626388794?text=Bonjour%20Mbaye%2C%20j%27aimerais%20avoir%20des%20informations%20sur%20vos%20services%20de%20transport%20au%20S%C3%A9n%C3%A9gal"
+              href="https://wa.me/221775762203?text=Bonjour%20Mbaye%2C%20j%27aimerais%20avoir%20des%20informations%20sur%20vos%20services%20de%20transport%20au%20S%C3%A9n%C3%A9gal"
               className="bg-[#25D366] hover:bg-[#20BA5A] text-white px-4 py-2 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg flex items-center space-x-2"
             >
               <WhatsAppLogo className="w-4 h-4" />

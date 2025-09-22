@@ -28,7 +28,7 @@ describe('Utils', () => {
       
       const result = formatWhatsAppUrl(phone, message)
       
-      expect(result).toContain('https://wa.me/33626388794')
+      expect(result).toContain('https://wa.me/221775762203')
       expect(result).toContain('text=Bonjour%2C%20je%20souhaite%20un%20devis')
     })
 
@@ -42,7 +42,7 @@ describe('Utils', () => {
       const message = 'Bonjour test'
       const result = formatWhatsAppUrl('+221775762203', message)
       
-      expect(result).toContain('https://wa.me/33626388794')
+      expect(result).toContain('https://wa.me/221775762203')
       expect(result).toContain('text=Bonjour%20test')
     })
 
