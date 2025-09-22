@@ -31,15 +31,6 @@ export function TransportClient() {
       <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           <div className="space-y-6">
-            <div className="text-center">
-              <button
-                onClick={handleBackToHome}
-                className="text-primary hover:underline text-sm mb-4"
-              >
-                ← Retour aux options
-              </button>
-            </div>
-
             <TransportQuoteWrapper
               currentQuote={currentQuote}
               tripData={tripData}

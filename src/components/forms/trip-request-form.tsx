@@ -78,7 +78,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
                 {...register('date')}
               />
               {errors.date && (
-                <p className="text-sm text-destructive mobile-error-text">{errors.date.message}</p>
+                <p className="text-sm text-red-600 mobile-error-text">{errors.date.message}</p>
               )}
             </div>
 
@@ -94,7 +94,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
                 {...register('passengers', { valueAsNumber: true })}
               />
               {errors.passengers && (
-                <p className="text-sm text-destructive mobile-error-text">{errors.passengers.message}</p>
+                <p className="text-sm text-red-600 mobile-error-text">{errors.passengers.message}</p>
               )}
             </div>
           </div>
@@ -111,7 +111,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
               {...register('duration', { valueAsNumber: true })}
             />
             {errors.duration && (
-              <p className="text-sm text-destructive mobile-error-text">{errors.duration.message}</p>
+              <p className="text-sm text-red-600 mobile-error-text">{errors.duration.message}</p>
             )}
           </div>
 
@@ -127,7 +127,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
                 {...register('customerName')}
               />
               {errors.customerName && (
-                <p className="text-sm text-destructive mobile-error-text">{errors.customerName.message}</p>
+                <p className="text-sm text-red-600 mobile-error-text">{errors.customerName.message}</p>
               )}
             </div>
 
@@ -143,7 +143,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
                 {...register('customerPhone')}
               />
               {errors.customerPhone && (
-                <p className="text-sm text-destructive mobile-error-text">{errors.customerPhone.message}</p>
+                <p className="text-sm text-red-600 mobile-error-text">{errors.customerPhone.message}</p>
               )}
             </div>
 
@@ -159,7 +159,7 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
                 {...register('customerEmail')}
               />
               {errors.customerEmail && (
-                <p className="text-sm text-destructive mobile-error-text">{errors.customerEmail.message}</p>
+                <p className="text-sm text-red-600 mobile-error-text">{errors.customerEmail.message}</p>
               )}
             </div>
 
@@ -177,14 +177,38 @@ export function TripRequestForm({ onQuoteGenerated }: TripRequestFormProps) {
           </div>
 
           {error && (
-            <div className="p-4 bg-destructive/10 border border-destructive rounded-md">
-              <p className="text-sm text-destructive mobile-error-text">{error}</p>
+            <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-600 mobile-error-text">{error}</p>
             </div>
           )}
 
-          <Button type="submit" className="w-full mobile-form-button mobile-touch-safe" disabled={isLoading}>
-            {isLoading ? 'Génération du devis...' : 'Obtenir un devis'}
-          </Button>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full group relative overflow-hidden bg-gradient-to-br from-teranga-orange via-teranga-orange to-orange-500 hover:from-senegal-green hover:via-senegal-green hover:to-green-600 border-2 border-teranga-orange hover:border-senegal-green rounded-2xl shadow-md hover:shadow-xl transition-[background,border-color,box-shadow,transform] duration-300 cursor-pointer mobile-touch-safe disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              padding: '16px 24px',
+              minHeight: '56px',
+              touchAction: 'manipulation'
+            }}
+            onMouseEnter={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.willChange = 'background, border-color, box-shadow, transform'
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.willChange = 'auto'
+            }}
+          >
+            {/* Shine effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+
+            <div className="relative text-center">
+              <span className="text-lg font-bold text-white transition-all duration-300">
+                {isLoading ? 'Génération du devis...' : 'Obtenir un devis'}
+              </span>
+            </div>
+          </button>
         </form>
       </CardContent>
     </Card>
