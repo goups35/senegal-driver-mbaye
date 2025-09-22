@@ -1,63 +1,9 @@
 import { Navbar } from '@/components/navigation/navbar'
 import Link from 'next/link'
+import { testimonials, calculateTestimonialStats } from '@/data/testimonials'
 
 export default function TestimonialsPage() {
-  const testimonials = [
-    {
-      id: 1,
-      name: "MaximeS",
-      location: "Paris, France",
-      date: "Juin 2025",
-      rating: 5,
-      text: "Mbaye a transformé notre voyage au Sénégal en une expérience magique. Sa connaissance du pays, sa gentillesse et sa disponibilité ont fait de ces 10 jours des moments inoubliables. Nous recommandons vivement !",
-      trip: "Circuit 10 jours Dakar-Saint-Louis-Saly"
-    },
-    {
-      id: 2,
-      name: "James Thompson",
-      location: "Londres, UK",
-      date: "Janvier 2024",
-      rating: 5,
-      text: "Exceptional service from Mbaye! His English is perfect, and he showed us hidden gems of Senegal that we would never have discovered alone. Professional, safe, and incredibly knowledgeable.",
-      trip: "Safari Niokolo-Koba + Lac Rose"
-    },
-    {
-      id: 3,
-      name: "Familia Rodriguez",
-      location: "Madrid, Espagne",
-      date: "Février 2024",
-      rating: 5,
-      text: "Mbaye s&apos;est occupé de notre famille avec 3 enfants de manière exceptionnelle. Toujours patient, attentionné et plein de bonnes idées d&apos;activités. Les enfants ont adoré !",
-      trip: "Vacances familiales Saly-Toubacouta"
-    },
-    {
-      id: 4,
-      name: "Sophie Martin",
-      location: "Lyon, France",
-      date: "Novembre 2023",
-      rating: 5,
-      text: "Un voyage en solo réussi grâce à Mbaye. Je me suis sentie en sécurité tout au long du parcours. Ses explications culturelles ont enrichi chaque visite. Une belle découverte humaine !",
-      trip: "Solo trip Casamance 5 jours"
-    },
-    {
-      id: 5,
-      name: "Andreas & Lisa Weber",
-      location: "Berlin, Allemagne", 
-      date: "Décembre 2023",
-      rating: 5,
-      text: "Mbaye hat unsere Reise nach Senegal perfekt organisiert. Seine Professionalität und sein Lächeln haben unseren Aufenthalt unvergesslich gemacht. Sehr zu empfehlen!",
-      trip: "Circuit culturel 7 jours"
-    },
-    {
-      id: 6,
-      name: "Emma & David Johnson",
-      location: "Toronto, Canada",
-      date: "Octobre 2023",
-      rating: 5,
-      text: "We couldn&apos;t have asked for a better guide! Mbaye&apos;s passion for his country is contagious. Every day brought new surprises and authentic experiences. Thank you for this incredible journey!",
-      trip: "Découverte authentique 12 jours"
-    }
-  ]
+  const stats = calculateTestimonialStats()
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -88,12 +34,12 @@ export default function TestimonialsPage() {
           {/* Stats */}
           <div className="flex justify-center items-center space-x-8 mt-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-senegal-green">4.9/5</div>
+              <div className="text-3xl font-bold text-senegal-green">{stats.formattedRating}</div>
               <div className="text-sm text-gray-500">Note moyenne</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-ocean-blue">150+</div>
-              <div className="text-sm text-gray-500">Voyages réalisés</div>
+              <div className="text-3xl font-bold text-ocean-blue">{stats.totalReviews}</div>
+              <div className="text-sm text-gray-500">Avis clients</div>
             </div>
           </div>
         </div>

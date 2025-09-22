@@ -6,9 +6,11 @@ import { QuickStatsBar } from '@/components/homepage/quick-stats-bar'
 import { IAAssistantSection } from '@/components/homepage/ia-assistant-section'
 import { TestimonialSection } from '@/components/homepage/testimonial-section'
 import { MbayeTrustSection } from '@/components/homepage/mbaye-trust-section'
+import { calculateTestimonialStats } from '@/data/testimonials'
 
 export function HomeClient() {
   const router = useRouter()
+  const stats = calculateTestimonialStats()
 
   return (
     <div className="min-h-screen">
@@ -136,8 +138,8 @@ export function HomeClient() {
             <div className="mt-8">
               <QuickStatsBar
                 stats={{
-                  rating: '4.9/5',
-                  trips: '+10 avis'
+                  rating: stats.formattedRating,
+                  trips: stats.formattedReviews
                 }}
               />
             </div>
