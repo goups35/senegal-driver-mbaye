@@ -403,7 +403,7 @@ export function TravelChat({ onTravelPlanReady }: TravelChatProps) {
     if (messages.length === 0) {
       const welcomeMessage: Message = {
         role: 'assistant',
-        content: '🇸🇳 Bonjour ! Je suis Maxime, votre conseiller voyage spécialisé Sénégal.\n\nJe vais vous aider à créer un voyage personnalisé jour par jour, parfaitement adapté à vos envies !\n\nCommencez par me parler de votre projet : qu&apos;est-ce qui vous attire dans l&apos;idée de découvrir le Sénégal ? 😊',
+        content: '🇸🇳 Bonjour ! Je suis Maxime, votre conseiller voyage spécialisé Sénégal.\n\nJe vais vous aider à créer un voyage personnalisé jour par jour, parfaitement adapté à vos envies !\n\nCommencez par me parler de votre projet : qu\'est-ce qui vous attire dans l\'idée de découvrir le Sénégal ? 😊',
         timestamp: new Date()
       }
       setMessages([welcomeMessage])
