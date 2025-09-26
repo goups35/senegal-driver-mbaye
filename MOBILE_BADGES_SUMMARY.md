@@ -79,7 +79,7 @@ Les badges de réassurance entre le slogan et les CTAs fonctionnent correctement
 ### Badges Testés ✅
 1. **"Sécurisé"** (vert) - Icon + texte
 2. **"Connaissance terrain"** (bleu) - Icon + texte
-3. **"Plus de 10 ans d'expérience"** (orange) - Icon + texte
+3. **"Plus de 20 ans d'expérience"** (orange) - Icon + texte
 
 ---
 

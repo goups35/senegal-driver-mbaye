@@ -62,7 +62,7 @@ Les badges de réassurance sont **optimisés pour mobile** et prêts pour la pro
 ```
 Badge "Sécurisé": ~84px × 32px
 Badge "Connaissance terrain": ~136px × 32px
-Badge "Plus de 10 ans d'expérience": ~180px × 32px
+Badge "Plus de 20 ans d'expérience": ~180px × 32px
 ```
 
 #### ⚠️ CONSTAT TOUCH TARGETS

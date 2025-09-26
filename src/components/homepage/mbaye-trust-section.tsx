@@ -35,7 +35,7 @@ export function MbayeTrustSection({ className = "" }: MbayeTrustSectionProps) {
 
           {/* Description narrative */}
           <p className="text-sm md:text-base text-baobab-brown/90 mb-6 leading-relaxed mobile-text-readable">
-            Fort de plus de 10 ans d&apos;expérience dans le transport touristique, Mbaye Diop est votre guide de confiance pour découvrir les merveilles du Sénégal. Passionné par son pays et sa culture, il saura vous faire vivre une expérience authentique et mémorable, en toute sécurité et dans le respect des traditions locales.
+            Fort de plus de 20 ans d&apos;expérience dans le transport touristique, Mbaye Diop est votre guide de confiance pour découvrir les merveilles du Sénégal. Passionné par son pays et sa culture, il saura vous faire vivre une expérience authentique et mémorable, en toute sécurité et dans le respect des traditions locales.
           </p>
 
           {/* CTA Button */}
