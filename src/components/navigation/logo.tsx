@@ -24,7 +24,7 @@ export function Logo({ className = '' }: LogoProps) {
       {/* Brand Text */}
       <div className="flex flex-col">
         <span className="text-xl font-bold text-baobab-brown leading-tight">
-          Mbaye Transport
+          Mbaye Tours
         </span>
         <span className="text-xs text-senegal-green font-medium tracking-wide">
           SÉNÉGAL AUTHENTIQUE
