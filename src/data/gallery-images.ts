@@ -52,14 +52,6 @@ const visiteImages: GalleryImage[] = [
     description: 'Exploration des marchés authentiques'
   },
   {
-    id: 'visite-7',
-    src: '/images/gallerie-photos/visite-7.jpeg',
-    alt: 'Excursion guidée - Artisanat local',
-    title: 'Artisanat local',
-    category: 'visite',
-    description: 'Rencontre avec les artisans locaux'
-  },
-  {
     id: 'visite-8',
     src: '/images/gallerie-photos/visite-8.jpeg',
     alt: 'Visite culturelle - Rencontres locales',
@@ -93,16 +85,8 @@ const visiteImages: GalleryImage[] = [
   }
 ]
 
-// Photos de destinations en second
+// Photos de destinations en second (photo 1.jpg retirée)
 const destinationImages: GalleryImage[] = [
-  {
-    id: 'dest-1',
-    src: '/images/gallerie-photos/1.jpeg',
-    alt: 'Paysage sénégalais - Destination naturelle',
-    title: 'Beauté naturelle',
-    category: 'destination',
-    description: 'Les merveilles naturelles du Sénégal'
-  },
   {
     id: 'dest-2',
     src: '/images/gallerie-photos/2.jpeg',
@@ -123,9 +107,9 @@ const destinationImages: GalleryImage[] = [
     id: 'dest-4',
     src: '/images/gallerie-photos/4.jpeg',
     alt: 'Destination nature - Écosystèmes variés',
-    title: 'Écosystèmes variés',
+    title: 'Réserves naturelles',
     category: 'destination',
-    description: 'Biodiversité exceptionnelle'
+    description: 'Parcs nationaux et faune sauvage du Sénégal'
   },
   {
     id: 'dest-5',
@@ -147,9 +131,9 @@ const destinationImages: GalleryImage[] = [
     id: 'dest-7',
     src: '/images/gallerie-photos/7.jpeg',
     alt: 'Paysage naturel - Savane sénégalaise',
-    title: 'Savane sénégalaise',
+    title: 'Brousse africaine',
     category: 'destination',
-    description: 'L\'authenticité de la savane'
+    description: 'Immersion totale dans la nature préservée'
   },
   {
     id: 'dest-8',

@@ -58,27 +58,6 @@ export function GalleryGrid({ images, onImageClick }: GalleryGridProps) {
             </div>
           </div>
 
-          {/* Category Badge */}
-          <div className="absolute top-3 right-3">
-            <span className={`
-              px-2 py-1 rounded-full text-xs font-medium
-              ${image.category === 'visite'
-                ? 'bg-teranga-orange text-white'
-                : 'bg-senegal-green text-white'
-              }
-            `}>
-              {image.category === 'visite' ? 'Visite' : 'Destination'}
-            </span>
-          </div>
-
-          {/* Featured Badge */}
-          {image.featured && (
-            <div className="absolute top-3 left-3">
-              <span className="bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
-                ⭐ Coup de cœur
-              </span>
-            </div>
-          )}
         </div>
       ))}
     </div>

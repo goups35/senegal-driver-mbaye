@@ -40,7 +40,7 @@ export function DestinationGallery() {
       {/* Results count */}
       <div className="text-center mb-8">
         <p className="text-gray-600">
-          {destinationImages.length} destination{destinationImages.length > 1 ? 's' : ''} à découvrir
+          De merveilleuses destinations à découvrir
         </p>
       </div>
 
