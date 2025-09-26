@@ -97,13 +97,49 @@ src/
     └── index.ts           # Types TypeScript
 ```
 
-## 📋 Checklist de Déploiement
+## 📋 Workflow de Déploiement
 
-### Avant le déploiement:
+### 🔄 Workflow Git Recommandé
 
+#### 1. **Développement avec branches**
+```bash
+# Créer une branche pour chaque feature/fix
+git checkout -b feature/nom-de-la-feature
+git checkout -b fix/correction-bug
+```
+
+#### 2. **Tests localhost obligatoires**
+```bash
+npm run build    # Vérifier la compilation
+npm run lint     # Vérifier le code
+npm run dev      # Tester en local sur localhost:3000
+```
+
+#### 3. **Déploiement progressif**
+```bash
+# 1. Push de la branche feature
+git push origin feature/nom-de-la-feature
+
+# 2. Créer une Pull Request vers main (pas de merge direct)
+# 3. Review du code + tests
+
+# 4. Merge uniquement après validation
+git checkout main
+git merge feature/nom-de-la-feature
+git push origin main  # Déploiement auto sur Vercel
+```
+
+#### 4. **Environnements**
+- **Local**: `npm run dev` - Tests et développement
+- **Staging**: Preview Vercel depuis PR
+- **Production**: Branche `main` - Déploiement manuel déclenché
+
+### ✅ Checklist Pré-Déploiement
+
+#### **Configuration initiale**
 - [ ] **Variables d'environnement configurées**
   - [ ] Supabase URL + clé anonyme
-  - [ ] OpenAI API key
+  - [ ] Groq API key
   - [ ] Numéro WhatsApp
   - [ ] Resend API key (si emails activés)
 
@@ -112,31 +148,40 @@ src/
   - [ ] Schéma SQL exécuté (`supabase-schema.sql`)
   - [ ] Tables `trip_requests` et `trip_quotes` créées
 
-- [ ] **Tests fonctionnels**
-  - [ ] Formulaire de demande fonctionne
-  - [ ] Génération de devis par IA
-  - [ ] Bouton WhatsApp redirige correctement
-  - [ ] Envoi d'email (si activé)
-  - [ ] Stockage en base de données
+#### **Tests fonctionnels localhost**
+- [ ] `npm run build` - Compilation réussie
+- [ ] `npm run lint` - Aucune erreur de linting
+- [ ] `npm run test` - Tests passent (si disponibles)
+- [ ] Formulaire de demande fonctionne
+- [ ] Génération de devis par IA
+- [ ] Bouton WhatsApp redirige correctement
+- [ ] Envoi d'email (si activé)
+- [ ] Stockage en base de données
 
-### Déploiement Vercel:
+### 🚀 Déploiement Production
 
-1. **Push le code sur GitHub**
-```bash
-git add .
-git commit -m "feat: MVP Transport Sénégal ready for production"
-git push origin main
-```
-
-2. **Connecter à Vercel**
+#### **Setup Vercel initial**
+1. **Connecter à Vercel**
    - Importer le projet GitHub
    - Ajouter les variables d'environnement
-   - Déployer
+   - Configurer la protection de branche `main`
 
-3. **Configuration post-déploiement**
-   - [ ] URL de production dans `NEXT_PUBLIC_APP_URL`
+2. **Protection GitHub**
+   - Activer protection branche `main`
+   - Requérir Pull Request
+   - Pas de push direct sur `main`
+
+#### **Process de mise en production**
+1. **Validation finale**
+   - [ ] Pull Request reviewée et approuvée
+   - [ ] Tous les checks passent
+   - [ ] Tests fonctionnels validés
+
+2. **Déploiement**
+   - [ ] Merge PR vers `main`
+   - [ ] Vérifier le déploiement Vercel
    - [ ] Tester toutes les fonctionnalités en prod
-   - [ ] Vérifier les logs Vercel pour les erreurs
+   - [ ] Vérifier les logs pour les erreurs
 
 ## 🔧 Configuration des Services Externes
 
