@@ -210,9 +210,9 @@ export function CombinedSocialSection() {
                   async
                   src="//www.instagram.com/embed.js"
                   onLoad={() => {
-                    // @ts-ignore
+                    // @ts-expect-error Instagram embed global is not typed
                     if (window.instgrm) {
-                      // @ts-ignore
+                      // @ts-expect-error Instagram embed global is not typed
                       window.instgrm.Embeds.process()
                     }
                   }}

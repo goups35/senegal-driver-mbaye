@@ -4,12 +4,12 @@ import { Navbar } from '@/components/navigation/navbar'
 import { Footer } from '@/components/footer/footer'
 import { TransportQuoteWrapper } from '@/components/features/transport-quote/transport-quote-wrapper'
 import { useTripContext } from '@/context/trip-context'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import type { TripQuote } from '@/types'
 import { TripRequestInput } from '@/schemas/trip'
 
 export function TransportClient() {
-  const router = useRouter()
+  // const router = useRouter()
   const { currentQuote, tripData, updateQuoteAndData, resetTrip } = useTripContext()
 
   const handleQuoteGenerated = (quote: TripQuote, data: TripRequestInput) => {
@@ -20,10 +20,10 @@ export function TransportClient() {
     resetTrip()
   }
 
-  const handleBackToHome = () => {
-    resetTrip()
-    router.push('/')
-  }
+  // const handleBackToHome = () => {
+  //   resetTrip()
+  //   router.push('/')
+  // }
 
   return (
     <div className="min-h-screen bg-white">
