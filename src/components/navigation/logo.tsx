@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SenegalFlag } from '@/components/ui/senegal-flag'
+import Image from 'next/image'
 
 interface LogoProps {
   className?: string
@@ -8,10 +8,16 @@ interface LogoProps {
 export function Logo({ className = '' }: LogoProps) {
   return (
     <Link href="/" className={`flex items-center space-x-3 ${className}`}>
-      {/* Logo Icon avec drapeau */}
+      {/* Logo Icon avec image MB Tours */}
       <div className="relative">
         <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg">
-          <SenegalFlag className="w-full h-full" />
+          <Image
+            src="/images/mb_tours.jpg"
+            alt="MB Tours Logo"
+            width={40}
+            height={40}
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
       

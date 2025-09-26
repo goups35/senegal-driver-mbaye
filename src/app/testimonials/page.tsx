@@ -91,7 +91,7 @@ export default function TestimonialsPage() {
               Partagez votre expérience et aidez d&apos;autres voyageurs
             </p>
             <a
-              href="mailto:legoupil.alexandre@gmail.com?subject=Mon%20avis%20sur%20Transport%20Sénégal%20-%20Voyage%20avec%20Mbaye&body=Bonjour%2C%0A%0AJe%20souhaite%20partager%20mon%20expérience%20de%20voyage%20avec%20Mbaye%20:%0A%0A%F0%9F%93%85%20Dates%20du%20voyage%20:%20%0A%F0%9F%9A%97%20Type%20de%20voyage%20:%20%0A%E2%AD%90%20Note%20sur%205%20:%20%0A%F0%9F%93%9D%20Mon%20témoignage%20:%0A%0A%0A%0ACordialement%2C%0A[Votre%20nom]%0A[Votre%20ville%2C%20pays]"
+              href="mailto:mbayediop04@gmail.com?subject=Mon%20avis%20sur%20Transport%20Sénégal%20-%20Voyage%20avec%20Mbaye&body=Bonjour%2C%0A%0AJe%20souhaite%20partager%20mon%20expérience%20de%20voyage%20avec%20Mbaye%20:%0A%0A%F0%9F%93%85%20Dates%20du%20voyage%20:%20%0A%F0%9F%9A%97%20Type%20de%20voyage%20:%20%0A%E2%AD%90%20Note%20sur%205%20:%20%0A%F0%9F%93%9D%20Mon%20témoignage%20:%0A%0A%0A%0ACordialement%2C%0A[Votre%20nom]%0A[Votre%20ville%2C%20pays]"
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 font-medium inline-flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

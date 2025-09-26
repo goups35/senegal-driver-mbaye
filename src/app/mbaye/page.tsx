@@ -42,17 +42,18 @@ export default function MbayePage() {
                 </h2>
                 <div className="space-y-4 text-gray-700">
                   <p>
-                    Fort de plus de 10 ans d&apos;expérience dans le transport touristique, 
-                    Mbaye est votre chauffeur de confiance pour découvrir les merveilles du Sénégal.
+                    Je m&apos;appelle Mbaye Diop, chauffeur-guide avec 20 années d&apos;expérience à faire découvrir les trésors cachés de ce magnifique pays.
+                    Né et grandi ici, j&apos;ai une connaissance intime du Sénégal, de ses traditions, de son histoire riche et de ses sites les plus époustouflants.
                   </p>
                   <p>
-                    Passionné par son pays et sa culture, il saura vous faire vivre une 
-                    expérience authentique et mémorable, en toute sécurité et dans le respect 
-                    des traditions locales.
+                    Avant de devenir guide, j&apos;ai travaillé comme garde du corps, ce qui m&apos;a permis de développer un sens aigu de la sécurité et de l&apos;attention aux détails. Aujourd&apos;hui, je mets cette expérience au service de votre confort et de votre plaisir, en vous guidant avec chaleur et professionnalisme à travers ce pays que j&apos;aime tant.
                   </p>
                   <p>
-                    Avec Mbaye, chaque voyage devient une aventure humaine riche en découvertes 
-                    et en rencontres authentiques.
+                    Mon objectif est de vous offrir une expérience inoubliable. Ensemble, nous choisirons un itinéraire qui correspond à vos envies et à votre rythme.
+                    Que vous souhaitiez une excursion d&apos;une journée ou un circuit de plusieurs jours, mon véhicule climatisé vous apportera tout le confort nécessaire. Je peux vous proposer un itinéraire basé sur mes connaissances, ou bien nous pouvons créer ensemble un parcours sur mesure, selon vos envies et centres d&apos;intérêt, car chaque voyageur est unique.
+                  </p>
+                  <p>
+                    Nous pourrons, par exemple, découvrir l&apos;histoire de Saint-Louis, faire une balade en pirogue dans les îles du Saloum, observer les grands animaux de la réserve de Bandia, passer une nuit dans le désert de Lompoul ou encore visiter le parc du Niokolo-Koba.
                   </p>
                 </div>
               </div>
@@ -73,7 +74,7 @@ export default function MbayePage() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-baobab-brown mb-2">Plus de 10 ans d&apos;expérience</h4>
+                  <h4 className="font-semibold text-baobab-brown mb-2">20 années d&apos;expérience</h4>
                   <p className="text-gray-600 text-sm">
                     Une expertise approfondie du tourisme sénégalais et des routes du pays
                   </p>

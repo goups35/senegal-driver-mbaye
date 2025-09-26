@@ -83,7 +83,16 @@ Merci de confirmer la disponibilité.`
             </Button>
 
             <p className="text-sm text-muted-foreground">
-              Vous n&apos;avez pas WhatsApp mais avez Instagram ou Facebook ? Envoyez votre demande à Mbaye sur Instagram ou Facebook.
+              Vous n&apos;avez pas WhatsApp ? Envoyez votre demande à Mbaye sur{' '}
+              <a
+                href="https://www.instagram.com/mb_tours_/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-600 hover:text-pink-700 underline font-medium"
+              >
+                Instagram
+              </a>
+              .
             </p>
           </div>
         </CardContent>
