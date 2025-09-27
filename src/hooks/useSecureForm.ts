@@ -33,7 +33,7 @@ export function useSecureForm(options: UseSecureFormOptions = {}) {
     blocked: false
   })
 
-  const violationTimeoutRef = useRef<NodeJS.Timeout>()
+  const violationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   /**
    * Check if form submission is allowed
@@ -110,9 +110,9 @@ export function useSecureForm(options: UseSecureFormOptions = {}) {
   /**
    * Validate and sanitize form data
    */
-  const validateFormData = useCallback(<T extends Record<string, any>>(
+  const validateFormData = useCallback(<T extends Record<string, unknown>>(
     data: T,
-    schema?: Record<keyof T, (value: any) => boolean>
+    schema?: Record<keyof T, (value: unknown) => boolean>
   ): { isValid: boolean; sanitizedData?: T; errors: string[] } => {
     const errors: string[] = []
     const sanitizedData = { ...data }
@@ -145,7 +145,7 @@ export function useSecureForm(options: UseSecureFormOptions = {}) {
                            key.includes('email') ? 255 :
                            key.includes('phone') ? 20 : 500
 
-          sanitizedData[key] = sanitizeInput(value, {
+          ;(sanitizedData as Record<string, unknown>)[key] = sanitizeInput(value, {
             maxLength,
             allowHtml: false,
             allowSpecialChars: !key.includes('email') && !key.includes('phone')
@@ -171,7 +171,8 @@ export function useSecureForm(options: UseSecureFormOptions = {}) {
       )
 
       emailFields.forEach(field => {
-        if (data[field] && !validateEmail(data[field])) {
+        const value = data[field]
+        if (value && typeof value === 'string' && !validateEmail(value)) {
           errors.push(`Format d'email invalide: ${field}`)
         }
       })
@@ -182,7 +183,8 @@ export function useSecureForm(options: UseSecureFormOptions = {}) {
       )
 
       phoneFields.forEach(field => {
-        if (data[field] && !validatePhone(data[field])) {
+        const value = data[field]
+        if (value && typeof value === 'string' && !validatePhone(value)) {
           errors.push(`Format de téléphone invalide: ${field}`)
         }
       })
@@ -193,7 +195,7 @@ export function useSecureForm(options: UseSecureFormOptions = {}) {
         errors
       }
 
-    } catch (error) {
+    } catch {
       recordViolation('Form validation error')
       return {
         isValid: false,

@@ -46,7 +46,7 @@ const chatRequestSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     // Get client IP for rate limiting
-    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
 
     // Rate limiting check
     const rateLimit = checkRateLimit(ip, 30, 60000) // 30 requests per minute

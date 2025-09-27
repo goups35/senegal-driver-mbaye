@@ -32,7 +32,7 @@ const vehicleDatabase: Record<string, VehicleInfo> = {
 export async function POST(request: NextRequest) {
   try {
     // Get client IP for rate limiting
-    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
 
     // Rate limiting check - more restrictive for quote generation
     const rateLimit = checkRateLimit(ip, 10, 60000) // 10 requests per minute

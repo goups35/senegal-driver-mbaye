@@ -78,7 +78,6 @@ export function checkRateLimit(
   windowMs: number = 60000
 ): { allowed: boolean; remaining: number; resetTime: number } {
   const now = Date.now()
-  const windowStart = now - windowMs
 
   // Clean expired entries
   for (const [key, value] of rateLimitStore.entries()) {
