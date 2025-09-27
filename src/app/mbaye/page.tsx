@@ -25,7 +25,7 @@ export default function MbayePage() {
             <div className="text-center">
               <div className="relative w-80 h-80 mx-auto">
                 <Image
-                  src="/images/mbaye-photo.jpeg"
+                  src="/images/mbaye.png"
                   alt="Mbaye Diop - Chauffeur guide professionnel au Sénégal"
                   fill
                   className="object-cover rounded-2xl shadow-lg border border-sahel-sand"
