@@ -1,25 +1,83 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { generateGeminiResponse } from '@/lib/gemini'
-import { 
-  TripPlanningPromptEngine, 
+import {
+  TripPlanningPromptEngine,
   ConversationStateManager,
   WhatsAppMessageFormatter,
   ConversationState
 } from '@/lib/conversation-flow'
+import { checkRateLimit, validateRequestSize } from '@/lib/security'
+
+// Security utility for chat input sanitization
+const sanitizeChatInput = (value: string) => {
+  return value
+    .trim()
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
+    .replace(/javascript:/gi, '') // Remove javascript: protocols
+    .replace(/on\w+\s*=/gi, '') // Remove event handlers
+    .replace(/data:text\/html|data:application\/javascript/gi, '') // Remove data URLs
+    .slice(0, 2000) // Limit message length
+}
 
 const chatRequestSchema = z.object({
-  message: z.string().min(1),
+  message: z.string()
+    .min(1, 'Le message ne peut pas être vide')
+    .max(2000, 'Le message est trop long (maximum 2000 caractères)')
+    .transform(sanitizeChatInput),
+
   conversationHistory: z.array(z.object({
-    role: z.enum(['user', 'assistant']),
+    role: z.enum(['user', 'assistant'], {
+      errorMap: () => ({ message: 'Rôle invalide dans l\'historique' })
+    }),
     content: z.string()
-  })).optional(),
-  sessionId: z.string().optional()
+      .max(10000, 'Contenu de l\'historique trop long')
+      .transform(sanitizeChatInput)
+  }))
+    .max(50, 'Historique de conversation trop long')
+    .optional(),
+
+  sessionId: z.string()
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Format de session ID invalide')
+    .max(100, 'Session ID trop long')
+    .optional()
 })
 
 export async function POST(request: NextRequest) {
   try {
+    // Get client IP for rate limiting
+    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+
+    // Rate limiting check
+    const rateLimit = checkRateLimit(ip, 30, 60000) // 30 requests per minute
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error: 'Trop de requêtes. Veuillez réessayer dans quelques instants.',
+          retryAfter: Math.ceil((rateLimit.resetTime - Date.now()) / 1000)
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString(),
+            'X-RateLimit-Limit': '30',
+            'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString()
+          }
+        }
+      )
+    }
+
     const body = await request.json()
+
+    // Request size validation
+    if (!validateRequestSize(body, 50)) { // 50KB max
+      return NextResponse.json(
+        { error: 'Requête trop volumineuse' },
+        { status: 413 }
+      )
+    }
+
     const { message, sessionId = 'default' } = chatRequestSchema.parse(body)
 
     // Gestion de l'état de conversation

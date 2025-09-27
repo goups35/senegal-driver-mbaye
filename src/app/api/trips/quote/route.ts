@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { tripRequestSchema } from '@/schemas/trip'
 import { z } from 'zod'
 import type { TripQuote, VehicleInfo, RouteStep } from '@/types'
+import { checkRateLimit, validateRequestSize } from '@/lib/security'
 
 const vehicleDatabase: Record<string, VehicleInfo> = {
   standard: {
@@ -30,7 +31,39 @@ const vehicleDatabase: Record<string, VehicleInfo> = {
 
 export async function POST(request: NextRequest) {
   try {
+    // Get client IP for rate limiting
+    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+
+    // Rate limiting check - more restrictive for quote generation
+    const rateLimit = checkRateLimit(ip, 10, 60000) // 10 requests per minute
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error: 'Trop de demandes de devis. Veuillez réessayer dans quelques instants.',
+          retryAfter: Math.ceil((rateLimit.resetTime - Date.now()) / 1000)
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString(),
+            'X-RateLimit-Limit': '10',
+            'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString()
+          }
+        }
+      )
+    }
+
     const body = await request.json()
+
+    // Request size validation
+    if (!validateRequestSize(body, 10)) { // 10KB max for trip requests
+      return NextResponse.json(
+        { error: 'Requête trop volumineuse' },
+        { status: 413 }
+      )
+    }
+
     const tripData = tripRequestSchema.parse(body)
 
     // Use default vehicle type since it's no longer in the form
